@@ -4,4 +4,5 @@
 library;
 
 export 'src/delegate.dart';
+export 'src/stateful.dart';
 export 'src/usecase.dart';

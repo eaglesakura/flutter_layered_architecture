@@ -4,6 +4,9 @@ import 'package:flutter_layered_architecture_lint/src/delegate/delegate_immutabl
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_internal.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_no_nested_delegate.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_no_usecase_instantiation.dart';
+import 'package:flutter_layered_architecture_lint/src/stateful/stateful_closes_mutable_state_stream.dart';
+import 'package:flutter_layered_architecture_lint/src/stateful/stateful_has_mutable_state_stream.dart';
+import 'package:flutter_layered_architecture_lint/src/stateful/stateful_immutable.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_immutable.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_method_signature.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_single_method.dart';
@@ -37,5 +40,8 @@ class _FlutterLayeredArchitectureLint extends PluginBase {
     const DelegateInternal(),
     const DelegateNoNestedDelegate(),
     const DelegateNoUsecaseInstantiation(),
+    const StatefulImmutable(),
+    const StatefulHasMutableStateStream(),
+    const StatefulClosesMutableStateStream(),
   ];
 }

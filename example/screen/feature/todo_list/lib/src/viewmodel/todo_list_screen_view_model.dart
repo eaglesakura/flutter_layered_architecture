@@ -1,3 +1,4 @@
+import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:screen_feature_todo_list/src/viewmodel/delegate/on_add_todo_delegate.dart';
@@ -15,6 +16,7 @@ part 'todo_list_screen_view_model.action.dart';
 
 /// ViewModel for the todo list screen.
 @internal
+@stateful
 final class TodoListScreenViewModel {
   /// Provides [TodoListScreenViewModel] with autoDispose lifecycle.
   static final provider = Provider.autoDispose<TodoListScreenViewModel>(
