@@ -1,0 +1,55 @@
+{
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            80
+        ],
+        "editor.selectionHighlight": false,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.suggestSelection": "first",
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": "off"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+    },
+    "cSpell.ignorePaths": [
+        "**/pubspec.lock",
+        ".git/**",
+        ".idea/**",
+        ".vscode/**",
+        ".fvm/**",
+        "**/build/**",
+        ".dart_tool/**",
+        "**/*.gen.dart",
+        "**/*.g.dart",
+        "**/*.freezed.dart"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always",
+        "source.organizeImports": "always",
+        "source.sortMembers": "always"
+    },
+    "editor.formatOnSave": true,
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*.dart": "$(capture).g.dart, $(capture).freezed.dart, $(capture).gen.dart, $(capture).preview.dart",
+        "Gemfile": "Gemfile.lock",
+        "Podfile": "Podfile.lock",
+        ".mise.toml": ".mise.*.toml",
+    },
+    "files.exclude": {
+        "**/.dart_tool": true,
+        "**/.DS_Store": true,
+        "**/.fvm": true,
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.svn": true,
+        "**/Thumbs.db": true
+    },
+    "yaml.schemas": {},
+}
