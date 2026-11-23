@@ -22,3 +22,13 @@ Pair with `flutter_layered_architecture_annotations`.
 | `usecase_single_method` | Declares exactly one instance method |
 | `usecase_method_signature` | That method has parameters and a non-void return type |
 | `usecase_immutable` | All fields are `final`/`const`, and a `const` constructor exists |
+
+### `@delegate`
+
+| Lint code | Check |
+| --- | --- |
+| `delegate_execute_method` | Declares exactly one instance method named `execute` |
+| `delegate_immutable` | All fields are `final`/`const`, and a `const` constructor exists |
+| `delegate_internal` | Also annotated with `@internal` |
+| `delegate_no_nested_delegate` | Must not accept or instantiate other `@delegate` types |
+| `delegate_no_usecase_instantiation` | Must not instantiate `@usecase` types (inject via constructor) |

@@ -1,4 +1,9 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/delegate/delegate_execute_method.dart';
+import 'package:flutter_layered_architecture_lint/src/delegate/delegate_immutable.dart';
+import 'package:flutter_layered_architecture_lint/src/delegate/delegate_internal.dart';
+import 'package:flutter_layered_architecture_lint/src/delegate/delegate_no_nested_delegate.dart';
+import 'package:flutter_layered_architecture_lint/src/delegate/delegate_no_usecase_instantiation.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_immutable.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_method_signature.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_single_method.dart';
@@ -27,5 +32,10 @@ class _FlutterLayeredArchitectureLint extends PluginBase {
     const UsecaseSingleMethod(),
     const UsecaseMethodSignature(),
     const UsecaseImmutable(),
+    const DelegateExecuteMethod(),
+    const DelegateImmutable(),
+    const DelegateInternal(),
+    const DelegateNoNestedDelegate(),
+    const DelegateNoUsecaseInstantiation(),
   ];
 }

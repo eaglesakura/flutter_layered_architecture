@@ -14,6 +14,8 @@ dependencies:
   material_ui: ^1.1.0
   domain_todo: ^0.1.0
   flutter_hooks: ^0.21.3
+  flutter_layered_architecture_annotations:
+    path: ../../../../packages/annotations
   flutter_riverpod: ^3.0.3
   hooks_riverpod: ^3.0.3
   meta: ^1.16.0
@@ -22,6 +24,9 @@ dependencies:
   usecase_todo: ^0.1.0
 
 dev_dependencies:
+  custom_lint: ^0.8.1
   flutter_lints: ^6.0.0
+  flutter_layered_architecture_lint:
+    path: ../../../../packages/lint
   flutter_test:
     sdk: flutter
