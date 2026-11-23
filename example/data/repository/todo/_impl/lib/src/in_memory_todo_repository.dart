@@ -1,19 +1,30 @@
 import 'package:data_repository_todo/data_repository_todo.dart';
 import 'package:domain_todo/domain_todo.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// In-memory [TodoRepository] for the sample app (Web / demo).
 final class InMemoryTodoRepository implements TodoRepository {
-  final List<Todo> _items = [];
+  /// Provides [InMemoryTodoRepository].
+  static final provider = Provider<InMemoryTodoRepository>(
+    (ref) => InMemoryTodoRepository(),
+  );
 
-  @override
-  Future<List<Todo>> list() async {
-    return List<Todo>.unmodifiable(_items);
-  }
+  final List<Todo> _items = [];
 
   @override
   Future<Todo> add(Todo todo) async {
     _items.insert(0, todo);
     return todo;
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    _items.removeWhere((item) => item.id == id);
+  }
+
+  @override
+  Future<List<Todo>> list() async {
+    return List<Todo>.unmodifiable(_items);
   }
 
   @override
@@ -24,10 +35,5 @@ final class InMemoryTodoRepository implements TodoRepository {
     }
     _items[index] = todo;
     return todo;
-  }
-
-  @override
-  Future<void> delete(String id) async {
-    _items.removeWhere((item) => item.id == id);
   }
 }

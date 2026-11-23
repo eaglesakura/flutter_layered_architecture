@@ -12,6 +12,13 @@ It combines a Custom Linter, Runtime libraries, and SKILLs to support introducin
 | Runtime | Provides libraries that support layered architecture at runtime |
 | SKILL | Provides agent-oriented guides for adoption and day-to-day use |
 
+## Recommended libraries
+
+| Category | Recommended libraries |
+| --- | --- |
+| Dependency Injection | [Riverpod](https://pub.dev/packages/riverpod) |
+| UI construction | [Riverpod](https://pub.dev/packages/flutter_riverpod) / [Hooks](https://pub.dev/packages/flutter_hooks) ([hooks_riverpod](https://pub.dev/packages/hooks_riverpod)) |
+
 ## Repository layout
 
 ```text
@@ -23,6 +30,7 @@ flutter_layered_architecture/
 │   └── lint/                 # flutter_layered_architecture_lint
 ├── example/                  # Layered Architecture TODO sample (Web)
 │   ├── app/                  # example_app
+│   ├── foundation/dependency_injection/ # foundation_dependency_injection
 │   ├── domain/todo/          # domain_todo
 │   ├── data/repository/todo/ # data_repository_todo (+ _impl)
 │   ├── usecase/todo/         # usecase_todo (+ _impl)

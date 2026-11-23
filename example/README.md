@@ -7,6 +7,8 @@ Web-only sample TODO app split into packages that mirror production layout.
 ```text
 example/
 ├── app/                              # example_app (Flutter Web)
+├── foundation/
+│   └── dependency_injection/         # foundation_dependency_injection
 ├── domain/
 │   └── todo/                         # domain_todo
 ├── data/

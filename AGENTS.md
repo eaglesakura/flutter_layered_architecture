@@ -15,6 +15,7 @@
 │   └── lint/                 # flutter_layered_architecture_lint
 ├── example/                  # Layered Architecture TODO サンプル（Web）
 │   ├── app/                  # example_app
+│   ├── foundation/dependency_injection/ # foundation_dependency_injection
 │   ├── domain/todo/          # domain_todo
 │   ├── data/repository/todo/ # data_repository_todo (+ _impl)
 │   ├── usecase/todo/         # usecase_todo (+ _impl)

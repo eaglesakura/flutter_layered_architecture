@@ -1,13 +1,17 @@
-import 'package:example_app/dependency_builder.dart';
+import 'package:example_app/example_dependency_injection.dart';
 import 'package:example_app/main.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:foundation_dependency_injection/foundation_dependency_injection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
   testWidgets('shows todo screen title', (tester) async {
+    final builder = DependencyBuilder();
+    const ExampleDependencyInjection().bind(builder);
+
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: const DependencyBuilder().build(),
+      UncontrolledProviderScope(
+        container: builder.build(),
         child: const ExampleApp(),
       ),
     );

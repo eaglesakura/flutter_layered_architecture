@@ -1,0 +1,22 @@
+name: foundation_dependency_injection
+description: DI builder for the Flutter Layered Architecture example.
+version: 0.1.0
+publish_to: "none"
+resolution: workspace
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.50.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.0.3
+  riverpod: ^3.0.3
+  riverpod_container_async: ^2.0.0
+  riverpod_container_builder: ^1.0.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter

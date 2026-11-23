@@ -10,6 +10,7 @@ workspace:
   - packages/annotations
   - packages/lint
   - example/app
+  - example/foundation/dependency_injection
   - example/domain/todo
   - example/data/repository/todo
   - example/data/repository/todo/_impl

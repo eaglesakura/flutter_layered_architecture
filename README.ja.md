@@ -12,6 +12,13 @@ Custom Linter・Runtime・SKILL の組み合わせで、レイヤード構成の
 | Runtime | 実行時にレイヤード構成を支えるライブラリを提供する |
 | SKILL | Agent 向けの導入・運用手順を提供する |
 
+## 推奨ライブラリ
+
+| カテゴリ | 推奨ライブラリ |
+| --- | --- |
+| Dependency Injection | [Riverpod](https://pub.dev/packages/riverpod) |
+| UI 構築 | [Riverpod](https://pub.dev/packages/flutter_riverpod) / [Hooks](https://pub.dev/packages/flutter_hooks)（[hooks_riverpod](https://pub.dev/packages/hooks_riverpod)） |
+
 ## リポジトリ構成
 
 ```text
@@ -23,6 +30,7 @@ flutter_layered_architecture/
 │   └── lint/                 # flutter_layered_architecture_lint
 ├── example/                  # Layered Architecture TODO サンプル（Web）
 │   ├── app/                  # example_app
+│   ├── foundation/dependency_injection/ # foundation_dependency_injection
 │   ├── domain/todo/          # domain_todo
 │   ├── data/repository/todo/ # data_repository_todo (+ _impl)
 │   ├── usecase/todo/         # usecase_todo (+ _impl)
