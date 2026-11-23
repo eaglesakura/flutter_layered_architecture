@@ -1,11 +1,12 @@
 import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
+import 'package:screen_feature_todo_list/src/viewmodel/state/todo_list_screen_state.dart';
 import 'package:state_stream/state_stream.dart';
 
 /// Probe: close() 未呼び出し.
 @stateful
 // expect_lint: stateful_closes_mutable_state_stream
 final class ProbeStatefulMissingClose {
-  final MutableStateStream<int> state;
+  final MutableStateStream<TodoListScreenState> state;
 
   const ProbeStatefulMissingClose({required this.state});
 }
@@ -21,9 +22,20 @@ final class ProbeStatefulMissingStream {
 @stateful
 // expect_lint: stateful_immutable
 final class ProbeStatefulMutable {
-  MutableStateStream<int> state;
+  MutableStateStream<TodoListScreenState> state;
 
   ProbeStatefulMutable(this.state);
+
+  Future<void> close() => state.close();
+}
+
+/// Probe: MutableStateStream の型引数が Freezed ではない.
+@stateful
+final class ProbeStatefulNonFreezedState {
+  // expect_lint: stateful_mutable_state_stream_freezed
+  final MutableStateStream<List<int>> state;
+
+  const ProbeStatefulNonFreezedState({required this.state});
 
   Future<void> close() => state.close();
 }

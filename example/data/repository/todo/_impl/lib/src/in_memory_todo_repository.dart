@@ -1,4 +1,5 @@
 import 'package:data_repository_todo/data_repository_todo.dart';
+import 'package:data_repository_todo_impl/src/in_memory_todo_repository_state.dart';
 import 'package:domain_todo/domain_todo.dart';
 import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,57 +12,63 @@ final class InMemoryTodoRepository implements TodoRepository {
   static final provider = Provider<InMemoryTodoRepository>(
     (ref) {
       final result = InMemoryTodoRepository(
-        items: MutableStateStream<List<Todo>>(const []),
+        state: MutableStateStream(const InMemoryTodoRepositoryState()),
       );
       ref.onDispose(result._close);
       return result;
     },
   );
 
-  /// Stored todo items (newest first).
-  final MutableStateStream<List<Todo>> items;
+  /// Repository state stream.
+  final MutableStateStream<InMemoryTodoRepositoryState> state;
 
   /// Creates an [InMemoryTodoRepository].
   const InMemoryTodoRepository({
-    required this.items,
+    required this.state,
   });
 
   @override
   Future<Todo> add(Todo todo) {
-    return items.updateWithLock((current, emitter) async {
-      await emitter.emit([todo, ...current]);
+    return state.updateWithLock((current, emitter) async {
+      await emitter.emit(
+        current.copyWith(items: [todo, ...current.items]),
+      );
       return todo;
     });
   }
 
   @override
   Future<void> delete(String id) {
-    return items.updateWithLock((current, emitter) async {
-      await emitter.emit([
-        for (final item in current)
-          if (item.id != id) item,
-      ]);
+    return state.updateWithLock((current, emitter) async {
+      await emitter.emit(
+        current.copyWith(
+          items: [
+            for (final item in current.items)
+              if (item.id != id) item,
+          ],
+        ),
+      );
     });
   }
 
   @override
   Future<List<Todo>> list() async {
-    return List<Todo>.unmodifiable(items.state);
+    return List<Todo>.unmodifiable(state.state.items);
   }
 
   @override
   Future<Todo> update(Todo todo) {
-    return items.updateWithLock((current, emitter) async {
-      final index = current.indexWhere((item) => item.id == todo.id);
+    return state.updateWithLock((current, emitter) async {
+      final index = current.items.indexWhere((item) => item.id == todo.id);
       if (index < 0) {
         throw StateError('Todo not found: ${todo.id}');
       }
-      final next = [...current];
+      final next = [...current.items];
       next[index] = todo;
-      await emitter.emit(next);
+      await emitter.emit(current.copyWith(items: next));
       return todo;
     });
   }
 
-  Future<void> _close() => items.close();
+  Future<void> _close() => state.close();
 }

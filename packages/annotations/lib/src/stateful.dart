@@ -22,6 +22,7 @@ const stateful = Stateful();
 /// フィールドはすべて `final`、コンストラクタは `const` とする.
 /// `MutableStateStream<T>` フィールドを持ち、いずれかの経路で
 /// `MutableStateStream.close()` が呼ばれている必要がある.
+/// `T` は Freezed（`@freezed` / `@Freezed()`）付きの class である必要がある.
 ///
 /// Example:
 /// ```dart

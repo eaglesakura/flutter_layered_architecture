@@ -6,6 +6,12 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 export 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart'
     show fieldsAreFinalOrConst, hasConstConstructor;
 
+/// `freezed_annotation` の Freezed アノテーション型チェッカー.
+const freezedAnnotationChecker = TypeChecker.fromName(
+  'Freezed',
+  packageName: 'freezed_annotation',
+);
+
 /// `state_stream` の `MutableStateStream` 型チェッカー.
 const mutableStateStreamChecker = TypeChecker.fromName(
   'MutableStateStream',
@@ -57,6 +63,22 @@ bool hasStatefulAnnotation(AnnotatedNode node) {
   return false;
 }
 
+/// [type] が Freezed（`@freezed` / `@Freezed()`）付きクラスかを判定する.
+///
+/// Example:
+/// ```dart
+/// final ok = isFreezedAnnotatedType(stateType);
+/// ```
+bool isFreezedAnnotatedType(DartType? type) {
+  if (type is! InterfaceType) {
+    return false;
+  }
+  return freezedAnnotationChecker.hasAnnotationOf(
+    type.element,
+    throwOnUnresolved: false,
+  );
+}
+
 /// [node] 内の `MutableStateStream` 型フィールド宣言を列挙する.
 ///
 /// Example:
@@ -75,6 +97,25 @@ Iterable<VariableDeclaration> mutableStateStreamFieldsOf(
       }
     }
   }
+}
+
+/// [streamType] が `MutableStateStream<T>` のときの型引数 `T` を返す.
+///
+/// Example:
+/// ```dart
+/// final stateType = mutableStateStreamStateType(fieldType);
+/// ```
+DartType? mutableStateStreamStateType(DartType? streamType) {
+  if (streamType is! InterfaceType) {
+    return null;
+  }
+  if (!mutableStateStreamChecker.isAssignableFromType(streamType)) {
+    return null;
+  }
+  if (streamType.typeArguments.isEmpty) {
+    return null;
+  }
+  return streamType.typeArguments.first;
 }
 
 DartType? _resolvedFieldType(

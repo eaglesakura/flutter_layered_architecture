@@ -1,22 +1,27 @@
 import 'package:domain_todo/domain_todo.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'todo_list_screen_state.freezed.dart';
 
 /// Mutable screen state for the todo list screen.
-final class TodoListScreenState {
-  /// Whether the first load is in progress.
-  final bool isLoading;
-
-  /// Current todo items.
-  final List<Todo> todos;
-
-  /// Draft title in the input field.
-  final String draftTitle;
-
+///
+/// Example:
+/// ```dart
+/// TodoListScreenState.initial();
+/// ```
+@freezed
+abstract class TodoListScreenState with _$TodoListScreenState {
   /// Creates a [TodoListScreenState].
-  const TodoListScreenState({
-    required this.isLoading,
-    required this.todos,
-    required this.draftTitle,
-  });
+  const factory TodoListScreenState({
+    /// Whether the first load is in progress.
+    required bool isLoading,
+
+    /// Current todo items.
+    required List<Todo> todos,
+
+    /// Draft title in the input field.
+    required String draftTitle,
+  }) = _TodoListScreenState;
 
   /// Initial loading state.
   factory TodoListScreenState.initial() {
@@ -24,19 +29,6 @@ final class TodoListScreenState {
       isLoading: true,
       todos: [],
       draftTitle: '',
-    );
-  }
-
-  /// Returns a copy with selected fields replaced.
-  TodoListScreenState copyWith({
-    bool? isLoading,
-    List<Todo>? todos,
-    String? draftTitle,
-  }) {
-    return TodoListScreenState(
-      isLoading: isLoading ?? this.isLoading,
-      todos: todos ?? this.todos,
-      draftTitle: draftTitle ?? this.draftTitle,
     );
   }
 }

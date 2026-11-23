@@ -40,3 +40,4 @@ Pair with `flutter_layered_architecture_annotations`.
 | `stateful_immutable` | All fields are `final`/`const`, and a `const` constructor exists |
 | `stateful_has_mutable_state_stream` | Declares at least one `MutableStateStream` field |
 | `stateful_closes_mutable_state_stream` | Calls `MutableStateStream.close()` somewhere in the class |
+| `stateful_mutable_state_stream_freezed` | `MutableStateStream<T>` requires `T` to be a Freezed-annotated class |
