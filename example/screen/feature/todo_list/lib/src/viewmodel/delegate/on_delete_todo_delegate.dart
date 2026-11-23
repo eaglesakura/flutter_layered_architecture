@@ -20,7 +20,7 @@ final class OnDeleteTodoDelegate {
   /// Executes the delete action for [id].
   Future<void> execute(String id) async {
     await _deleteTodoUsecase.execute(DeleteTodoRequest(id: id));
-    final todos = await _listTodosUsecase.execute();
+    final todos = await _listTodosUsecase.execute(const ListTodosRequest());
     await _state.updateWithLock((current, emitter) {
       return emitter.emit(current.copyWith(todos: todos));
     });

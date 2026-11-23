@@ -19,4 +19,7 @@ workspace:
   - example/screen/feature/todo_list
 
 dev_dependencies:
+  custom_lint: ^0.8.1
   flutter_lints: ^6.0.0
+  flutter_layered_architecture_lint:
+    path: packages/lint

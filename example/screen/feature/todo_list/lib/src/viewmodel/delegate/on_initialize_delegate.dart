@@ -19,7 +19,7 @@ final class OnInitializeDelegate {
     await _state.updateWithLock((current, emitter) {
       return emitter.emit(current.copyWith(isLoading: true));
     });
-    final todos = await _listTodosUsecase.execute();
+    final todos = await _listTodosUsecase.execute(const ListTodosRequest());
     await _state.updateWithLock((current, emitter) {
       return emitter.emit(
         current.copyWith(isLoading: false, todos: todos),

@@ -17,5 +17,6 @@ final class ListTodosUsecaseImpl implements ListTodosUsecase {
   const ListTodosUsecaseImpl(this._todoRepository);
 
   @override
-  Future<List<Todo>> execute() => _todoRepository.list();
+  Future<List<Todo>> execute(ListTodosRequest request) =>
+      _todoRepository.list();
 }

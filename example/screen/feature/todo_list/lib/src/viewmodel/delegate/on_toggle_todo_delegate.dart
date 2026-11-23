@@ -20,7 +20,7 @@ final class OnToggleTodoDelegate {
   /// Executes the toggle action for [id].
   Future<void> execute(String id) async {
     await _toggleTodoUsecase.execute(ToggleTodoRequest(id: id));
-    final todos = await _listTodosUsecase.execute();
+    final todos = await _listTodosUsecase.execute(const ListTodosRequest());
     await _state.updateWithLock((current, emitter) {
       return emitter.emit(current.copyWith(todos: todos));
     });

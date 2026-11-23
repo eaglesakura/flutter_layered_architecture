@@ -4,6 +4,8 @@ formatter:
   trailing_commas: preserve
 
 analyzer:
+  plugins:
+    - custom_lint
   errors:
     directives_ordering: error
     depend_on_referenced_packages: error

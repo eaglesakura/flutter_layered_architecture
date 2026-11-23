@@ -11,5 +11,14 @@ analyzer:
     - custom_lint
 ```
 
-Lint rules will be added in later releases. Pair with
-`flutter_layered_architecture_annotations`.
+Pair with `flutter_layered_architecture_annotations`.
+
+## Rules
+
+### `@usecase`
+
+| Lint code | Check |
+| --- | --- |
+| `usecase_single_method` | Declares exactly one instance method |
+| `usecase_method_signature` | That method has parameters and a non-void return type |
+| `usecase_immutable` | All fields are `final`/`const`, and a `const` constructor exists |

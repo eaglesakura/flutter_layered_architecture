@@ -25,7 +25,7 @@ final class OnAddTodoDelegate {
     }
 
     await _addTodoUsecase.execute(AddTodoRequest(title: title));
-    final todos = await _listTodosUsecase.execute();
+    final todos = await _listTodosUsecase.execute(const ListTodosRequest());
     await _state.updateWithLock((current, emitter) {
       return emitter.emit(
         current.copyWith(todos: todos, draftTitle: ''),
