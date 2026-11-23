@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 
 /// `@stateful` 型が `MutableStateStream` フィールドを持つことを検証する Lint.
@@ -18,6 +19,7 @@ final class StatefulHasMutableStateStream extends DartLintRule {
     name: 'stateful_has_mutable_state_stream',
     problemMessage:
         '@stateful types must declare at least one MutableStateStream field.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [StatefulHasMutableStateStream] ルールを生成する.

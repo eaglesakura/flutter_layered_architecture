@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 
 /// `@delegate` 型が `execute` インスタンスメソッドだけを持つことを検証する Lint.
@@ -24,6 +25,7 @@ final class DelegateExecuteMethod extends DartLintRule {
     problemMessage:
         '@delegate types must declare exactly one instance method named '
         'execute.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [DelegateExecuteMethod] ルールを生成する.

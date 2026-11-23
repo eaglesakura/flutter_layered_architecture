@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 
@@ -27,6 +28,7 @@ final class DelegateNoNestedDelegate extends DartLintRule {
     problemMessage:
         '@delegate types must not accept or instantiate other @delegate '
         'types.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [DelegateNoNestedDelegate] ルールを生成する.

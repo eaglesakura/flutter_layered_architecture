@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
 
 /// `@usecase` 型が final フィールドと const コンストラクタを持つことを検証する Lint.
@@ -25,6 +26,7 @@ final class UsecaseImmutable extends DartLintRule {
     problemMessage:
         '@usecase types must have only final fields and at least one const '
         'constructor.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [UsecaseImmutable] ルールを生成する.

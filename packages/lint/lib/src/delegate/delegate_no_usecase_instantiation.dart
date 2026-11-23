@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 
@@ -26,6 +27,7 @@ final class DelegateNoUsecaseInstantiation extends DartLintRule {
     problemMessage:
         '@delegate types must not instantiate @usecase types; inject them via '
         'the constructor instead.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [DelegateNoUsecaseInstantiation] ルールを生成する.

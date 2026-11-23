@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 
 /// `@delegate` 型が final フィールドと const コンストラクタを持つことを検証する Lint.
@@ -25,6 +26,7 @@ final class DelegateImmutable extends DartLintRule {
     problemMessage:
         '@delegate types must have only final fields and at least one const '
         'constructor.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [DelegateImmutable] ルールを生成する.

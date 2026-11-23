@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 
 /// `@stateful` の `MutableStateStream<T>` について、`T` が Freezed 型であることを検証する Lint.
@@ -21,6 +22,7 @@ final class StatefulMutableStateStreamFreezed extends DartLintRule {
     problemMessage:
         'MutableStateStream type argument on @stateful types must be a '
         'Freezed-annotated class.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [StatefulMutableStateStreamFreezed] ルールを生成する.

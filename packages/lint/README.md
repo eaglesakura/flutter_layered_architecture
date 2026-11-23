@@ -13,14 +13,17 @@ analyzer:
 
 Pair with `flutter_layered_architecture_annotations`.
 
+Architecture violations (`@usecase` / `@delegate` / `@stateful`) are reported as
+**WARNING**.
+
 ## Rules
 
 ### `@usecase`
 
 | Lint code | Check |
 | --- | --- |
-| `usecase_single_method` | Declares exactly one instance method |
-| `usecase_method_signature` | That method has parameters and a non-void return type |
+| `usecase_single_method` | Warns when two or more public instance methods exist |
+| `usecase_method_signature` | The single public method has parameters and a non-void return type |
 | `usecase_immutable` | All fields are `final`/`const`, and a `const` constructor exists |
 
 ### `@delegate`

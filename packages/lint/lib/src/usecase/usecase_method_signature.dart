@@ -1,12 +1,13 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
 
-/// `@usecase` の唯一のインスタンスメソッドが引数と非 void 戻り値を持つことを検証する Lint.
+/// `@usecase` の唯一の public インスタンスメソッドが引数と非 void 戻り値を持つことを検証する Lint.
 ///
-/// インスタンスメソッドがちょうど1つのときだけシグネチャを検査する.
-/// メソッド数の過不足は `usecase_single_method` ルール側で扱う.
+/// public インスタンスメソッドがちょうど1つのときだけシグネチャを検査する.
+/// public メソッドが2つ以上の場合は `usecase_single_method` ルール側で扱う.
 ///
 /// Example:
 /// ```dart
@@ -24,6 +25,7 @@ final class UsecaseMethodSignature extends DartLintRule {
     problemMessage:
         '@usecase methods must have at least one parameter and a non-void '
         'return type.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [UsecaseMethodSignature] ルールを生成する.
@@ -34,7 +36,7 @@ final class UsecaseMethodSignature extends DartLintRule {
   /// ```
   const UsecaseMethodSignature() : super(code: _code);
 
-  /// `@usecase` クラスの唯一のインスタンスメソッドを検査し、違反なら報告する.
+  /// `@usecase` クラスの唯一の public インスタンスメソッドを検査し、違反なら報告する.
   ///
   /// [resolver] は解析対象ファイルの解決情報.
   /// [reporter] は診断の出力先.
@@ -55,7 +57,7 @@ final class UsecaseMethodSignature extends DartLintRule {
         return;
       }
 
-      final methods = instanceMethodsOf(node).toList(growable: false);
+      final methods = publicInstanceMethodsOf(node).toList(growable: false);
       if (methods.length != 1) {
         return;
       }

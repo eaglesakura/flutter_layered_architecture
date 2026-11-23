@@ -40,3 +40,17 @@ Iterable<MethodDeclaration> instanceMethodsOf(ClassDeclaration node) {
     (method) => !method.isStatic && !method.isGetter && !method.isSetter,
   );
 }
+
+/// [node] が持つ public インスタンスメソッド宣言を列挙する.
+///
+/// [instanceMethodsOf] のうち、名前が `_` で始まらないもの.
+///
+/// Example:
+/// ```dart
+/// final publics = publicInstanceMethodsOf(classNode).toList();
+/// ```
+Iterable<MethodDeclaration> publicInstanceMethodsOf(ClassDeclaration node) {
+  return instanceMethodsOf(node).where(
+    (method) => !method.name.lexeme.startsWith('_'),
+  );
+}

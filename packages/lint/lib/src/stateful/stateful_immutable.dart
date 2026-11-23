@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 
 /// `@stateful` 型が final フィールドと const コンストラクタを持つことを検証する Lint.
@@ -20,6 +21,7 @@ final class StatefulImmutable extends DartLintRule {
     problemMessage:
         '@stateful types must have only final fields and at least one const '
         'constructor.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [StatefulImmutable] ルールを生成する.

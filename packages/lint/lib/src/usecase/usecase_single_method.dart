@@ -1,14 +1,15 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
 
-/// `@usecase` 型がインスタンスメソッドをちょうど1つ持つことを検証する Lint.
+/// `@usecase` 型の public インスタンスメソッドが2つ以上ないことを検証する Lint.
 ///
-/// メソッド数が 0 または 2 以上のとき、型名位置に診断を出す.
+/// public メソッドが2つ以上のとき、型名位置に WARNING を出す.
+/// private メソッド（`_` 始まり）は件数に含めない.
 ///
 /// Example:
 /// ```dart
-/// // analysis_options.yaml で custom_lint を有効化したうえで:
 /// // @usecase
 /// // final class Bad {
 /// //   const Bad();
@@ -21,7 +22,9 @@ final class UsecaseSingleMethod extends DartLintRule {
   /// [UsecaseSingleMethod] の診断コード.
   static const _code = LintCode(
     name: 'usecase_single_method',
-    problemMessage: '@usecase types must declare exactly one instance method.',
+    problemMessage:
+        '@usecase types must not declare more than one public instance method.',
+    errorSeverity: architectureViolationSeverity,
   );
 
   /// [UsecaseSingleMethod] ルールを生成する.
@@ -32,7 +35,7 @@ final class UsecaseSingleMethod extends DartLintRule {
   /// ```
   const UsecaseSingleMethod() : super(code: _code);
 
-  /// `@usecase` クラスを走査し、インスタンスメソッド数が1以外なら報告する.
+  /// `@usecase` クラスを走査し、public インスタンスメソッドが2つ以上なら報告する.
   ///
   /// [resolver] は解析対象ファイルの解決情報.
   /// [reporter] は診断の出力先.
@@ -40,7 +43,6 @@ final class UsecaseSingleMethod extends DartLintRule {
   ///
   /// Example:
   /// ```dart
-  /// // custom_lint が各 Dart ファイル解析時に呼び出す.
   /// rule.run(resolver, reporter, context);
   /// ```
   @override
@@ -54,8 +56,8 @@ final class UsecaseSingleMethod extends DartLintRule {
         return;
       }
 
-      final methods = instanceMethodsOf(node).toList(growable: false);
-      if (methods.length == 1) {
+      final methods = publicInstanceMethodsOf(node).toList(growable: false);
+      if (methods.length < 2) {
         return;
       }
 

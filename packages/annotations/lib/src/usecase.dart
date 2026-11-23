@@ -16,6 +16,9 @@ const usecase = Usecase();
 /// Usecase の interface（および必要に応じて実装）に付与し、
 /// `flutter_layered_architecture_lint` が構造を検証できるようにする.
 ///
+/// NOTE.
+/// public インスタンスメソッドは1つまでとする（2つ以上は WARNING）.
+///
 /// Example:
 /// ```dart
 /// @usecase
