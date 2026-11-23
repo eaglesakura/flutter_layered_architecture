@@ -1,0 +1,19 @@
+name: flutter_layered_architecture_lint
+description: Custom lint rules for Flutter Layered Architecture conventions.
+version: 0.1.0
+publish_to: "none"
+resolution: workspace
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  analyzer: ^7.4.5
+  analyzer_plugin: ^0.13.1
+  custom_lint_builder: ^0.7.5
+  flutter_layered_architecture_annotations: ^0.1.0
+
+dev_dependencies:
+  custom_lint: ^0.7.5
+  flutter_lints: ^6.0.0
+  lints: ^6.0.0

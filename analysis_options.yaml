@@ -9,6 +9,9 @@ analyzer:
     depend_on_referenced_packages: error
   exclude:
     - "**/*.gen.dart"
+    - "**/build/**"
+    - "**/web/**"
+    - "**/.dart_tool/**"
   language:
     strict-casts: true
     strict-raw-types: false

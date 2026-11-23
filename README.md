@@ -19,5 +19,13 @@ flutter_layered_architecture/
 ├── pubspec.yaml              # Dart workspace root
 ├── analysis_options.yaml     # Shared static analysis settings
 ├── packages/                 # Published / consumed Dart/Flutter packages
+│   ├── annotations/          # flutter_layered_architecture_annotations
+│   └── lint/                 # flutter_layered_architecture_lint
+├── example/                  # Layered Architecture TODO sample (Web)
+│   ├── app/                  # example_app
+│   ├── domain/todo/          # domain_todo
+│   ├── data/repository/todo/ # data_repository_todo (+ _impl)
+│   ├── usecase/todo/         # usecase_todo (+ _impl)
+│   └── screen/feature/todo_list/ # screen_feature_todo_list
 └── skills/                   # SKILLs tied to this repository
 ```

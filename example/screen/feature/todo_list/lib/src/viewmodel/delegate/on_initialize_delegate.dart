@@ -1,0 +1,29 @@
+import 'package:screen_feature_todo_list/src/viewmodel/state/todo_list_screen_state.dart';
+import 'package:state_stream/state_stream.dart';
+import 'package:usecase_todo/usecase_todo.dart';
+
+/// Loads the initial todo list into the screen state stream.
+final class OnInitializeDelegate {
+  final MutableStateStream<TodoListScreenState> _state;
+  final ListTodosUsecase _listTodosUsecase;
+
+  /// Creates an [OnInitializeDelegate].
+  const OnInitializeDelegate({
+    required MutableStateStream<TodoListScreenState> state,
+    required ListTodosUsecase listTodosUsecase,
+  }) : _state = state,
+       _listTodosUsecase = listTodosUsecase;
+
+  /// Executes the initialize action.
+  Future<void> execute() async {
+    await _state.updateWithLock((current, emitter) {
+      return emitter.emit(current.copyWith(isLoading: true));
+    });
+    final todos = await _listTodosUsecase.execute();
+    await _state.updateWithLock((current, emitter) {
+      return emitter.emit(
+        current.copyWith(isLoading: false, todos: todos),
+      );
+    });
+  }
+}

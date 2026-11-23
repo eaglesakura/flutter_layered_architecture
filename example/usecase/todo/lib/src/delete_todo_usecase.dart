@@ -1,0 +1,21 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Request for [DeleteTodoUsecase].
+final class DeleteTodoRequest {
+  /// Target todo id.
+  final String id;
+
+  /// Creates a [DeleteTodoRequest].
+  const DeleteTodoRequest({required this.id});
+}
+
+/// Deletes a todo item.
+abstract interface class DeleteTodoUsecase {
+  /// Provides [DeleteTodoUsecase]. Must be overridden by an implementation package.
+  static final provider = Provider<DeleteTodoUsecase>(
+    (ref) => throw UnimplementedError('DeleteTodoUsecase is not bound'),
+  );
+
+  /// Removes the todo identified by [request].
+  Future<void> execute(DeleteTodoRequest request);
+}
