@@ -1,14 +1,6 @@
 import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// Request for [DeleteTodoUsecase].
-final class DeleteTodoRequest {
-  /// Target todo id.
-  final String id;
-
-  /// Creates a [DeleteTodoRequest].
-  const DeleteTodoRequest({required this.id});
-}
+import 'package:usecase_todo/src/delete_todo_request.dart';
 
 /// Deletes a todo item.
 @usecase

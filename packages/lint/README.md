@@ -18,6 +18,21 @@ Architecture violations (`@usecase` / `@delegate` / `@stateful`) are reported as
 
 ## Rules
 
+### File layout
+
+| Lint code | Check |
+| --- | --- |
+| `one_public_type_per_file` | At most one public named type (`class` / `enum` / `mixin` / named `extension` / `extension type`) per file |
+| `public_type_file_name` | When exactly one public type exists, the file name must be its `lower_snake_case` form |
+
+Skipped for `part of` files and paths under `test/`. Private (`_`-prefixed) types and `typedef`s are ignored. Zero public types is allowed.
+
+Helper unit tests (assert runner; `package:test` conflicts with this workspace's `analyzer`/`flutter_test` pins):
+
+```bash
+cd packages/lint && dart run test/file_layout_checkers_test.dart
+```
+
 ### `@usecase`
 
 | Lint code | Check |

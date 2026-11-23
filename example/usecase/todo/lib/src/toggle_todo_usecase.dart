@@ -1,15 +1,7 @@
 import 'package:domain_todo/domain_todo.dart';
 import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// Request for [ToggleTodoUsecase].
-final class ToggleTodoRequest {
-  /// Target todo id.
-  final String id;
-
-  /// Creates a [ToggleTodoRequest].
-  const ToggleTodoRequest({required this.id});
-}
+import 'package:usecase_todo/src/toggle_todo_request.dart';
 
 /// Toggles completion of a todo item.
 @usecase

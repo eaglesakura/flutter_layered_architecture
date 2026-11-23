@@ -1,15 +1,7 @@
 import 'package:domain_todo/domain_todo.dart';
 import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// Request for [AddTodoUsecase].
-final class AddTodoRequest {
-  /// Title entered by the user.
-  final String title;
-
-  /// Creates an [AddTodoRequest].
-  const AddTodoRequest({required this.title});
-}
+import 'package:usecase_todo/src/add_todo_request.dart';
 
 /// Adds a new todo item.
 @usecase

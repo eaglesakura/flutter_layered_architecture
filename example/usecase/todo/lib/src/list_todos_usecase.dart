@@ -1,12 +1,7 @@
 import 'package:domain_todo/domain_todo.dart';
 import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// Request for [ListTodosUsecase].
-final class ListTodosRequest {
-  /// Creates a [ListTodosRequest].
-  const ListTodosRequest();
-}
+import 'package:usecase_todo/src/list_todos_request.dart';
 
 /// Lists all todo items.
 @usecase
