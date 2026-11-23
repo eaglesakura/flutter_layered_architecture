@@ -1,4 +1,8 @@
 import 'package:data_repository_todo/data_repository_todo.dart';
+import 'package:data_repository_todo_impl/src/delegate/add_todo_in_memory_delegate.dart';
+import 'package:data_repository_todo_impl/src/delegate/delete_todo_in_memory_delegate.dart';
+import 'package:data_repository_todo_impl/src/delegate/list_todos_in_memory_delegate.dart';
+import 'package:data_repository_todo_impl/src/delegate/update_todo_in_memory_delegate.dart';
 import 'package:data_repository_todo_impl/src/in_memory_todo_repository_state.dart';
 import 'package:domain_todo/domain_todo.dart';
 import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
@@ -29,45 +33,22 @@ final class InMemoryTodoRepository implements TodoRepository {
 
   @override
   Future<Todo> add(Todo todo) {
-    return state.updateWithLock((current, emitter) async {
-      await emitter.emit(
-        current.copyWith(items: [todo, ...current.items]),
-      );
-      return todo;
-    });
+    return AddTodoInMemoryDelegate(state: state).execute(todo);
   }
 
   @override
   Future<void> delete(String id) {
-    return state.updateWithLock((current, emitter) async {
-      await emitter.emit(
-        current.copyWith(
-          items: [
-            for (final item in current.items)
-              if (item.id != id) item,
-          ],
-        ),
-      );
-    });
+    return DeleteTodoInMemoryDelegate(state: state).execute(id);
   }
 
   @override
-  Future<List<Todo>> list() async {
-    return List<Todo>.unmodifiable(state.state.items);
+  Future<List<Todo>> list() {
+    return ListTodosInMemoryDelegate(state: state).execute();
   }
 
   @override
   Future<Todo> update(Todo todo) {
-    return state.updateWithLock((current, emitter) async {
-      final index = current.items.indexWhere((item) => item.id == todo.id);
-      if (index < 0) {
-        throw StateError('Todo not found: ${todo.id}');
-      }
-      final next = [...current.items];
-      next[index] = todo;
-      await emitter.emit(current.copyWith(items: next));
-      return todo;
-    });
+    return UpdateTodoInMemoryDelegate(state: state).execute(todo);
   }
 
   Future<void> _close() => state.close();

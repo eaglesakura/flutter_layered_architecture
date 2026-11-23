@@ -23,6 +23,8 @@ const stateful = Stateful();
 /// `MutableStateStream<T>` フィールドを持ち、いずれかの経路で
 /// `MutableStateStream.close()` が呼ばれている必要がある.
 /// `T` は Freezed（`@freezed` / `@Freezed()`）付きの class である必要がある.
+/// インスタンスメソッドの処理は `@delegate` の `execute` へ委譲する
+/// （`close` / `_close` による `MutableStateStream.close()` のみは例外）.
 ///
 /// Example:
 /// ```dart
