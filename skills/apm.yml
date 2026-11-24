@@ -1,0 +1,12 @@
+name: flutter-layered-architecture
+version: 0.1.0
+description: |
+  Flutter Layered Architecture の analyzer プラグイン規約（linter rule）SKILL 集。
+  @usecase / @delegate / @stateful / @viewModel およびファイルレイアウト規約をカバーする。
+type: skill
+includes: auto
+targets:
+  - cursor
+  - claude
+  - copilot
+  - codex
