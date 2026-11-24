@@ -1,16 +1,93 @@
 import 'dart:io';
 
+import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
-/// バレル公開面のキャッシュキー接頭辞.
+final _barrelSnapshotCache = <String, BarrelExportSnapshot>{};
+
+/// [path] と [packageName] からバレル公開面スナップショットを取得する.
+///
+/// 同一 `lib/` ルートは解析セッション内でキャッシュする.
+///
+/// Example:
+/// ```dart
+/// final snapshot = barrelSnapshotForPath(filePath, packageName);
+/// ```
 @internal
-const barrelExportCacheKeyPrefix = 'unexported_public_must_be_internal:';
+BarrelExportSnapshot? barrelSnapshotForPath(String path, String packageName) {
+  if (packageName.isEmpty) {
+    return null;
+  }
+  final libRoot = packageLibRootOf(path);
+  if (libRoot == null) {
+    return null;
+  }
+  final key = '$libRoot::$packageName';
+  return _barrelSnapshotCache.putIfAbsent(
+    key,
+    () =>
+        collectBarrelExportSnapshot(libRoot: libRoot, packageName: packageName),
+  );
+}
+
+/// [context] と [path] からパッケージ名を解決する.
+///
+/// [RuleContext.package] の pubspec を優先し、無ければパスを辿る.
+///
+/// Example:
+/// ```dart
+/// final name = packageNameForContext(context, path);
+/// ```
+@internal
+String packageNameForContext(RuleContext context, String path) {
+  final package = context.package;
+  if (package != null) {
+    final fromPubspec = packageNameFromPubspecAt(package.root.path);
+    if (fromPubspec != null && fromPubspec.isNotEmpty) {
+      return fromPubspec;
+    }
+  }
+  final libRoot = packageLibRootOf(path);
+  if (libRoot != null) {
+    final packageRoot = p.dirname(p.dirname(libRoot));
+    final fromPubspec = packageNameFromPubspecAt(packageRoot);
+    if (fromPubspec != null && fromPubspec.isNotEmpty) {
+      return fromPubspec;
+    }
+  }
+  return '';
+}
+
+/// [packageRoot] の `pubspec.yaml` から `name:` を読む.
+///
+/// Example:
+/// ```dart
+/// packageNameFromPubspecAt('/path/to/pkg');
+/// ```
+@internal
+String? packageNameFromPubspecAt(String packageRoot) {
+  final pubspec = File(p.join(packageRoot, 'pubspec.yaml'));
+  if (!pubspec.existsSync()) {
+    return null;
+  }
+  try {
+    for (final line in pubspec.readAsLinesSync()) {
+      final trimmed = line.trim();
+      if (trimmed.startsWith('name:')) {
+        return trimmed.substring('name:'.length).trim();
+      }
+    }
+  } on Object {
+    return null;
+  }
+  return null;
+}
 
 /// [names] に `show` / `hide` combinator を適用する.
 ///
@@ -39,54 +116,6 @@ Set<String> applyExportCombinators(
     }
   }
   return result;
-}
-
-/// [context] から resolver の path 向けのバレル公開面スナップショットを取得する.
-///
-/// 未キャッシュなら `null`.
-///
-/// Example:
-/// ```dart
-/// final snapshot = barrelExportSnapshotOf(resolver, context);
-/// ```
-@internal
-BarrelExportSnapshot? barrelExportSnapshotOf(
-  CustomLintResolver resolver,
-  CustomLintContext context,
-) {
-  final libRoot = packageLibRootOf(resolver.path);
-  if (libRoot == null) {
-    return null;
-  }
-  final cached = context.sharedState['$barrelExportCacheKeyPrefix$libRoot'];
-  return cached is BarrelExportSnapshot ? cached : null;
-}
-
-/// バレル公開面スナップショットを `CustomLintContext.sharedState` にキャッシュする.
-///
-/// Example:
-/// ```dart
-/// cacheBarrelExportsIfNeeded(resolver, context);
-/// ```
-@internal
-void cacheBarrelExportsIfNeeded(
-  CustomLintResolver resolver,
-  CustomLintContext context,
-) {
-  final libRoot = packageLibRootOf(resolver.path);
-  if (libRoot == null) {
-    return;
-  }
-
-  final key = '$barrelExportCacheKeyPrefix$libRoot';
-  if (context.sharedState.containsKey(key)) {
-    return;
-  }
-
-  context.sharedState[key] = collectBarrelExportSnapshot(
-    libRoot: libRoot,
-    packageName: context.pubspec.name,
-  );
 }
 
 /// [libRoot] 配下の `library;` 付きバレルから公開名集合を構築する.
@@ -338,24 +367,13 @@ Iterable<PublicTopLevelSymbolInfo> publicTopLevelSymbolsOf(
 ) sync* {
   for (final declaration in unit.declarations) {
     switch (declaration) {
-      case ClassDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration, annotated: declaration);
-        }
-      case EnumDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration, annotated: declaration);
-        }
-      case MixinDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration, annotated: declaration);
-        }
-      case ExtensionTypeDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration, annotated: declaration);
-        }
-      case ExtensionDeclaration(:final name?):
-        if (!isPrivateIdentifier(name.lexeme)) {
+      case ClassDeclaration():
+      case EnumDeclaration():
+      case MixinDeclaration():
+      case ExtensionTypeDeclaration():
+      case ExtensionDeclaration():
+        final name = typeDeclarationNameToken(declaration);
+        if (name != null && !isPrivateIdentifier(name.lexeme)) {
           yield (name: name, node: declaration, annotated: declaration);
         }
       case FunctionDeclaration(:final name):

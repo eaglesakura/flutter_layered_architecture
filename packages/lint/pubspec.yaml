@@ -1,22 +1,20 @@
 name: flutter_layered_architecture_lint
-description: Custom lint rules for Flutter Layered Architecture conventions.
+description: Analyzer plugin for Flutter Layered Architecture conventions.
 version: 0.1.0
 publish_to: "none"
-resolution: workspace
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.13.0 <4.0.0"
 
 dependencies:
-  analyzer: ^8.0.0
-  analyzer_plugin: ^0.13.1
-  custom_lint_builder: ^0.8.1
+  # Must be compatible with the analysis_server pin (^0.3.21 → 0.3.26 / analyzer 14.7.0).
+  analysis_server_plugin: 0.3.26
+  analyzer: 14.7.0
   flutter_layered_architecture_annotations:
     path: ../annotations
   meta: ^1.16.0
   path: ^1.9.0
 
 dev_dependencies:
-  custom_lint: ^0.8.1
   flutter_lints: ^6.0.0
   lints: ^6.0.0

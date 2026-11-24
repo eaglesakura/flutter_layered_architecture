@@ -1,12 +1,14 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
+import 'package:flutter_layered_architecture_lint/src/type_checker.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
 import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart'
+
     show hasInternalAnnotation;
 export 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart'
     show
@@ -45,7 +47,7 @@ const viewModelAnnotationChecker = TypeChecker.fromName(
 /// ```
 @internal
 MethodDeclaration? entityGetterOf(ClassDeclaration node) {
-  for (final method in node.members.whereType<MethodDeclaration>()) {
+  for (final method in classDeclarationMembers(node).whereType<MethodDeclaration>()) {
     if (method.isGetter && method.name.lexeme == 'entity') {
       return method;
     }
@@ -91,7 +93,7 @@ DartType? extensionExtendedType(ExtensionDeclaration node) {
 Iterable<MethodDeclaration> extensionMethodsWithInvalidNames(
   ExtensionDeclaration node,
 ) {
-  return node.members.whereType<MethodDeclaration>().where(
+  return extensionDeclarationMembers(node).whereType<MethodDeclaration>().where(
     (method) =>
         !method.isStatic &&
         !method.isGetter &&

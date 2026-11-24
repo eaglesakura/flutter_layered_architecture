@@ -1,11 +1,16 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
-import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
+import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart'
+
+    show instanceMethodsOf;
 import 'package:flutter_layered_architecture_lint/src/view_model/view_model_checkers.dart';
 import 'package:meta/meta.dart';
 
@@ -53,77 +58,90 @@ bool _isCloseOnlyMethod(MethodDeclaration method) {
 /// // → stateful_methods_use_delegate
 /// ```
 @internal
-final class StatefulMethodsUseDelegate extends DartLintRule {
+final class StatefulMethodsUseDelegate extends AnalysisRule {
   /// [StatefulMethodsUseDelegate] の診断コード.
-  static const _code = LintCode(
-    name: 'stateful_methods_use_delegate',
-    problemMessage:
-        '@stateful/@viewModel instance methods must delegate to a @delegate '
+  static const LintCode code = LintCode(
+    'stateful_methods_use_delegate',
+    '@stateful/@viewModel instance methods must delegate to a @delegate '
         'execute method (close/_close that only closes MutableStateStream is '
         'allowed).',
-    errorSeverity: architectureViolationSeverity,
+    severity: architectureViolationSeverity,
   );
 
   /// [StatefulMethodsUseDelegate] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = StatefulMethodsUseDelegate();
-  /// ```
-  const StatefulMethodsUseDelegate() : super(code: _code);
+  StatefulMethodsUseDelegate()
+    : super(
+        name: 'stateful_methods_use_delegate',
+        description:
+            '@stateful/@viewModel instance methods must delegate to a '
+            '@delegate execute method (close/_close that only closes '
+            'MutableStateStream is allowed).',
+      );
 
-  /// `@stateful` / `@viewModel` の各インスタンスメソッドを検査し、委譲が無ければ報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!appliesStatefulRules(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _ClassVisitor(this));
+    registry.addExtensionDeclaration(this, _ExtensionVisitor(this));
+  }
+}
 
-      for (final method in instanceMethodsOf(node)) {
-        _reportIfMissingDelegate(method, reporter);
-      }
-    });
+final class _ClassVisitor extends SimpleAstVisitor<void> {
+  _ClassVisitor(this.rule);
 
-    context.registry.addExtensionDeclaration((node) {
-      final extendedType = extensionExtendedType(node);
-      if (!typeAppliesStatefulRules(extendedType)) {
-        return;
-      }
+  final StatefulMethodsUseDelegate rule;
 
-      for (final method in node.members.whereType<MethodDeclaration>()) {
-        if (method.isStatic || method.isGetter || method.isSetter) {
-          continue;
-        }
-        _reportIfMissingDelegate(method, reporter);
-      }
-    });
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!appliesStatefulRules(node)) {
+      return;
+    }
+
+    for (final method in instanceMethodsOf(node)) {
+      _reportIfMissingDelegate(method);
+    }
   }
 
-  void _reportIfMissingDelegate(
-    MethodDeclaration method,
-    DiagnosticReporter reporter,
-  ) {
+  void _reportIfMissingDelegate(MethodDeclaration method) {
     if (_isCloseOnlyMethod(method)) {
       return;
     }
     if (_callsDelegateExecute(method)) {
       return;
     }
-    reporter.atToken(method.name, code);
+    rule.reportAtToken(method.name);
+  }
+}
+
+final class _ExtensionVisitor extends SimpleAstVisitor<void> {
+  _ExtensionVisitor(this.rule);
+
+  final StatefulMethodsUseDelegate rule;
+
+  @override
+  void visitExtensionDeclaration(ExtensionDeclaration node) {
+    final extendedType = extensionExtendedType(node);
+    if (!typeAppliesStatefulRules(extendedType)) {
+      return;
+    }
+
+    for (final method in extensionDeclarationMembers(node).whereType<MethodDeclaration>()) {
+      if (method.isStatic || method.isGetter || method.isSetter) {
+        continue;
+      }
+      if (_isCloseOnlyMethod(method)) {
+        continue;
+      }
+      if (_callsDelegateExecute(method)) {
+        continue;
+      }
+      rule.reportAtToken(method.name);
+    }
   }
 }
 

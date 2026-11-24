@@ -1,5 +1,9 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
 import 'package:meta/meta.dart';
@@ -16,58 +20,61 @@ import 'package:meta/meta.dart';
 /// // → public_type_file_name
 /// ```
 @internal
-final class PublicTypeFileName extends DartLintRule {
+final class PublicTypeFileName extends AnalysisRule {
   /// [PublicTypeFileName] の診断コード.
-  static const _code = LintCode(
-    name: 'public_type_file_name',
-    problemMessage:
-        'The file name must be the lower_snake_case form of the single '
-        'public type name.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'public_type_file_name',
+    'The file name must be the lower_snake_case form of the single public '
+        'type name.',
+    severity: architectureViolationSeverity,
   );
 
   /// [PublicTypeFileName] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = PublicTypeFileName();
-  /// ```
-  const PublicTypeFileName() : super(code: _code);
+  PublicTypeFileName()
+    : super(
+        name: 'public_type_file_name',
+        description:
+            'The file name must be the lower_snake_case form of the single '
+            'public type name.',
+      );
 
-  /// 唯一の public 型があるとき、ファイル名が期待と一致しなければ報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addCompilationUnit((unit) {
-      if (shouldSkipFileLayoutLint(path: resolver.path, unit: unit)) {
-        return;
-      }
+    registry.addCompilationUnit(this, _Visitor(this, context));
+  }
+}
 
-      final types = publicNamedTypesOf(unit).toList(growable: false);
-      if (types.length != 1) {
-        return;
-      }
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
 
-      final type = types.single;
-      final expected = expectedFileNameForType(type.name.lexeme);
-      final actual = fileBasename(resolver.path);
-      if (actual == expected) {
-        return;
-      }
+  final PublicTypeFileName rule;
+  final RuleContext context;
 
-      reporter.atToken(type.name, code);
-    });
+  @override
+  void visitCompilationUnit(CompilationUnit node) {
+    final path = context.currentUnit?.file.path ?? '';
+    if (shouldSkipFileLayoutLint(path: path, unit: node)) {
+      return;
+    }
+
+    final types = publicNamedTypesOf(node).toList(growable: false);
+    if (types.length != 1) {
+      return;
+    }
+
+    final type = types.single;
+    final expected = expectedFileNameForType(type.name.lexeme);
+    final actual = fileBasename(path);
+    if (actual == expected) {
+      return;
+    }
+
+    rule.reportAtToken(type.name);
   }
 }

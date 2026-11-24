@@ -1,7 +1,9 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart'
+
     show instanceMethodsOf;
 
 /// [node] のフィールドがすべて `final` または `const` かを判定する.
@@ -12,7 +14,7 @@ export 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.d
 /// ```
 @internal
 bool fieldsAreFinalOrConst(ClassDeclaration node) {
-  return node.members.whereType<FieldDeclaration>().every(
+  return classDeclarationMembers(node).whereType<FieldDeclaration>().every(
     (field) => field.fields.isFinal || field.fields.isConst,
   );
 }
@@ -25,7 +27,7 @@ bool fieldsAreFinalOrConst(ClassDeclaration node) {
 /// ```
 @internal
 bool hasConstConstructor(ClassDeclaration node) {
-  return node.members.whereType<ConstructorDeclaration>().any(
+  return classDeclarationMembers(node).whereType<ConstructorDeclaration>().any(
     (constructor) => constructor.constKeyword != null,
   );
 }
@@ -64,9 +66,8 @@ bool _hasAnnotationNamed(AnnotatedNode node, Set<String> names) {
   for (final annotation in node.metadata) {
     final name = annotation.name;
     final simpleName = switch (name) {
-      SimpleIdentifier(:final name) => name,
       PrefixedIdentifier(:final identifier) => identifier.name,
-      _ => name.toSource(),
+      SimpleIdentifier(:final name) => name,
     };
     if (names.contains(simpleName)) {
       return true;

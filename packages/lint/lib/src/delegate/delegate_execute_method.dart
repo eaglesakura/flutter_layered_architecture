@@ -1,6 +1,11 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:meta/meta.dart';
 
@@ -20,51 +25,51 @@ import 'package:meta/meta.dart';
 /// // → delegate_execute_method
 /// ```
 @internal
-final class DelegateExecuteMethod extends DartLintRule {
+final class DelegateExecuteMethod extends AnalysisRule {
   /// [DelegateExecuteMethod] の診断コード.
-  static const _code = LintCode(
-    name: 'delegate_execute_method',
-    problemMessage:
-        '@delegate types must declare exactly one instance method named '
-        'execute.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'delegate_execute_method',
+    '@delegate types must declare exactly one instance method named execute.',
+    severity: architectureViolationSeverity,
   );
 
   /// [DelegateExecuteMethod] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = DelegateExecuteMethod();
-  /// ```
-  const DelegateExecuteMethod() : super(code: _code);
+  DelegateExecuteMethod()
+    : super(
+        name: 'delegate_execute_method',
+        description:
+            '@delegate types must declare exactly one instance method named '
+            'execute.',
+      );
 
-  /// `@delegate` クラスを走査し、`execute` 以外または複数メソッドなら報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasDelegateAnnotation(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _Visitor(this));
+  }
+}
 
-      final methods = instanceMethodsOf(node).toList(growable: false);
-      if (methods.length == 1 && methods.single.name.lexeme == 'execute') {
-        return;
-      }
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule);
 
-      reporter.atToken(node.name, code);
-    });
+  final DelegateExecuteMethod rule;
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasDelegateAnnotation(node)) {
+      return;
+    }
+
+    final methods = instanceMethodsOf(node).toList(growable: false);
+    if (methods.length == 1 && methods.single.name.lexeme == 'execute') {
+      return;
+    }
+
+    rule.reportAtToken(classDeclarationName(node));
   }
 }

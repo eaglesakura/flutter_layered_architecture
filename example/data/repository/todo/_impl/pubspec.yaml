@@ -19,9 +19,6 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.0
-  custom_lint: ^0.8.1
   flutter_lints: ^6.0.0
-  flutter_layered_architecture_lint:
-    path: ../../../../../packages/lint
   freezed: ^3.2.0
   lints: ^6.0.0

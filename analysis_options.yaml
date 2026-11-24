@@ -3,9 +3,12 @@ include: package:flutter_lints/flutter.yaml
 formatter:
   trailing_commas: preserve
 
+# Official analyzer plugin (dart analyze / IDE). Not under analyzer.plugins.
+plugins:
+  flutter_layered_architecture_lint:
+    path: packages/lint
+
 analyzer:
-  plugins:
-    - custom_lint
   errors:
     directives_ordering: error
     depend_on_referenced_packages: error
@@ -14,6 +17,9 @@ analyzer:
     - "**/build/**"
     - "**/web/**"
     - "**/.dart_tool/**"
+    # Intentional violation probes (former custom_lint expect_lint).
+    - "**/probe_*.dart"
+    - "**/*_lint_probe.dart"
   language:
     strict-casts: true
     strict-raw-types: false

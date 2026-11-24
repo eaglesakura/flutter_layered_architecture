@@ -1,5 +1,9 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
@@ -18,77 +22,63 @@ import 'package:meta/meta.dart';
 /// // → unexported_public_must_be_internal
 /// ```
 @internal
-final class UnexportedPublicMustBeInternal extends DartLintRule {
+final class UnexportedPublicMustBeInternal extends AnalysisRule {
   /// [UnexportedPublicMustBeInternal] の診断コード.
-  static const _code = LintCode(
-    name: 'unexported_public_must_be_internal',
-    problemMessage:
-        'Public symbols not exported from a lib/ barrel (library;) '
-        'must be annotated with @internal or be private.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'unexported_public_must_be_internal',
+    'Public symbols not exported from a lib/ barrel (library;) must be '
+        'annotated with @internal or be private.',
+    severity: architectureViolationSeverity,
   );
 
   /// [UnexportedPublicMustBeInternal] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = UnexportedPublicMustBeInternal();
-  /// ```
-  const UnexportedPublicMustBeInternal() : super(code: _code);
+  UnexportedPublicMustBeInternal()
+    : super(
+        name: 'unexported_public_must_be_internal',
+        description:
+            'Public symbols not exported from a lib/ barrel (library;) must '
+            'be annotated with @internal or be private.',
+      );
 
-  /// 未 export の公開シンボルに `@internal` が無ければ報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addCompilationUnit((unit) {
-      if (shouldSkipFileLayoutLint(path: resolver.path, unit: unit)) {
-        return;
-      }
-
-      final snapshot = barrelExportSnapshotOf(resolver, context);
-      if (snapshot == null || !snapshot.hasBarrels) {
-        return;
-      }
-
-      for (final symbol in publicTopLevelSymbolsOf(unit)) {
-        if (isExportedNameInBarrels(symbol.name.lexeme, snapshot)) {
-          continue;
-        }
-        if (hasInternalAnnotation(symbol.annotated)) {
-          continue;
-        }
-        reporter.atToken(symbol.name, code);
-      }
-    });
+    registry.addCompilationUnit(this, _Visitor(this, context));
   }
+}
 
-  /// バレル公開面をキャッシュしてから親の startUp を実行する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [context] は共有状態と AST 登録に使う.
-  ///
-  /// Example:
-  /// ```dart
-  /// await rule.startUp(resolver, context);
-  /// ```
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
+
+  final UnexportedPublicMustBeInternal rule;
+  final RuleContext context;
+
   @override
-  Future<void> startUp(
-    CustomLintResolver resolver,
-    CustomLintContext context,
-  ) async {
-    cacheBarrelExportsIfNeeded(resolver, context);
-    await super.startUp(resolver, context);
+  void visitCompilationUnit(CompilationUnit unit) {
+    final path = context.currentUnit?.file.path ?? '';
+    if (shouldSkipFileLayoutLint(path: path, unit: unit)) {
+      return;
+    }
+
+    final packageName = packageNameForContext(context, path);
+    final snapshot = barrelSnapshotForPath(path, packageName);
+    if (snapshot == null || !snapshot.hasBarrels) {
+      return;
+    }
+
+    for (final symbol in publicTopLevelSymbolsOf(unit)) {
+      if (isExportedNameInBarrels(symbol.name.lexeme, snapshot)) {
+        continue;
+      }
+      if (hasInternalAnnotation(symbol.annotated)) {
+        continue;
+      }
+      rule.reportAtToken(symbol.name);
+    }
   }
 }

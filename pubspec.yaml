@@ -3,12 +3,11 @@ version: 0.0.1
 publish_to: "none"
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.10.0 <4.0.0"
   flutter: ">=3.50.0"
 
 workspace:
   - packages/annotations
-  - packages/lint
   - example/app
   - example/foundation/dependency_injection
   - example/domain/todo
@@ -19,7 +18,4 @@ workspace:
   - example/screen/feature/todo_list
 
 dev_dependencies:
-  custom_lint: ^0.8.1
   flutter_lints: ^6.0.0
-  flutter_layered_architecture_lint:
-    path: packages/lint

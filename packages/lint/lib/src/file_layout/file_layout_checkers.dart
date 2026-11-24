@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:meta/meta.dart';
 
 /// [typeName] に対応する期待ファイル名（`*.dart`）を返す.
@@ -90,27 +91,17 @@ String pascalToSnakeCase(String name) {
 @internal
 Iterable<PublicNamedTypeInfo> publicNamedTypesOf(CompilationUnit unit) sync* {
   for (final declaration in unit.declarations) {
+    final name = typeDeclarationNameToken(declaration);
+    if (name == null || isPrivateIdentifier(name.lexeme)) {
+      continue;
+    }
     switch (declaration) {
-      case ClassDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration);
-        }
-      case EnumDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration);
-        }
-      case MixinDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration);
-        }
-      case ExtensionTypeDeclaration(:final name):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration);
-        }
-      case ExtensionDeclaration(:final name?):
-        if (!isPrivateIdentifier(name.lexeme)) {
-          yield (name: name, node: declaration);
-        }
+      case ClassDeclaration():
+      case EnumDeclaration():
+      case MixinDeclaration():
+      case ExtensionTypeDeclaration():
+      case ExtensionDeclaration():
+        yield (name: name, node: declaration);
       default:
         break;
     }

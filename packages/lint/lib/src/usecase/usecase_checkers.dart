@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:meta/meta.dart';
 
 /// [node] に `@usecase` / `@Usecase()` が付いているかを判定する.
@@ -18,9 +19,8 @@ bool hasUsecaseAnnotation(AnnotatedNode node) {
   for (final annotation in node.metadata) {
     final name = annotation.name;
     final simpleName = switch (name) {
-      SimpleIdentifier(:final name) => name,
       PrefixedIdentifier(:final identifier) => identifier.name,
-      _ => name.toSource(),
+      SimpleIdentifier(:final name) => name,
     };
     if (simpleName == 'usecase' || simpleName == 'Usecase') {
       return true;
@@ -39,7 +39,7 @@ bool hasUsecaseAnnotation(AnnotatedNode node) {
 /// ```
 @internal
 Iterable<MethodDeclaration> instanceMethodsOf(ClassDeclaration node) {
-  return node.members.whereType<MethodDeclaration>().where(
+  return classDeclarationMembers(node).whereType<MethodDeclaration>().where(
     (method) => !method.isStatic && !method.isGetter && !method.isSetter,
   );
 }

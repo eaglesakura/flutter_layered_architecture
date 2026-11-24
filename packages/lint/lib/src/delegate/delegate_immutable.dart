@@ -1,6 +1,11 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:meta/meta.dart';
 
@@ -21,50 +26,51 @@ import 'package:meta/meta.dart';
 /// // → delegate_immutable
 /// ```
 @internal
-final class DelegateImmutable extends DartLintRule {
+final class DelegateImmutable extends AnalysisRule {
   /// [DelegateImmutable] の診断コード.
-  static const _code = LintCode(
-    name: 'delegate_immutable',
-    problemMessage:
-        '@delegate types must have only final fields and at least one const '
+  static const LintCode code = LintCode(
+    'delegate_immutable',
+    '@delegate types must have only final fields and at least one const '
         'constructor.',
-    errorSeverity: architectureViolationSeverity,
+    severity: architectureViolationSeverity,
   );
 
   /// [DelegateImmutable] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = DelegateImmutable();
-  /// ```
-  const DelegateImmutable() : super(code: _code);
+  DelegateImmutable()
+    : super(
+        name: 'delegate_immutable',
+        description:
+            '@delegate types must have only final fields and at least one '
+            'const constructor.',
+      );
 
-  /// `@delegate` クラスのフィールドとコンストラクタを検査し、違反なら報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasDelegateAnnotation(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _Visitor(this));
+  }
+}
 
-      if (fieldsAreFinalOrConst(node) && hasConstConstructor(node)) {
-        return;
-      }
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule);
 
-      reporter.atToken(node.name, code);
-    });
+  final DelegateImmutable rule;
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasDelegateAnnotation(node)) {
+      return;
+    }
+
+    if (fieldsAreFinalOrConst(node) && hasConstConstructor(node)) {
+      return;
+    }
+
+    rule.reportAtToken(classDeclarationName(node));
   }
 }

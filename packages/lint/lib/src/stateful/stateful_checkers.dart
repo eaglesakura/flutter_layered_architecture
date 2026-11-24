@@ -1,10 +1,12 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
+import 'package:flutter_layered_architecture_lint/src/type_checker.dart';
 import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart'
+
     show fieldsAreFinalOrConst, hasConstConstructor;
 
 /// `freezed_annotation` の Freezed アノテーション型チェッカー.
@@ -90,9 +92,8 @@ bool _hasAnnotationNamed(AnnotatedNode node, Set<String> names) {
   for (final annotation in node.metadata) {
     final name = annotation.name;
     final simpleName = switch (name) {
-      SimpleIdentifier(:final name) => name,
       PrefixedIdentifier(:final identifier) => identifier.name,
-      _ => name.toSource(),
+      SimpleIdentifier(:final name) => name,
     };
     if (names.contains(simpleName)) {
       return true;
@@ -128,7 +129,7 @@ bool isFreezedAnnotatedType(DartType? type) {
 Iterable<VariableDeclaration> mutableStateStreamFieldsOf(
   ClassDeclaration node,
 ) sync* {
-  for (final field in node.members.whereType<FieldDeclaration>()) {
+  for (final field in classDeclarationMembers(node).whereType<FieldDeclaration>()) {
     for (final variable in field.fields.variables) {
       final type = _resolvedFieldType(field, variable);
       if (type != null &&

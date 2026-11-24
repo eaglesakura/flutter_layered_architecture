@@ -2,15 +2,27 @@
 
 Flutter Layered Architecture のプロジェクト導入をサポートするリポジトリである。
 
-Custom Linter・Runtime・SKILL の組み合わせで、レイヤード構成の導入と運用を支援する。
+Analyzer プラグイン（`dart analyze` / IDE）・Runtime・SKILL の組み合わせで、レイヤード構成の導入と運用を支援する。
 
 ## 構成要素
 
 | 要素 | 役割 |
 | --- | --- |
-| Custom Linter | レイヤー境界や依存方向などの規約を静的に検査する |
+| Analyzer プラグイン | レイヤー境界や依存方向などの規約を `dart analyze` / IDE で静的に検査する（`analysis_server_plugin`） |
 | Runtime | 実行時にレイヤード構成を支えるライブラリを提供する |
 | SKILL | Agent 向けの導入・運用手順を提供する |
+
+## Analyzer プラグインの有効化
+
+ワークスペースルートの `analysis_options.yaml`:
+
+```yaml
+plugins:
+  flutter_layered_architecture_lint:
+    path: packages/lint
+```
+
+Dart 3.10+（Flutter 3.38+）が必要。`plugins:` を変更したら IDE の Dart Analysis Server を再起動すること。
 
 ## 推奨ライブラリ
 

@@ -1,5 +1,9 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/view_model/view_model_checkers.dart';
 import 'package:meta/meta.dart';
@@ -20,59 +24,68 @@ import 'package:meta/meta.dart';
 /// // → viewmodel_on_method_names
 /// ```
 @internal
-final class ViewModelOnMethodNames extends DartLintRule {
+final class ViewModelOnMethodNames extends AnalysisRule {
   /// [ViewModelOnMethodNames] の診断コード.
-  static const _code = LintCode(
-    name: 'viewmodel_on_method_names',
-    problemMessage:
-        '@viewModel instance/extension methods must be named on... '
+  static const LintCode code = LintCode(
+    'viewmodel_on_method_names',
+    '@viewModel instance/extension methods must be named on... '
         '(close/_close excepted).',
-    errorSeverity: architectureViolationSeverity,
+    severity: architectureViolationSeverity,
   );
 
   /// [ViewModelOnMethodNames] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = ViewModelOnMethodNames();
-  /// ```
-  const ViewModelOnMethodNames() : super(code: _code);
+  ViewModelOnMethodNames()
+    : super(
+        name: 'viewmodel_on_method_names',
+        description:
+            '@viewModel instance/extension methods must be named on... '
+            '(close/_close excepted).',
+      );
 
-  /// `@viewModel` クラスと、その型への extension のメソッド名を検査する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasViewModelAnnotation(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _ClassVisitor(this));
+    registry.addExtensionDeclaration(this, _ExtensionVisitor(this));
+  }
+}
 
-      for (final method in viewModelMethodsWithInvalidNames(node)) {
-        reporter.atToken(method.name, code);
-      }
-    });
+final class _ClassVisitor extends SimpleAstVisitor<void> {
+  _ClassVisitor(this.rule);
 
-    context.registry.addExtensionDeclaration((node) {
-      final extendedType = extensionExtendedType(node);
-      if (!typeHasViewModelAnnotation(extendedType)) {
-        return;
-      }
+  final ViewModelOnMethodNames rule;
 
-      for (final method in extensionMethodsWithInvalidNames(node)) {
-        reporter.atToken(method.name, code);
-      }
-    });
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasViewModelAnnotation(node)) {
+      return;
+    }
+
+    for (final method in viewModelMethodsWithInvalidNames(node)) {
+      rule.reportAtToken(method.name);
+    }
+  }
+}
+
+final class _ExtensionVisitor extends SimpleAstVisitor<void> {
+  _ExtensionVisitor(this.rule);
+
+  final ViewModelOnMethodNames rule;
+
+  @override
+  void visitExtensionDeclaration(ExtensionDeclaration node) {
+    final extendedType = extensionExtendedType(node);
+    if (!typeHasViewModelAnnotation(extendedType)) {
+      return;
+    }
+
+    for (final method in extensionMethodsWithInvalidNames(node)) {
+      rule.reportAtToken(method.name);
+    }
   }
 }

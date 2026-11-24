@@ -1,5 +1,9 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
 import 'package:meta/meta.dart';
@@ -8,61 +12,57 @@ import 'package:meta/meta.dart';
 ///
 /// `part of` と `test/` 配下は対象外.
 /// private（`_` 始まり）と typedef・無名 extension は件数に含めない.
-///
-/// Example:
-/// ```dart
-/// // final class Foo {}
-/// // final class Bar {}
-/// // → one_public_type_per_file (on Bar)
-/// ```
 @internal
-final class OnePublicTypePerFile extends DartLintRule {
+final class OnePublicTypePerFile extends AnalysisRule {
   /// [OnePublicTypePerFile] の診断コード.
-  static const _code = LintCode(
-    name: 'one_public_type_per_file',
-    problemMessage:
-        'A file must declare at most one public named type '
+  static const LintCode code = LintCode(
+    'one_public_type_per_file',
+    'A file must declare at most one public named type '
         '(class/enum/mixin/extension/extension type).',
-    errorSeverity: architectureViolationSeverity,
+    severity: architectureViolationSeverity,
   );
 
   /// [OnePublicTypePerFile] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = OnePublicTypePerFile();
-  /// ```
-  const OnePublicTypePerFile() : super(code: _code);
+  OnePublicTypePerFile()
+    : super(
+        name: 'one_public_type_per_file',
+        description:
+            'A file must declare at most one public named type '
+            '(class/enum/mixin/extension/extension type).',
+      );
 
-  /// コンパイル単位を走査し、public 型が2つ以上なら2つ目以降を報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addCompilationUnit((unit) {
-      if (shouldSkipFileLayoutLint(path: resolver.path, unit: unit)) {
-        return;
-      }
+    registry.addCompilationUnit(this, _Visitor(this, context));
+  }
+}
 
-      final types = publicNamedTypesOf(unit).toList(growable: false);
-      if (types.length < 2) {
-        return;
-      }
+final class _Visitor extends SimpleAstVisitor<void> {
+  final OnePublicTypePerFile rule;
 
-      for (final type in types.skip(1)) {
-        reporter.atToken(type.name, code);
-      }
-    });
+  final RuleContext context;
+  _Visitor(this.rule, this.context);
+
+  @override
+  void visitCompilationUnit(CompilationUnit node) {
+    final path = context.currentUnit?.file.path ?? '';
+    if (shouldSkipFileLayoutLint(path: path, unit: node)) {
+      return;
+    }
+
+    final types = publicNamedTypesOf(node).toList(growable: false);
+    if (types.length < 2) {
+      return;
+    }
+
+    for (final type in types.skip(1)) {
+      rule.reportAtToken(type.name);
+    }
   }
 }

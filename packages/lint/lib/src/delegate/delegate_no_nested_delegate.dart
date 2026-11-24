@@ -1,7 +1,11 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 import 'package:meta/meta.dart';
@@ -23,66 +27,74 @@ import 'package:meta/meta.dart';
 /// // → delegate_no_nested_delegate
 /// ```
 @internal
-final class DelegateNoNestedDelegate extends DartLintRule {
+final class DelegateNoNestedDelegate extends AnalysisRule {
   /// [DelegateNoNestedDelegate] の診断コード.
-  static const _code = LintCode(
-    name: 'delegate_no_nested_delegate',
-    problemMessage:
-        '@delegate types must not accept or instantiate other @delegate '
-        'types.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'delegate_no_nested_delegate',
+    '@delegate types must not accept or instantiate other @delegate types.',
+    severity: architectureViolationSeverity,
   );
 
   /// [DelegateNoNestedDelegate] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = DelegateNoNestedDelegate();
-  /// ```
-  const DelegateNoNestedDelegate() : super(code: _code);
+  DelegateNoNestedDelegate()
+    : super(
+        name: 'delegate_no_nested_delegate',
+        description:
+            '@delegate types must not accept or instantiate other @delegate '
+            'types.',
+      );
 
-  /// コンストラクタ引数とインスタンス生成を検査し、入れ子 Delegate なら報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasDelegateAnnotation(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _ClassVisitor(this));
+    registry.addInstanceCreationExpression(this, _CreationVisitor(this));
+  }
+}
 
-      for (final constructor
-          in node.members.whereType<ConstructorDeclaration>()) {
-        for (final parameter in constructor.parameters.parameters) {
-          final type = resolvedTypeOfParameter(parameter);
-          if (!typeHasAnnotation(type, delegateAnnotationChecker)) {
-            continue;
-          }
-          reporter.atNode(parameter, code);
+final class _ClassVisitor extends SimpleAstVisitor<void> {
+  _ClassVisitor(this.rule);
+
+  final DelegateNoNestedDelegate rule;
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasDelegateAnnotation(node)) {
+      return;
+    }
+
+    for (final constructor
+        in classDeclarationMembers(node).whereType<ConstructorDeclaration>()) {
+      for (final parameter in constructor.parameters.parameters) {
+        final type = resolvedTypeOfParameter(parameter);
+        if (!typeHasAnnotation(type, delegateAnnotationChecker)) {
+          continue;
         }
+        rule.reportAtNode(parameter);
       }
-    });
+    }
+  }
+}
 
-    context.registry.addInstanceCreationExpression((node) {
-      final enclosing = enclosingClassOf(node);
-      if (enclosing == null || !hasDelegateAnnotation(enclosing)) {
-        return;
-      }
-      if (!typeHasAnnotation(node.staticType, delegateAnnotationChecker)) {
-        return;
-      }
-      reporter.atNode(node, code);
-    });
+final class _CreationVisitor extends SimpleAstVisitor<void> {
+  _CreationVisitor(this.rule);
+
+  final DelegateNoNestedDelegate rule;
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    final enclosing = enclosingClassOf(node);
+    if (enclosing == null || !hasDelegateAnnotation(enclosing)) {
+      return;
+    }
+    if (!typeHasAnnotation(node.staticType, delegateAnnotationChecker)) {
+      return;
+    }
+    rule.reportAtNode(node);
   }
 }

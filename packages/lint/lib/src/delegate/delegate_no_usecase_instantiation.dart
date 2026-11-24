@@ -1,5 +1,9 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
@@ -22,49 +26,50 @@ import 'package:meta/meta.dart';
 /// // → delegate_no_usecase_instantiation
 /// ```
 @internal
-final class DelegateNoUsecaseInstantiation extends DartLintRule {
+final class DelegateNoUsecaseInstantiation extends AnalysisRule {
   /// [DelegateNoUsecaseInstantiation] の診断コード.
-  static const _code = LintCode(
-    name: 'delegate_no_usecase_instantiation',
-    problemMessage:
-        '@delegate types must not instantiate @usecase types; inject them via '
-        'the constructor instead.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'delegate_no_usecase_instantiation',
+    '@delegate types must not instantiate @usecase types; inject them via the '
+        'constructor instead.',
+    severity: architectureViolationSeverity,
   );
 
   /// [DelegateNoUsecaseInstantiation] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = DelegateNoUsecaseInstantiation();
-  /// ```
-  const DelegateNoUsecaseInstantiation() : super(code: _code);
+  DelegateNoUsecaseInstantiation()
+    : super(
+        name: 'delegate_no_usecase_instantiation',
+        description:
+            '@delegate types must not instantiate @usecase types; inject '
+            'them via the constructor instead.',
+      );
 
-  /// `@delegate` 内のインスタンス生成を検査し、`@usecase` 生成なら報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addInstanceCreationExpression((node) {
-      final enclosing = enclosingClassOf(node);
-      if (enclosing == null || !hasDelegateAnnotation(enclosing)) {
-        return;
-      }
-      if (!typeHasAnnotation(node.staticType, usecaseAnnotationChecker)) {
-        return;
-      }
-      reporter.atNode(node, code);
-    });
+    registry.addInstanceCreationExpression(this, _Visitor(this));
+  }
+}
+
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule);
+
+  final DelegateNoUsecaseInstantiation rule;
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    final enclosing = enclosingClassOf(node);
+    if (enclosing == null || !hasDelegateAnnotation(enclosing)) {
+      return;
+    }
+    if (!typeHasAnnotation(node.staticType, usecaseAnnotationChecker)) {
+      return;
+    }
+    rule.reportAtNode(node);
   }
 }

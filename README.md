@@ -2,15 +2,27 @@
 
 A repository that helps you adopt Flutter Layered Architecture in your projects.
 
-It combines a Custom Linter, Runtime libraries, and SKILLs to support introducing and operating a layered structure.
+It combines an analyzer plugin (`dart analyze` / IDE), Runtime libraries, and SKILLs to support introducing and operating a layered structure.
 
 ## Components
 
 | Component | Role |
 | --- | --- |
-| Custom Linter | Statically checks conventions such as layer boundaries and dependency direction |
+| Analyzer plugin | Statically checks conventions such as layer boundaries and dependency direction via `dart analyze` / the IDE (`analysis_server_plugin`) |
 | Runtime | Provides libraries that support layered architecture at runtime |
 | SKILL | Provides agent-oriented guides for adoption and day-to-day use |
+
+## Enabling the analyzer plugin
+
+In the workspace root `analysis_options.yaml`:
+
+```yaml
+plugins:
+  flutter_layered_architecture_lint:
+    path: packages/lint
+```
+
+Requires Dart 3.10+ (Flutter 3.38+). After changing `plugins:`, restart the Dart Analysis Server in the IDE.
 
 ## Recommended libraries
 

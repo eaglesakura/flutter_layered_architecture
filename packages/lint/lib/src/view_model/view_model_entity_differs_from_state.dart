@@ -1,5 +1,9 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/view_model/view_model_checkers.dart';
 import 'package:meta/meta.dart';
@@ -17,60 +21,61 @@ import 'package:meta/meta.dart';
 /// // → viewmodel_entity_differs_from_state
 /// ```
 @internal
-final class ViewModelEntityDiffersFromState extends DartLintRule {
+final class ViewModelEntityDiffersFromState extends AnalysisRule {
   /// [ViewModelEntityDiffersFromState] の診断コード.
-  static const _code = LintCode(
-    name: 'viewmodel_entity_differs_from_state',
-    problemMessage:
-        'entity model type on @viewModel must differ from the '
+  static const LintCode code = LintCode(
+    'viewmodel_entity_differs_from_state',
+    'entity model type on @viewModel must differ from the '
         'MutableStateStream state model type.',
-    errorSeverity: architectureViolationSeverity,
+    severity: architectureViolationSeverity,
   );
 
   /// [ViewModelEntityDiffersFromState] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = ViewModelEntityDiffersFromState();
-  /// ```
-  const ViewModelEntityDiffersFromState() : super(code: _code);
+  ViewModelEntityDiffersFromState()
+    : super(
+        name: 'viewmodel_entity_differs_from_state',
+        description:
+            'entity model type on @viewModel must differ from the '
+            'MutableStateStream state model type.',
+      );
 
-  /// entity 型と state 型が同一なら報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasViewModelAnnotation(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _Visitor(this));
+  }
+}
 
-      final getter = entityGetterOf(node);
-      if (getter == null) {
-        return;
-      }
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule);
 
-      final entityType = entityModelTypeOf(node);
-      final stateType = primaryStateModelTypeOf(node);
-      if (entityType == null || stateType == null) {
-        return;
-      }
-      if (!interfaceTypesAreSame(entityType, stateType)) {
-        return;
-      }
+  final ViewModelEntityDiffersFromState rule;
 
-      reporter.atToken(getter.name, code);
-    });
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasViewModelAnnotation(node)) {
+      return;
+    }
+
+    final getter = entityGetterOf(node);
+    if (getter == null) {
+      return;
+    }
+
+    final entityType = entityModelTypeOf(node);
+    final stateType = primaryStateModelTypeOf(node);
+    if (entityType == null || stateType == null) {
+      return;
+    }
+    if (!interfaceTypesAreSame(entityType, stateType)) {
+      return;
+    }
+
+    rule.reportAtToken(getter.name);
   }
 }

@@ -1,6 +1,11 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:meta/meta.dart';
 
@@ -16,48 +21,48 @@ import 'package:meta/meta.dart';
 /// // → delegate_internal
 /// ```
 @internal
-final class DelegateInternal extends DartLintRule {
+final class DelegateInternal extends AnalysisRule {
   /// [DelegateInternal] の診断コード.
-  static const _code = LintCode(
-    name: 'delegate_internal',
-    problemMessage: '@delegate types must also be annotated with @internal.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'delegate_internal',
+    '@delegate types must also be annotated with @internal.',
+    severity: architectureViolationSeverity,
   );
 
   /// [DelegateInternal] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = DelegateInternal();
-  /// ```
-  const DelegateInternal() : super(code: _code);
+  DelegateInternal()
+    : super(
+        name: 'delegate_internal',
+        description: '@delegate types must also be annotated with @internal.',
+      );
 
-  /// `@delegate` クラスに `@internal` が無ければ報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasDelegateAnnotation(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _Visitor(this));
+  }
+}
 
-      if (hasInternalAnnotation(node)) {
-        return;
-      }
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule);
 
-      reporter.atToken(node.name, code);
-    });
+  final DelegateInternal rule;
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasDelegateAnnotation(node)) {
+      return;
+    }
+
+    if (hasInternalAnnotation(node)) {
+      return;
+    }
+
+    rule.reportAtToken(classDeclarationName(node));
   }
 }

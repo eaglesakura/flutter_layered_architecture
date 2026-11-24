@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:flutter_layered_architecture_lint/src/type_checker.dart';
 import 'package:meta/meta.dart';
 
 /// `@Delegate` アノテーションの型チェッカー.
@@ -51,11 +51,7 @@ InterfaceElement? interfaceElementOf(DartType? type) {
 /// ```
 @internal
 DartType? resolvedTypeOfParameter(FormalParameter parameter) {
-  final formal = switch (parameter) {
-    DefaultFormalParameter(:final parameter) => parameter,
-    _ => parameter,
-  };
-  return formal.declaredFragment?.element.type;
+  return parameter.declaredFragment?.element.type;
 }
 
 /// [type] の宣言クラスに [checker] のアノテーションが付いているかを判定する.

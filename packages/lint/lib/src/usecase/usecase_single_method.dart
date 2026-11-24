@@ -1,6 +1,11 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
 import 'package:meta/meta.dart';
 
@@ -20,50 +25,51 @@ import 'package:meta/meta.dart';
 /// // → usecase_single_method
 /// ```
 @internal
-final class UsecaseSingleMethod extends DartLintRule {
+final class UsecaseSingleMethod extends AnalysisRule {
   /// [UsecaseSingleMethod] の診断コード.
-  static const _code = LintCode(
-    name: 'usecase_single_method',
-    problemMessage:
-        '@usecase types must not declare more than one public instance method.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'usecase_single_method',
+    '@usecase types must not declare more than one public instance method.',
+    severity: architectureViolationSeverity,
   );
 
   /// [UsecaseSingleMethod] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = UsecaseSingleMethod();
-  /// ```
-  const UsecaseSingleMethod() : super(code: _code);
+  UsecaseSingleMethod()
+    : super(
+        name: 'usecase_single_method',
+        description:
+            '@usecase types must not declare more than one public instance '
+            'method.',
+      );
 
-  /// `@usecase` クラスを走査し、public インスタンスメソッドが2つ以上なら報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasUsecaseAnnotation(node)) {
-        return;
-      }
+    registry.addClassDeclaration(this, _Visitor(this));
+  }
+}
 
-      final methods = publicInstanceMethodsOf(node).toList(growable: false);
-      if (methods.length < 2) {
-        return;
-      }
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule);
 
-      reporter.atToken(node.name, code);
-    });
+  final UsecaseSingleMethod rule;
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasUsecaseAnnotation(node)) {
+      return;
+    }
+
+    final methods = publicInstanceMethodsOf(node).toList(growable: false);
+    if (methods.length < 2) {
+      return;
+    }
+
+    rule.reportAtToken(classDeclarationName(node));
   }
 }

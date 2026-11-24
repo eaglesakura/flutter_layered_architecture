@@ -1,6 +1,9 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
 import 'package:meta/meta.dart';
@@ -20,78 +23,73 @@ import 'package:meta/meta.dart';
 /// // → usecase_method_signature
 /// ```
 @internal
-final class UsecaseMethodSignature extends DartLintRule {
+final class UsecaseMethodSignature extends AnalysisRule {
   /// [UsecaseMethodSignature] の診断コード.
-  static const _code = LintCode(
-    name: 'usecase_method_signature',
-    problemMessage:
-        '@usecase methods must have at least one parameter and a non-void '
-        'return type.',
-    errorSeverity: architectureViolationSeverity,
+  static const LintCode code = LintCode(
+    'usecase_method_signature',
+    '@usecase methods must have at least one parameter and a non-void return '
+        'type.',
+    severity: architectureViolationSeverity,
   );
 
   /// [UsecaseMethodSignature] ルールを生成する.
-  ///
-  /// Example:
-  /// ```dart
-  /// const rule = UsecaseMethodSignature();
-  /// ```
-  const UsecaseMethodSignature() : super(code: _code);
+  UsecaseMethodSignature()
+    : super(
+        name: 'usecase_method_signature',
+        description:
+            '@usecase methods must have at least one parameter and a non-void '
+            'return type.',
+      );
 
-  /// `@usecase` クラスの唯一の public インスタンスメソッドを検査し、違反なら報告する.
-  ///
-  /// [resolver] は解析対象ファイルの解決情報.
-  /// [reporter] は診断の出力先.
-  /// [context] は解析コンテキスト（AST 登録に使う）.
-  ///
-  /// Example:
-  /// ```dart
-  /// rule.run(resolver, reporter, context);
-  /// ```
   @override
-  void run(
-    CustomLintResolver resolver,
-    DiagnosticReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (!hasUsecaseAnnotation(node)) {
-        return;
-      }
-
-      final methods = publicInstanceMethodsOf(node).toList(growable: false);
-      if (methods.length != 1) {
-        return;
-      }
-
-      final method = methods.single;
-      final parameterList = method.parameters;
-      final hasParameters =
-          parameterList != null && parameterList.parameters.isNotEmpty;
-      final hasReturnValue = !_isVoidReturnType(method.returnType);
-      if (hasParameters && hasReturnValue) {
-        return;
-      }
-
-      reporter.atToken(method.name, code);
-    });
+    registry.addClassDeclaration(this, _Visitor(this));
   }
+}
 
-  /// [returnType] が void（または戻り値注釈なし）かを判定する.
-  ///
-  /// 注釈が無い場合は暗黙の void 扱いとする.
-  ///
-  /// Example:
-  /// ```dart
-  /// final isVoid = _isVoidReturnType(method.returnType);
-  /// ```
-  bool _isVoidReturnType(TypeAnnotation? returnType) {
-    if (returnType == null) {
-      return true;
+final class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule);
+
+  final UsecaseMethodSignature rule;
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!hasUsecaseAnnotation(node)) {
+      return;
     }
-    if (returnType is NamedType) {
-      return returnType.name.lexeme == 'void';
+
+    final methods = publicInstanceMethodsOf(node).toList(growable: false);
+    if (methods.length != 1) {
+      return;
     }
-    return returnType.toSource() == 'void';
+
+    final method = methods.single;
+    final parameterList = method.parameters;
+    final hasParameters =
+        parameterList != null && parameterList.parameters.isNotEmpty;
+    final hasReturnValue = !isVoidReturnType(method.returnType);
+    if (hasParameters && hasReturnValue) {
+      return;
+    }
+
+    rule.reportAtToken(method.name);
   }
+}
+
+/// [returnType] が void（または戻り値注釈なし）かを判定する.
+@internal
+bool isVoidReturnType(TypeAnnotation? returnType) {
+  if (returnType == null) {
+    return true;
+  }
+  if (returnType is NamedType) {
+    return returnType.name.lexeme == 'void';
+  }
+  return returnType.toSource() == 'void';
 }
