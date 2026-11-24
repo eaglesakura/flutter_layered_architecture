@@ -1,5 +1,5 @@
+import 'package:example_app/example_app.dart';
 import 'package:example_app/example_dependency_injection.dart';
-import 'package:example_app/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foundation_dependency_injection/foundation_dependency_injection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
