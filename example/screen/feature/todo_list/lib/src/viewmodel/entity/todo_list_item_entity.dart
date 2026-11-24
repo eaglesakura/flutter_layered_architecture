@@ -1,18 +1,19 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'todo_list_item_entity.freezed.dart';
+
 /// Display model for a single todo row.
-final class TodoListItemEntity {
-  /// Identifier used for row actions.
-  final String id;
-
-  /// Title shown in the list.
-  final String title;
-
-  /// Whether the checkbox is checked.
-  final bool isCompleted;
-
+@freezed
+abstract class TodoListItemEntity with _$TodoListItemEntity {
   /// Creates a [TodoListItemEntity].
-  const TodoListItemEntity({
-    required this.id,
-    required this.title,
-    required this.isCompleted,
-  });
+  const factory TodoListItemEntity({
+    /// Identifier used for row actions.
+    required String id,
+
+    /// Title shown in the list.
+    required String title,
+
+    /// Whether the checkbox is checked.
+    required bool isCompleted,
+  }) = _TodoListItemEntity;
 }

@@ -6,3 +6,4 @@ library;
 export 'src/delegate.dart';
 export 'src/stateful.dart';
 export 'src/usecase.dart';
+export 'src/view_model.dart';

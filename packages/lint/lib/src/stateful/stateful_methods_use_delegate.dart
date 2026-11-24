@@ -6,6 +6,7 @@ import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
+import 'package:flutter_layered_architecture_lint/src/view_model/view_model_checkers.dart';
 
 /// [node] 配下で `MutableStateStream.close()` が呼ばれるかを判定する.
 ///
@@ -33,10 +34,11 @@ bool _isCloseOnlyMethod(MethodDeclaration method) {
   return callsMutableStateStreamCloseIn(method);
 }
 
-/// `@stateful` のインスタンスメソッドが `@delegate` へ委譲されることを検証する Lint.
+/// `@stateful` / `@viewModel` のインスタンスメソッドが `@delegate` へ委譲されることを検証する Lint.
 ///
 /// 業務処理は Delegate の `execute` 呼び出しに分離する.
 /// `close` / `_close` で `MutableStateStream.close()` のみ行うメソッドは例外とする.
+/// 当該型への extension method も同様に検査する.
 ///
 /// Example:
 /// ```dart
@@ -53,8 +55,9 @@ final class StatefulMethodsUseDelegate extends DartLintRule {
   static const _code = LintCode(
     name: 'stateful_methods_use_delegate',
     problemMessage:
-        '@stateful instance methods must delegate to a @delegate execute '
-        'method (close/_close that only closes MutableStateStream is allowed).',
+        '@stateful/@viewModel instance methods must delegate to a @delegate '
+        'execute method (close/_close that only closes MutableStateStream is '
+        'allowed).',
     errorSeverity: architectureViolationSeverity,
   );
 
@@ -66,7 +69,7 @@ final class StatefulMethodsUseDelegate extends DartLintRule {
   /// ```
   const StatefulMethodsUseDelegate() : super(code: _code);
 
-  /// `@stateful` の各インスタンスメソッドを検査し、委譲が無ければ報告する.
+  /// `@stateful` / `@viewModel` の各インスタンスメソッドを検査し、委譲が無ければ報告する.
   ///
   /// [resolver] は解析対象ファイルの解決情報.
   /// [reporter] は診断の出力先.
@@ -83,20 +86,41 @@ final class StatefulMethodsUseDelegate extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
-      if (!hasStatefulAnnotation(node)) {
+      if (!appliesStatefulRules(node)) {
         return;
       }
 
       for (final method in instanceMethodsOf(node)) {
-        if (_isCloseOnlyMethod(method)) {
-          continue;
-        }
-        if (_callsDelegateExecute(method)) {
-          continue;
-        }
-        reporter.atToken(method.name, code);
+        _reportIfMissingDelegate(method, reporter);
       }
     });
+
+    context.registry.addExtensionDeclaration((node) {
+      final extendedType = extensionExtendedType(node);
+      if (!typeAppliesStatefulRules(extendedType)) {
+        return;
+      }
+
+      for (final method in node.members.whereType<MethodDeclaration>()) {
+        if (method.isStatic || method.isGetter || method.isSetter) {
+          continue;
+        }
+        _reportIfMissingDelegate(method, reporter);
+      }
+    });
+  }
+
+  void _reportIfMissingDelegate(
+    MethodDeclaration method,
+    DiagnosticReporter reporter,
+  ) {
+    if (_isCloseOnlyMethod(method)) {
+      return;
+    }
+    if (_callsDelegateExecute(method)) {
+      return;
+    }
+    reporter.atToken(method.name, code);
   }
 }
 

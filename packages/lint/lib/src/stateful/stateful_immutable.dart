@@ -49,7 +49,7 @@ final class StatefulImmutable extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
-      if (!hasStatefulAnnotation(node)) {
+      if (!appliesStatefulRules(node)) {
         return;
       }
 

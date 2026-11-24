@@ -13,8 +13,8 @@ analyzer:
 
 Pair with `flutter_layered_architecture_annotations`.
 
-Architecture violations (`@usecase` / `@delegate` / `@stateful`) are reported as
-**WARNING**.
+Architecture violations (`@usecase` / `@delegate` / `@stateful` / `@viewModel`)
+are reported as **WARNING**.
 
 ## Rules
 
@@ -59,4 +59,16 @@ cd packages/lint && dart run test/file_layout_checkers_test.dart
 | `stateful_has_mutable_state_stream` | Declares at least one `MutableStateStream` field |
 | `stateful_closes_mutable_state_stream` | Calls `MutableStateStream.close()` somewhere in the class |
 | `stateful_mutable_state_stream_freezed` | `MutableStateStream<T>` requires `T` to be a Freezed-annotated class |
-| `stateful_methods_use_delegate` | Instance methods must call `@delegate.execute` (`close`/`_close` excepted) |
+| `stateful_methods_use_delegate` | Instance/extension methods must call `@delegate.execute` (`close`/`_close` excepted) |
+
+`@viewModel` also inherits these `@stateful` checks.
+
+### `@viewModel`
+
+| Lint code | Check |
+| --- | --- |
+| `viewmodel_internal` | Also annotated with `@internal` |
+| `viewmodel_has_entity_getter` | Declares `StateStream<T> get entity` |
+| `viewmodel_entity_freezed` | `entity` type argument `T` must be a Freezed-annotated class |
+| `viewmodel_entity_differs_from_state` | `entity` model type must differ from the `MutableStateStream` state model |
+| `viewmodel_on_method_names` | Instance/extension methods are named `on...` (`close`/`_close` excepted) |

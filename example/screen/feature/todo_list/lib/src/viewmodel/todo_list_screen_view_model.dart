@@ -16,7 +16,7 @@ part 'todo_list_screen_view_model.action.dart';
 
 /// ViewModel for the todo list screen.
 @internal
-@stateful
+@viewModel
 final class TodoListScreenViewModel {
   /// Provides [TodoListScreenViewModel] with autoDispose lifecycle.
   static final provider = Provider.autoDispose<TodoListScreenViewModel>(

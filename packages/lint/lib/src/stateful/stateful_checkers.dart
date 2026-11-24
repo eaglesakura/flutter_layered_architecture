@@ -49,6 +49,36 @@ bool hasMutableStateStreamField(ClassDeclaration node) {
 /// }
 /// ```
 bool hasStatefulAnnotation(AnnotatedNode node) {
+  return _hasAnnotationNamed(node, {'stateful', 'Stateful'});
+}
+
+/// [node] に `@viewModel` / `@ViewModel()` が付いているかを判定する.
+///
+/// Example:
+/// ```dart
+/// if (!hasViewModelAnnotation(classNode)) {
+///   return;
+/// }
+/// ```
+bool hasViewModelAnnotation(AnnotatedNode node) {
+  return _hasAnnotationNamed(node, {'viewModel', 'ViewModel'});
+}
+
+/// `@stateful` または `@viewModel` の対象かを判定する.
+///
+/// `@viewModel` は `@stateful` の制約を引き継ぐ.
+///
+/// Example:
+/// ```dart
+/// if (!appliesStatefulRules(classNode)) {
+///   return;
+/// }
+/// ```
+bool appliesStatefulRules(AnnotatedNode node) {
+  return hasStatefulAnnotation(node) || hasViewModelAnnotation(node);
+}
+
+bool _hasAnnotationNamed(AnnotatedNode node, Set<String> names) {
   for (final annotation in node.metadata) {
     final name = annotation.name;
     final simpleName = switch (name) {
@@ -56,7 +86,7 @@ bool hasStatefulAnnotation(AnnotatedNode node) {
       PrefixedIdentifier(:final identifier) => identifier.name,
       _ => name.toSource(),
     };
-    if (simpleName == 'stateful' || simpleName == 'Stateful') {
+    if (names.contains(simpleName)) {
       return true;
     }
   }
