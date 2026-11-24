@@ -68,8 +68,9 @@ final class _ClassVisitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    for (final constructor
-        in classDeclarationMembers(node).whereType<ConstructorDeclaration>()) {
+    for (final constructor in classDeclarationMembers(
+      node,
+    ).whereType<ConstructorDeclaration>()) {
       for (final parameter in constructor.parameters.parameters) {
         final type = resolvedTypeOfParameter(parameter);
         if (!typeHasAnnotation(type, delegateAnnotationChecker)) {

@@ -13,10 +13,9 @@ final class OnInitializeDelegate {
 
   /// Creates an [OnInitializeDelegate].
   const OnInitializeDelegate({
-    required MutableStateStream<TodoListScreenState> state,
-    required ListTodosUsecase listTodosUsecase,
-  }) : _state = state,
-       _listTodosUsecase = listTodosUsecase;
+    required this._state,
+    required this._listTodosUsecase,
+  });
 
   /// Executes the initialize action.
   Future<void> execute() async {

@@ -207,7 +207,7 @@ return $default(_that.items);case _:
 
 
 class _InMemoryTodoRepositoryState implements InMemoryTodoRepositoryState {
-  const _InMemoryTodoRepositoryState({final  List<Todo> items = const []}): _items = items;
+  const _InMemoryTodoRepositoryState({ List<Todo> items = const []}): _items = items;
   
 
 /// 保持中の Todo 一覧（新しい順）.

@@ -14,12 +14,10 @@ final class OnToggleTodoDelegate {
 
   /// Creates an [OnToggleTodoDelegate].
   const OnToggleTodoDelegate({
-    required MutableStateStream<TodoListScreenState> state,
-    required ToggleTodoUsecase toggleTodoUsecase,
-    required ListTodosUsecase listTodosUsecase,
-  }) : _state = state,
-       _toggleTodoUsecase = toggleTodoUsecase,
-       _listTodosUsecase = listTodosUsecase;
+    required this._state,
+    required this._toggleTodoUsecase,
+    required this._listTodosUsecase,
+  });
 
   /// Executes the toggle action for [id].
   Future<void> execute(String id) async {

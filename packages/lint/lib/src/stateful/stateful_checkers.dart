@@ -6,7 +6,6 @@ import 'package:flutter_layered_architecture_lint/src/type_checker.dart';
 import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart'
-
     show fieldsAreFinalOrConst, hasConstConstructor;
 
 /// `freezed_annotation` の Freezed アノテーション型チェッカー.
@@ -129,7 +128,9 @@ bool isFreezedAnnotatedType(DartType? type) {
 Iterable<VariableDeclaration> mutableStateStreamFieldsOf(
   ClassDeclaration node,
 ) sync* {
-  for (final field in classDeclarationMembers(node).whereType<FieldDeclaration>()) {
+  for (final field in classDeclarationMembers(
+    node,
+  ).whereType<FieldDeclaration>()) {
     for (final variable in field.fields.variables) {
       final type = _resolvedFieldType(field, variable);
       if (type != null &&

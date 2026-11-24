@@ -14,12 +14,10 @@ final class OnDeleteTodoDelegate {
 
   /// Creates an [OnDeleteTodoDelegate].
   const OnDeleteTodoDelegate({
-    required MutableStateStream<TodoListScreenState> state,
-    required DeleteTodoUsecase deleteTodoUsecase,
-    required ListTodosUsecase listTodosUsecase,
-  }) : _state = state,
-       _deleteTodoUsecase = deleteTodoUsecase,
-       _listTodosUsecase = listTodosUsecase;
+    required this._state,
+    required this._deleteTodoUsecase,
+    required this._listTodosUsecase,
+  });
 
   /// Executes the delete action for [id].
   Future<void> execute(String id) async {

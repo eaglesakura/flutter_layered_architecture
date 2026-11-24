@@ -22,7 +22,7 @@ plugins:
     path: packages/lint
 ```
 
-Dart 3.10+（Flutter 3.38+）が必要。`plugins:` を変更したら IDE の Dart Analysis Server を再起動すること。
+Dart 3.14+（Flutter 3.50+）が必要。`plugins:` を変更したら IDE の Dart Analysis Server を再起動すること。
 
 ## 推奨ライブラリ
 

@@ -11,8 +11,8 @@ final class OnUpdateDraftTitleDelegate {
 
   /// Creates an [OnUpdateDraftTitleDelegate].
   const OnUpdateDraftTitleDelegate({
-    required MutableStateStream<TodoListScreenState> state,
-  }) : _state = state;
+    required this._state,
+  });
 
   /// Executes the draft update for [title].
   Future<void> execute(String title) {

@@ -66,9 +66,11 @@ final class _Visitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    final fieldsAreFinal = classDeclarationMembers(node).whereType<FieldDeclaration>().every(
-      (field) => field.fields.isFinal || field.fields.isConst,
-    );
+    final fieldsAreFinal = classDeclarationMembers(node)
+        .whereType<FieldDeclaration>()
+        .every(
+          (field) => field.fields.isFinal || field.fields.isConst,
+        );
     final hasConstConstructor = classDeclarationMembers(node)
         .whereType<ConstructorDeclaration>()
         .any((constructor) => constructor.constKeyword != null);

@@ -8,7 +8,6 @@ import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.d
 import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart'
-
     show hasInternalAnnotation;
 export 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart'
     show
@@ -47,7 +46,9 @@ const viewModelAnnotationChecker = TypeChecker.fromName(
 /// ```
 @internal
 MethodDeclaration? entityGetterOf(ClassDeclaration node) {
-  for (final method in classDeclarationMembers(node).whereType<MethodDeclaration>()) {
+  for (final method in classDeclarationMembers(
+    node,
+  ).whereType<MethodDeclaration>()) {
     if (method.isGetter && method.name.lexeme == 'entity') {
       return method;
     }

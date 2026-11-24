@@ -9,7 +9,6 @@ import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart'
-
     show instanceMethodsOf;
 import 'package:flutter_layered_architecture_lint/src/view_model/view_model_checkers.dart';
 import 'package:meta/meta.dart';
@@ -130,7 +129,9 @@ final class _ExtensionVisitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    for (final method in extensionDeclarationMembers(node).whereType<MethodDeclaration>()) {
+    for (final method in extensionDeclarationMembers(
+      node,
+    ).whereType<MethodDeclaration>()) {
       if (method.isStatic || method.isGetter || method.isSetter) {
         continue;
       }

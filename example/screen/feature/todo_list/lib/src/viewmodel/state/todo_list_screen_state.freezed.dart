@@ -211,7 +211,7 @@ return $default(_that.isLoading,_that.todos,_that.draftTitle);case _:
 
 
 class _TodoListScreenState implements TodoListScreenState {
-  const _TodoListScreenState({required this.isLoading, required final  List<Todo> todos, required this.draftTitle}): _todos = todos;
+  const _TodoListScreenState({required this.isLoading, required  List<Todo> todos, required this.draftTitle}): _todos = todos;
   
 
 /// Whether the first load is in progress.

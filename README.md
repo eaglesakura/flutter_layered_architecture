@@ -22,7 +22,7 @@ plugins:
     path: packages/lint
 ```
 
-Requires Dart 3.10+ (Flutter 3.38+). After changing `plugins:`, restart the Dart Analysis Server in the IDE.
+Requires Dart 3.14+ (Flutter 3.50+). After changing `plugins:`, restart the Dart Analysis Server in the IDE.
 
 ## Recommended libraries
 

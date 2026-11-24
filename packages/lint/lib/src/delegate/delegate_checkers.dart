@@ -3,7 +3,6 @@ import 'package:flutter_layered_architecture_lint/src/ast_compat.dart';
 import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart'
-
     show instanceMethodsOf;
 
 /// [node] のフィールドがすべて `final` または `const` かを判定する.

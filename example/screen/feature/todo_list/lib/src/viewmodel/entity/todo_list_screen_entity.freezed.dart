@@ -213,7 +213,7 @@ return $default(_that.isLoading,_that.items,_that.draftTitle,_that.canAdd);case 
 
 
 class _TodoListScreenEntity implements TodoListScreenEntity {
-  const _TodoListScreenEntity({required this.isLoading, required final  List<TodoListItemEntity> items, required this.draftTitle, required this.canAdd}): _items = items;
+  const _TodoListScreenEntity({required this.isLoading, required  List<TodoListItemEntity> items, required this.draftTitle, required this.canAdd}): _items = items;
   
 
 /// Whether a loading indicator should be shown.

@@ -14,12 +14,10 @@ final class OnAddTodoDelegate {
 
   /// Creates an [OnAddTodoDelegate].
   const OnAddTodoDelegate({
-    required MutableStateStream<TodoListScreenState> state,
-    required AddTodoUsecase addTodoUsecase,
-    required ListTodosUsecase listTodosUsecase,
-  }) : _state = state,
-       _addTodoUsecase = addTodoUsecase,
-       _listTodosUsecase = listTodosUsecase;
+    required this._state,
+    required this._addTodoUsecase,
+    required this._listTodosUsecase,
+  });
 
   /// Executes the add action.
   Future<void> execute() async {
