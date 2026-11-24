@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'todo_list_item_entity.freezed.dart';
 
 /// Display model for a single todo row.
+@internal
 @freezed
 abstract class TodoListItemEntity with _$TodoListItemEntity {
   /// Creates a [TodoListItemEntity].

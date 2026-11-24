@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// 1ファイルに public な名前付き型が2つ以上ないことを検証する Lint.
 ///
@@ -14,6 +15,7 @@ import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_ch
 /// // final class Bar {}
 /// // → one_public_type_per_file (on Bar)
 /// ```
+@internal
 final class OnePublicTypePerFile extends DartLintRule {
   /// [OnePublicTypePerFile] の診断コード.
   static const _code = LintCode(

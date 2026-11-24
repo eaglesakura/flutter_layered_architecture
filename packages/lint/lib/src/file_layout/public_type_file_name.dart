@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// 唯一の public 型名とファイル名（lower_snake_case）の一致を検証する Lint.
 ///
@@ -14,6 +15,7 @@ import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_ch
 /// // final class AddTodoRequest {}
 /// // → public_type_file_name
 /// ```
+@internal
 final class PublicTypeFileName extends DartLintRule {
   /// [PublicTypeFileName] の診断コード.
   static const _code = LintCode(

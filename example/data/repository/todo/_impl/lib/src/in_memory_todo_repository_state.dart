@@ -9,6 +9,7 @@ part 'in_memory_todo_repository_state.freezed.dart';
 /// ```dart
 /// const InMemoryTodoRepositoryState(items: []);
 /// ```
+@internal
 @freezed
 abstract class InMemoryTodoRepositoryState with _$InMemoryTodoRepositoryState {
   /// [InMemoryTodoRepositoryState] を生成する.

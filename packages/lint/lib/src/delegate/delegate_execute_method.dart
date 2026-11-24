@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@delegate` 型が `execute` インスタンスメソッドだけを持つことを検証する Lint.
 ///
@@ -18,6 +19,7 @@ import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers
 /// // }
 /// // → delegate_execute_method
 /// ```
+@internal
 final class DelegateExecuteMethod extends DartLintRule {
   /// [DelegateExecuteMethod] の診断コード.
   static const _code = LintCode(

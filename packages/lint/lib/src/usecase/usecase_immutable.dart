@@ -3,6 +3,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@usecase` 型が final フィールドと const コンストラクタを持つことを検証する Lint.
 ///
@@ -19,6 +20,7 @@ import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.d
 /// // }
 /// // → usecase_immutable
 /// ```
+@internal
 final class UsecaseImmutable extends DartLintRule {
   /// [UsecaseImmutable] の診断コード.
   static const _code = LintCode(

@@ -9,6 +9,7 @@ part 'todo_list_screen_state.freezed.dart';
 /// ```dart
 /// TodoListScreenState.initial();
 /// ```
+@internal
 @freezed
 abstract class TodoListScreenState with _$TodoListScreenState {
   /// Creates a [TodoListScreenState].

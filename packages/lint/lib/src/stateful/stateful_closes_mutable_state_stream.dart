@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@stateful` 型内で `MutableStateStream.close()` が呼ばれることを検証する Lint.
 ///
@@ -14,6 +15,7 @@ import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers
 /// // }
 /// // → stateful_closes_mutable_state_stream
 /// ```
+@internal
 final class StatefulClosesMutableStateStream extends DartLintRule {
   /// [StatefulClosesMutableStateStream] の診断コード.
   static const _code = LintCode(

@@ -3,6 +3,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@delegate` 内での `@usecase` 型の生成を禁止する Lint.
 ///
@@ -20,6 +21,7 @@ import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_che
 /// // }
 /// // → delegate_no_usecase_instantiation
 /// ```
+@internal
 final class DelegateNoUsecaseInstantiation extends DartLintRule {
   /// [DelegateNoUsecaseInstantiation] の診断コード.
   static const _code = LintCode(

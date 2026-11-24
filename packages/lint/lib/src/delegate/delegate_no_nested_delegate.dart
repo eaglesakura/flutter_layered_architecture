@@ -4,6 +4,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@delegate` 内での別 `@delegate` の受け取り・生成を禁止する Lint.
 ///
@@ -21,6 +22,7 @@ import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_che
 /// // }
 /// // → delegate_no_nested_delegate
 /// ```
+@internal
 final class DelegateNoNestedDelegate extends DartLintRule {
   /// [DelegateNoNestedDelegate] の診断コード.
   static const _code = LintCode(

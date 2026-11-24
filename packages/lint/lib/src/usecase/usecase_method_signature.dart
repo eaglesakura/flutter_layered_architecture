@@ -3,6 +3,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@usecase` の唯一の public インスタンスメソッドが引数と非 void 戻り値を持つことを検証する Lint.
 ///
@@ -18,6 +19,7 @@ import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.d
 /// // }
 /// // → usecase_method_signature
 /// ```
+@internal
 final class UsecaseMethodSignature extends DartLintRule {
   /// [UsecaseMethodSignature] の診断コード.
   static const _code = LintCode(

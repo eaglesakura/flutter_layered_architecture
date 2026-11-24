@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@stateful` 型が `MutableStateStream` フィールドを持つことを検証する Lint.
 ///
@@ -13,6 +14,7 @@ import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers
 /// // }
 /// // → stateful_has_mutable_state_stream
 /// ```
+@internal
 final class StatefulHasMutableStateStream extends DartLintRule {
   /// [StatefulHasMutableStateStream] の診断コード.
   static const _code = LintCode(

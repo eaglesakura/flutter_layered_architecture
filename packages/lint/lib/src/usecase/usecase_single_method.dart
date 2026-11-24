@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@usecase` 型の public インスタンスメソッドが2つ以上ないことを検証する Lint.
 ///
@@ -18,6 +19,7 @@ import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.d
 /// // }
 /// // → usecase_single_method
 /// ```
+@internal
 final class UsecaseSingleMethod extends DartLintRule {
   /// [UsecaseSingleMethod] の診断コード.
   static const _code = LintCode(

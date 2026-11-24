@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:meta/meta.dart';
 
 /// [typeName] に対応する期待ファイル名（`*.dart`）を返す.
 ///
@@ -7,6 +8,7 @@ import 'package:analyzer/dart/ast/token.dart';
 /// ```dart
 /// expectedFileNameForType('AddTodoUsecase'); // 'add_todo_usecase.dart'
 /// ```
+@internal
 String expectedFileNameForType(String typeName) {
   return '${pascalToSnakeCase(typeName)}.dart';
 }
@@ -18,6 +20,7 @@ String expectedFileNameForType(String typeName) {
 /// fileBasename('/pkg/lib/src/add_todo_usecase.dart');
 /// // 'add_todo_usecase.dart'
 /// ```
+@internal
 String fileBasename(String path) {
   final normalized = path.replaceAll(r'\', '/');
   final parts = normalized.split('/');
@@ -30,6 +33,7 @@ String fileBasename(String path) {
 /// ```dart
 /// hasPartOfDirective(compilationUnit);
 /// ```
+@internal
 bool hasPartOfDirective(CompilationUnit unit) {
   return unit.directives.any((directive) => directive is PartOfDirective);
 }
@@ -41,6 +45,7 @@ bool hasPartOfDirective(CompilationUnit unit) {
 /// isPrivateIdentifier('_Helper'); // true
 /// isPrivateIdentifier('Foo'); // false
 /// ```
+@internal
 bool isPrivateIdentifier(String name) => name.startsWith('_');
 
 /// [path] が `test/` ディレクトリ配下かを判定する.
@@ -50,6 +55,7 @@ bool isPrivateIdentifier(String name) => name.startsWith('_');
 /// isUnderTestDirectory('/pkg/lib/src/foo.dart'); // false
 /// isUnderTestDirectory('/pkg/test/foo.dart'); // true
 /// ```
+@internal
 bool isUnderTestDirectory(String path) {
   final normalized = path.replaceAll(r'\', '/');
   return normalized.contains('/test/');
@@ -62,6 +68,7 @@ bool isUnderTestDirectory(String path) {
 /// pascalToSnakeCase('AddTodoRequest'); // 'add_todo_request'
 /// pascalToSnakeCase('HTTPClient'); // 'http_client'
 /// ```
+@internal
 String pascalToSnakeCase(String name) {
   return name
       .replaceAllMapped(
@@ -80,6 +87,7 @@ String pascalToSnakeCase(String name) {
 /// ```dart
 /// final types = publicNamedTypesOf(unit).toList();
 /// ```
+@internal
 Iterable<PublicNamedTypeInfo> publicNamedTypesOf(CompilationUnit unit) sync* {
   for (final declaration in unit.declarations) {
     switch (declaration) {
@@ -117,6 +125,7 @@ Iterable<PublicNamedTypeInfo> publicNamedTypesOf(CompilationUnit unit) sync* {
 /// ```dart
 /// shouldSkipFileLayoutLint(path: resolver.path, unit: unit);
 /// ```
+@internal
 bool shouldSkipFileLayoutLint({
   required String path,
   required CompilationUnit unit,
@@ -125,4 +134,5 @@ bool shouldSkipFileLayoutLint({
 }
 
 /// 名前付き public 型の宣言情報（型名トークンとノード）.
+@internal
 typedef PublicNamedTypeInfo = ({Token name, AstNode node});

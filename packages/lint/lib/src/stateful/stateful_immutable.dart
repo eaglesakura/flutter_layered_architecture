@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@stateful` 型が final フィールドと const コンストラクタを持つことを検証する Lint.
 ///
@@ -14,6 +15,7 @@ import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers
 /// // }
 /// // → stateful_immutable
 /// ```
+@internal
 final class StatefulImmutable extends DartLintRule {
   /// [StatefulImmutable] の診断コード.
   static const _code = LintCode(

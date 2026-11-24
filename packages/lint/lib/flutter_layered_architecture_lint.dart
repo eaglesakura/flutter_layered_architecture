@@ -1,3 +1,6 @@
+/// Flutter Layered Architecture 向け custom_lint プラグイン.
+library;
+
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_execute_method.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_immutable.dart';
@@ -6,6 +9,7 @@ import 'package:flutter_layered_architecture_lint/src/delegate/delegate_no_neste
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_no_usecase_instantiation.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/one_public_type_per_file.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/public_type_file_name.dart';
+import 'package:flutter_layered_architecture_lint/src/file_layout/unexported_public_must_be_internal.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_closes_mutable_state_stream.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_has_mutable_state_stream.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_immutable.dart';
@@ -43,6 +47,7 @@ class _FlutterLayeredArchitectureLint extends PluginBase {
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
     const OnePublicTypePerFile(),
     const PublicTypeFileName(),
+    const UnexportedPublicMustBeInternal(),
     const UsecaseSingleMethod(),
     const UsecaseMethodSignature(),
     const UsecaseImmutable(),

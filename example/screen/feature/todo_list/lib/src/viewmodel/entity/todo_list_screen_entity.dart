@@ -6,6 +6,7 @@ export 'package:screen_feature_todo_list/src/viewmodel/entity/todo_list_item_ent
 part 'todo_list_screen_entity.freezed.dart';
 
 /// Display model for the todo list screen.
+@internal
 @freezed
 abstract class TodoListScreenEntity with _$TodoListScreenEntity {
   /// Creates a [TodoListScreenEntity].

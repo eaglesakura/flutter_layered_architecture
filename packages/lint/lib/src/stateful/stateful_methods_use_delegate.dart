@@ -7,6 +7,7 @@ import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_che
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/view_model/view_model_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// [node] 配下で `MutableStateStream.close()` が呼ばれるかを判定する.
 ///
@@ -14,6 +15,7 @@ import 'package:flutter_layered_architecture_lint/src/view_model/view_model_chec
 /// ```dart
 /// final closes = callsMutableStateStreamCloseIn(method);
 /// ```
+@internal
 bool callsMutableStateStreamCloseIn(AstNode node) {
   final visitor = _MutableStateStreamCloseOnlyVisitor();
   node.accept(visitor);
@@ -50,6 +52,7 @@ bool _isCloseOnlyMethod(MethodDeclaration method) {
 /// // }
 /// // → stateful_methods_use_delegate
 /// ```
+@internal
 final class StatefulMethodsUseDelegate extends DartLintRule {
   /// [StatefulMethodsUseDelegate] の診断コード.
   static const _code = LintCode(

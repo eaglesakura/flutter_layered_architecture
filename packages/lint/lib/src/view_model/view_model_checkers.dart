@@ -4,6 +4,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_type_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart';
+import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart'
     show hasInternalAnnotation;
@@ -16,18 +17,21 @@ export 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers
         mutableStateStreamStateType;
 
 /// `@Stateful` アノテーションの型チェッカー.
+@internal
 const statefulAnnotationChecker = TypeChecker.fromName(
   'Stateful',
   packageName: 'flutter_layered_architecture_annotations',
 );
 
 /// `state_stream` の `StateStream` 型チェッカー.
+@internal
 const stateStreamChecker = TypeChecker.fromName(
   'StateStream',
   packageName: 'state_stream',
 );
 
 /// `@ViewModel` アノテーションの型チェッカー.
+@internal
 const viewModelAnnotationChecker = TypeChecker.fromName(
   'ViewModel',
   packageName: 'flutter_layered_architecture_annotations',
@@ -39,6 +43,7 @@ const viewModelAnnotationChecker = TypeChecker.fromName(
 /// ```dart
 /// final getter = entityGetterOf(classNode);
 /// ```
+@internal
 MethodDeclaration? entityGetterOf(ClassDeclaration node) {
   for (final method in node.members.whereType<MethodDeclaration>()) {
     if (method.isGetter && method.name.lexeme == 'entity') {
@@ -54,6 +59,7 @@ MethodDeclaration? entityGetterOf(ClassDeclaration node) {
 /// ```dart
 /// final entityType = entityModelTypeOf(classNode);
 /// ```
+@internal
 DartType? entityModelTypeOf(ClassDeclaration node) {
   final getter = entityGetterOf(node);
   if (getter == null) {
@@ -68,6 +74,7 @@ DartType? entityModelTypeOf(ClassDeclaration node) {
 /// ```dart
 /// final type = extensionExtendedType(extensionNode);
 /// ```
+@internal
 DartType? extensionExtendedType(ExtensionDeclaration node) {
   return node.onClause?.extendedType.type;
 }
@@ -80,6 +87,7 @@ DartType? extensionExtendedType(ExtensionDeclaration node) {
 ///   reporter.atToken(method.name, code);
 /// }
 /// ```
+@internal
 Iterable<MethodDeclaration> extensionMethodsWithInvalidNames(
   ExtensionDeclaration node,
 ) {
@@ -100,6 +108,7 @@ Iterable<MethodDeclaration> extensionMethodsWithInvalidNames(
 ///   reporter.atToken(classNode.name, code);
 /// }
 /// ```
+@internal
 bool hasEntityStateStreamGetter(ClassDeclaration node) {
   final getter = entityGetterOf(node);
   if (getter == null) {
@@ -121,6 +130,7 @@ bool hasEntityStateStreamGetter(ClassDeclaration node) {
 ///   // entity と state が同一モデル
 /// }
 /// ```
+@internal
 bool interfaceTypesAreSame(DartType? left, DartType? right) {
   if (left is! InterfaceType || right is! InterfaceType) {
     return false;
@@ -136,6 +146,7 @@ bool interfaceTypesAreSame(DartType? left, DartType? right) {
 ///   reporter.atToken(method.name, code);
 /// }
 /// ```
+@internal
 bool isAllowedViewModelMethodName(MethodDeclaration method) {
   final name = method.name.lexeme;
   return isCloseMethodName(name) || isOnActionMethodName(name);
@@ -149,6 +160,7 @@ bool isAllowedViewModelMethodName(MethodDeclaration method) {
 ///   continue;
 /// }
 /// ```
+@internal
 bool isCloseMethodName(String name) => name == 'close' || name == '_close';
 
 /// [name] が `on` で始まる ViewModel アクション名かを判定する.
@@ -158,6 +170,7 @@ bool isCloseMethodName(String name) => name == 'close' || name == '_close';
 /// isOnActionMethodName('onInitialize'); // true
 /// isOnActionMethodName('doWork'); // false
 /// ```
+@internal
 bool isOnActionMethodName(String name) => name.startsWith('on');
 
 /// [node] の最初の `MutableStateStream<T>` フィールドの `T` を返す.
@@ -166,6 +179,7 @@ bool isOnActionMethodName(String name) => name.startsWith('on');
 /// ```dart
 /// final stateType = primaryStateModelTypeOf(classNode);
 /// ```
+@internal
 DartType? primaryStateModelTypeOf(ClassDeclaration node) {
   for (final variable in mutableStateStreamFieldsOf(node)) {
     final streamType = variable.declaredFragment?.element.type;
@@ -183,6 +197,7 @@ DartType? primaryStateModelTypeOf(ClassDeclaration node) {
 /// ```dart
 /// final entityType = stateStreamTypeArgument(getter.returnType?.type);
 /// ```
+@internal
 DartType? stateStreamTypeArgument(DartType? streamType) {
   if (streamType is! InterfaceType) {
     return null;
@@ -217,6 +232,7 @@ DartType? stateStreamTypeArgument(DartType? streamType) {
 ///   return;
 /// }
 /// ```
+@internal
 bool typeAppliesStatefulRules(DartType? type) {
   return typeHasAnnotation(type, viewModelAnnotationChecker) ||
       typeHasAnnotation(type, statefulAnnotationChecker);
@@ -230,6 +246,7 @@ bool typeAppliesStatefulRules(DartType? type) {
 ///   return;
 /// }
 /// ```
+@internal
 bool typeHasViewModelAnnotation(DartType? type) {
   return typeHasAnnotation(type, viewModelAnnotationChecker);
 }
@@ -244,6 +261,7 @@ bool typeHasViewModelAnnotation(DartType? type) {
 ///   reporter.atToken(method.name, code);
 /// }
 /// ```
+@internal
 Iterable<MethodDeclaration> viewModelMethodsWithInvalidNames(
   ClassDeclaration node,
 ) {

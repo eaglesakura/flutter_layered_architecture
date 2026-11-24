@@ -2,6 +2,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
+import 'package:meta/meta.dart';
 
 /// `@stateful` の `MutableStateStream<T>` について、`T` が Freezed 型であることを検証する Lint.
 ///
@@ -15,6 +16,7 @@ import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers
 /// // }
 /// // → stateful_mutable_state_stream_freezed
 /// ```
+@internal
 final class StatefulMutableStateStreamFreezed extends DartLintRule {
   /// [StatefulMutableStateStreamFreezed] の診断コード.
   static const _code = LintCode(

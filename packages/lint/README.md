@@ -24,13 +24,17 @@ are reported as **WARNING**.
 | --- | --- |
 | `one_public_type_per_file` | At most one public named type (`class` / `enum` / `mixin` / named `extension` / `extension type`) per file |
 | `public_type_file_name` | When exactly one public type exists, the file name must be its `lower_snake_case` form |
+| `unexported_public_must_be_internal` | Public top-level symbols not exported from a `lib/` barrel (`library;`) must be `@internal` or private |
 
-Skipped for `part of` files and paths under `test/`. Private (`_`-prefixed) types and `typedef`s are ignored. Zero public types is allowed.
+Skipped for `part of` files and paths under `test/`. Private (`_`-prefixed) types and `typedef`s are ignored by the one-type / file-name rules. Zero public types is allowed.
+
+`unexported_public_must_be_internal` covers all public top-level symbols (`class` / `enum` / `mixin` / named `extension` / `extension type` / function / variable / `typedef`). Barrels are `lib/*.dart` files that declare `library;`. Packages with no such barrel are skipped.
 
 Helper unit tests (assert runner; `package:test` conflicts with this workspace's `analyzer`/`flutter_test` pins):
 
 ```bash
 cd packages/lint && dart run test/file_layout_checkers_test.dart
+cd packages/lint && dart run test/public_api_checkers_test.dart
 ```
 
 ### `@usecase`

@@ -1,7 +1,34 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.dart'
     show instanceMethodsOf;
+
+/// [node] のフィールドがすべて `final` または `const` かを判定する.
+///
+/// Example:
+/// ```dart
+/// final ok = fieldsAreFinalOrConst(classNode);
+/// ```
+@internal
+bool fieldsAreFinalOrConst(ClassDeclaration node) {
+  return node.members.whereType<FieldDeclaration>().every(
+    (field) => field.fields.isFinal || field.fields.isConst,
+  );
+}
+
+/// [node] が `const` コンストラクタを1つ以上持つかを判定する.
+///
+/// Example:
+/// ```dart
+/// final ok = hasConstConstructor(classNode);
+/// ```
+@internal
+bool hasConstConstructor(ClassDeclaration node) {
+  return node.members.whereType<ConstructorDeclaration>().any(
+    (constructor) => constructor.constKeyword != null,
+  );
+}
 
 /// [node] に `@delegate` / `@Delegate()` が付いているかを判定する.
 ///
@@ -15,6 +42,7 @@ export 'package:flutter_layered_architecture_lint/src/usecase/usecase_checkers.d
 ///   }
 /// });
 /// ```
+@internal
 bool hasDelegateAnnotation(AnnotatedNode node) {
   return _hasAnnotationNamed(node, {'delegate', 'Delegate'});
 }
@@ -27,32 +55,9 @@ bool hasDelegateAnnotation(AnnotatedNode node) {
 ///   reporter.atToken(classNode.name, code);
 /// }
 /// ```
+@internal
 bool hasInternalAnnotation(AnnotatedNode node) {
   return _hasAnnotationNamed(node, {'internal', 'Internal'});
-}
-
-/// [node] のフィールドがすべて `final` または `const` かを判定する.
-///
-/// Example:
-/// ```dart
-/// final ok = fieldsAreFinalOrConst(classNode);
-/// ```
-bool fieldsAreFinalOrConst(ClassDeclaration node) {
-  return node.members.whereType<FieldDeclaration>().every(
-    (field) => field.fields.isFinal || field.fields.isConst,
-  );
-}
-
-/// [node] が `const` コンストラクタを1つ以上持つかを判定する.
-///
-/// Example:
-/// ```dart
-/// final ok = hasConstConstructor(classNode);
-/// ```
-bool hasConstConstructor(ClassDeclaration node) {
-  return node.members.whereType<ConstructorDeclaration>().any(
-    (constructor) => constructor.constKeyword != null,
-  );
 }
 
 bool _hasAnnotationNamed(AnnotatedNode node, Set<String> names) {

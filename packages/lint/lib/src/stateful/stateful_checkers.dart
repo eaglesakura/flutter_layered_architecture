@@ -2,17 +2,20 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:meta/meta.dart';
 
 export 'package:flutter_layered_architecture_lint/src/delegate/delegate_checkers.dart'
     show fieldsAreFinalOrConst, hasConstConstructor;
 
 /// `freezed_annotation` の Freezed アノテーション型チェッカー.
+@internal
 const freezedAnnotationChecker = TypeChecker.fromName(
   'Freezed',
   packageName: 'freezed_annotation',
 );
 
 /// `state_stream` の `MutableStateStream` 型チェッカー.
+@internal
 const mutableStateStreamChecker = TypeChecker.fromName(
   'MutableStateStream',
   packageName: 'state_stream',
@@ -24,6 +27,7 @@ const mutableStateStreamChecker = TypeChecker.fromName(
 /// ```dart
 /// final closes = callsMutableStateStreamClose(classNode);
 /// ```
+@internal
 bool callsMutableStateStreamClose(ClassDeclaration node) {
   final visitor = _MutableStateStreamCloseVisitor();
   node.accept(visitor);
@@ -36,6 +40,7 @@ bool callsMutableStateStreamClose(ClassDeclaration node) {
 /// ```dart
 /// final hasStream = hasMutableStateStreamField(classNode);
 /// ```
+@internal
 bool hasMutableStateStreamField(ClassDeclaration node) {
   return mutableStateStreamFieldsOf(node).isNotEmpty;
 }
@@ -48,6 +53,7 @@ bool hasMutableStateStreamField(ClassDeclaration node) {
 ///   return;
 /// }
 /// ```
+@internal
 bool hasStatefulAnnotation(AnnotatedNode node) {
   return _hasAnnotationNamed(node, {'stateful', 'Stateful'});
 }
@@ -60,6 +66,7 @@ bool hasStatefulAnnotation(AnnotatedNode node) {
 ///   return;
 /// }
 /// ```
+@internal
 bool hasViewModelAnnotation(AnnotatedNode node) {
   return _hasAnnotationNamed(node, {'viewModel', 'ViewModel'});
 }
@@ -74,6 +81,7 @@ bool hasViewModelAnnotation(AnnotatedNode node) {
 ///   return;
 /// }
 /// ```
+@internal
 bool appliesStatefulRules(AnnotatedNode node) {
   return hasStatefulAnnotation(node) || hasViewModelAnnotation(node);
 }
@@ -99,6 +107,7 @@ bool _hasAnnotationNamed(AnnotatedNode node, Set<String> names) {
 /// ```dart
 /// final ok = isFreezedAnnotatedType(stateType);
 /// ```
+@internal
 bool isFreezedAnnotatedType(DartType? type) {
   if (type is! InterfaceType) {
     return false;
@@ -115,6 +124,7 @@ bool isFreezedAnnotatedType(DartType? type) {
 /// ```dart
 /// final fields = mutableStateStreamFieldsOf(classNode);
 /// ```
+@internal
 Iterable<VariableDeclaration> mutableStateStreamFieldsOf(
   ClassDeclaration node,
 ) sync* {
@@ -135,6 +145,7 @@ Iterable<VariableDeclaration> mutableStateStreamFieldsOf(
 /// ```dart
 /// final stateType = mutableStateStreamStateType(fieldType);
 /// ```
+@internal
 DartType? mutableStateStreamStateType(DartType? streamType) {
   if (streamType is! InterfaceType) {
     return null;

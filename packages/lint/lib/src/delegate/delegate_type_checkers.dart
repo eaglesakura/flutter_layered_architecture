@@ -2,14 +2,17 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:meta/meta.dart';
 
 /// `@Delegate` アノテーションの型チェッカー.
+@internal
 const delegateAnnotationChecker = TypeChecker.fromName(
   'Delegate',
   packageName: 'flutter_layered_architecture_annotations',
 );
 
 /// `@Usecase` アノテーションの型チェッカー.
+@internal
 const usecaseAnnotationChecker = TypeChecker.fromName(
   'Usecase',
   packageName: 'flutter_layered_architecture_annotations',
@@ -21,6 +24,7 @@ const usecaseAnnotationChecker = TypeChecker.fromName(
 /// ```dart
 /// final enclosing = enclosingClassOf(creation);
 /// ```
+@internal
 ClassDeclaration? enclosingClassOf(AstNode node) {
   return node.thisOrAncestorOfType<ClassDeclaration>();
 }
@@ -31,6 +35,7 @@ ClassDeclaration? enclosingClassOf(AstNode node) {
 /// ```dart
 /// final element = interfaceElementOf(expression.staticType);
 /// ```
+@internal
 InterfaceElement? interfaceElementOf(DartType? type) {
   if (type is InterfaceType) {
     return type.element;
@@ -44,6 +49,7 @@ InterfaceElement? interfaceElementOf(DartType? type) {
 /// ```dart
 /// final type = resolvedTypeOfParameter(parameter);
 /// ```
+@internal
 DartType? resolvedTypeOfParameter(FormalParameter parameter) {
   final formal = switch (parameter) {
     DefaultFormalParameter(:final parameter) => parameter,
@@ -58,6 +64,7 @@ DartType? resolvedTypeOfParameter(FormalParameter parameter) {
 /// ```dart
 /// final isDelegate = typeHasAnnotation(paramType, delegateAnnotationChecker);
 /// ```
+@internal
 bool typeHasAnnotation(DartType? type, TypeChecker checker) {
   final element = interfaceElementOf(type);
   if (element == null) {

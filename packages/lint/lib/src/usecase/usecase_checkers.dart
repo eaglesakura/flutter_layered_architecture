@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:meta/meta.dart';
 
 /// [node] に `@usecase` / `@Usecase()` が付いているかを判定する.
 ///
@@ -12,6 +13,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 ///   }
 /// });
 /// ```
+@internal
 bool hasUsecaseAnnotation(AnnotatedNode node) {
   for (final annotation in node.metadata) {
     final name = annotation.name;
@@ -35,6 +37,7 @@ bool hasUsecaseAnnotation(AnnotatedNode node) {
 /// ```dart
 /// final methods = instanceMethodsOf(classNode).toList();
 /// ```
+@internal
 Iterable<MethodDeclaration> instanceMethodsOf(ClassDeclaration node) {
   return node.members.whereType<MethodDeclaration>().where(
     (method) => !method.isStatic && !method.isGetter && !method.isSetter,
@@ -49,6 +52,7 @@ Iterable<MethodDeclaration> instanceMethodsOf(ClassDeclaration node) {
 /// ```dart
 /// final publics = publicInstanceMethodsOf(classNode).toList();
 /// ```
+@internal
 Iterable<MethodDeclaration> publicInstanceMethodsOf(ClassDeclaration node) {
   return instanceMethodsOf(node).where(
     (method) => !method.name.lexeme.startsWith('_'),
