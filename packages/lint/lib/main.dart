@@ -1,6 +1,7 @@
 // ignore_for_file: flutter_layered_architecture_lint/unexported_public_must_be_internal, flutter_layered_architecture_lint/public_type_file_name
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
+import 'package:flutter_layered_architecture_lint/src/architecture_layer/architecture_layer_dependency.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_execute_method.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_immutable.dart';
 import 'package:flutter_layered_architecture_lint/src/delegate/delegate_internal.dart';
@@ -54,5 +55,6 @@ final class FlutterLayeredArchitecturePlugin extends Plugin {
     registry.registerWarningRule(ViewModelEntityFreezed());
     registry.registerWarningRule(ViewModelEntityDiffersFromState());
     registry.registerWarningRule(ViewModelOnMethodNames());
+    registry.registerWarningRule(ArchitectureLayerDependency());
   }
 }

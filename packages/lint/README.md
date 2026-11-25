@@ -2,21 +2,40 @@
 
 Custom lint rules for Flutter Layered Architecture conventions.
 
-Add this package and `custom_lint` as `dev_dependencies`, then enable the
-plugin in `analysis_options.yaml`:
+Add this package as a dependency, then enable the plugin with top-level
+`plugins:` in `analysis_options.yaml` (workspace example):
 
 ```yaml
-analyzer:
-  plugins:
-    - custom_lint
+plugins:
+  flutter_layered_architecture_lint:
+    path: packages/lint
 ```
 
 Pair with `flutter_layered_architecture_annotations`.
 
-Architecture violations (`@usecase` / `@delegate` / `@stateful` / `@viewModel`)
-are reported as **WARNING**.
+Architecture violations (`@usecase` / `@delegate` / `@stateful` / `@viewModel`,
+and `architecture_layer_dependency`) are reported as **WARNING**.
 
 ## Rules
+
+### Architecture layer
+
+| Lint code | Check |
+| --- | --- |
+| `architecture_layer_dependency` | Warns when a package under `layererd_architecture.yaml` depends on a higher layer (pubspec direct deps only) |
+
+Uses the nearest `layererd_architecture.yaml` found upward from the package root.
+Missing or invalid definitions, overlapping `path_prefix` values, and
+`dep.level > self.level` (when both sides have `level`) are warnings. Packages
+outside every `path_prefix` (e.g. this lint package) are skipped. Unused layer
+entries with no packages are allowed. Import-only deps are covered by
+`depend_on_referenced_packages`, not this rule.
+
+Helper unit test:
+
+```bash
+cd packages/lint && dart run test/architecture_layer_checkers_test.dart
+```
 
 ### File layout
 
