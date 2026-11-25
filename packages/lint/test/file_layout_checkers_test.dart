@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
+import 'package:path/path.dart' as p;
 
 /// `package:test` は workspace の flutter_test / analyzer ^8 と解決不能なため、
 /// assert ベースのランナーで unit test 相当を実行する.
@@ -18,12 +21,287 @@ void main() {
     });
   });
 
+  group('pascalCaseSegments', () {
+    test('splits AddTodoUseCase', () {
+      final segments = pascalCaseSegments('AddTodoUseCase');
+      expectEquals(segments.length, 4);
+      expectEquals(segments[0], 'Add');
+      expectEquals(segments[1], 'Todo');
+      expectEquals(segments[2], 'Use');
+      expectEquals(segments[3], 'Case');
+    });
+
+    test('keeps Usecase as one segment', () {
+      final segments = pascalCaseSegments('AddTodoUsecase');
+      expectEquals(segments.length, 3);
+      expectEquals(segments[0], 'Add');
+      expectEquals(segments[1], 'Todo');
+      expectEquals(segments[2], 'Usecase');
+    });
+
+    test('splits HTTPClient', () {
+      final segments = pascalCaseSegments('HTTPClient');
+      expectEquals(segments.length, 2);
+      expectEquals(segments[0], 'HTTP');
+      expectEquals(segments[1], 'Client');
+    });
+  });
+
   group('expectedFileNameForType', () {
     test('appends .dart to snake_case name', () {
       expectEquals(
         expectedFileNameForType('AddTodoRequest'),
         'add_todo_request.dart',
       );
+    });
+  });
+
+  group('expectedFileNameForType with keywords', () {
+    const useCaseKeyword = (
+      keySegments: ['Use', 'Case'],
+      replacement: 'usecase',
+    );
+    const viewModelKeyword = (
+      keySegments: ['View', 'Model'],
+      replacement: 'viewmodel',
+    );
+
+    test('empty keywords AddTodoUseCase', () {
+      expectEquals(
+        expectedFileNameForType('AddTodoUseCase'),
+        'add_todo_use_case.dart',
+      );
+    });
+
+    test('UseCase maps to usecase', () {
+      expectEquals(
+        expectedFileNameForType(
+          'AddTodoUseCase',
+          keywords: [useCaseKeyword],
+        ),
+        'add_todo_usecase.dart',
+      );
+    });
+
+    test('ViewModel maps to viewmodel', () {
+      expectEquals(
+        expectedFileNameForType(
+          'TodoListViewModel',
+          keywords: [viewModelKeyword],
+        ),
+        'todo_list_viewmodel.dart',
+      );
+    });
+
+    test('Usecase spelling does not match UseCase', () {
+      expectEquals(
+        expectedFileNameForType(
+          'AddTodoUsecase',
+          keywords: [useCaseKeyword],
+        ),
+        'add_todo_usecase.dart',
+      );
+    });
+
+    test('non-matching AddTodoRequest', () {
+      expectEquals(
+        expectedFileNameForType(
+          'AddTodoRequest',
+          keywords: [useCaseKeyword],
+        ),
+        'add_todo_request.dart',
+      );
+    });
+
+    test('keyword at start', () {
+      expectEquals(
+        expectedFileNameForType('UseCase', keywords: [useCaseKeyword]),
+        'usecase.dart',
+      );
+    });
+
+    test('keyword at end', () {
+      expectEquals(
+        expectedFileNameForType('FooUseCase', keywords: [useCaseKeyword]),
+        'foo_usecase.dart',
+      );
+    });
+
+    test('keyword then suffix', () {
+      expectEquals(
+        expectedFileNameForType('UseCaseFoo', keywords: [useCaseKeyword]),
+        'usecase_foo.dart',
+      );
+    });
+
+    test('same keyword twice', () {
+      expectEquals(
+        expectedFileNameForType(
+          'UseCaseFooUseCase',
+          keywords: [useCaseKeyword],
+        ),
+        'usecase_foo_usecase.dart',
+      );
+    });
+
+    test('two keywords', () {
+      expectEquals(
+        expectedFileNameForType(
+          'AddTodoUseCaseViewModel',
+          keywords: [useCaseKeyword, viewModelKeyword],
+        ),
+        'add_todo_usecase_viewmodel.dart',
+      );
+    });
+
+    test('declaration order Case first', () {
+      const caseKeyword = (keySegments: ['Case'], replacement: 'case');
+      expectEquals(
+        expectedFileNameForType(
+          'AddTodoUseCase',
+          keywords: [caseKeyword, useCaseKeyword],
+        ),
+        'add_todo_use_case.dart',
+      );
+    });
+
+    test('replacement with underscore', () {
+      const underscoreKeyword = (
+        keySegments: ['Use', 'Case'],
+        replacement: 'use_case',
+      );
+      expectEquals(
+        expectedFileNameForType(
+          'AddTodoUseCase',
+          keywords: [underscoreKeyword],
+        ),
+        'add_todo_use_case.dart',
+      );
+    });
+
+    test('HTTPClient without keywords', () {
+      expectEquals(
+        expectedFileNameForType('HTTPClient'),
+        'http_client.dart',
+      );
+    });
+  });
+
+  group('parsePublicTypeFileNameKeywords', () {
+    test('parses two keywords in order', () {
+      const yamlText = '''
+rules:
+  public_type_file_name:
+    keywords:
+      UseCase: usecase
+      ViewModel: viewmodel
+''';
+      final keywords = parsePublicTypeFileNameKeywords(yamlText);
+      expectEquals(keywords.length, 2);
+      expectEquals(keywords[0].keySegments.length, 2);
+      expectEquals(keywords[0].keySegments[0], 'Use');
+      expectEquals(keywords[0].keySegments[1], 'Case');
+      expectEquals(keywords[0].replacement, 'usecase');
+      expectEquals(keywords[1].keySegments.length, 2);
+      expectEquals(keywords[1].keySegments[0], 'View');
+      expectEquals(keywords[1].keySegments[1], 'Model');
+      expectEquals(keywords[1].replacement, 'viewmodel');
+    });
+
+    test('missing rules yields empty', () {
+      expectEquals(parsePublicTypeFileNameKeywords('layers: []').length, 0);
+    });
+
+    test('empty rules map yields empty', () {
+      expectEquals(parsePublicTypeFileNameKeywords('rules: {}').length, 0);
+    });
+
+    test('empty rule config yields empty', () {
+      expectEquals(
+        parsePublicTypeFileNameKeywords('''
+rules:
+  public_type_file_name: {}
+''').length,
+        0,
+      );
+    });
+
+    test('empty keywords map yields empty', () {
+      expectEquals(
+        parsePublicTypeFileNameKeywords('''
+rules:
+  public_type_file_name:
+    keywords: {}
+''').length,
+        0,
+      );
+    });
+
+    test('invalid yaml yields empty', () {
+      expectEquals(parsePublicTypeFileNameKeywords('rules: [').length, 0);
+    });
+
+    test('skips empty string value', () {
+      expectEquals(
+        parsePublicTypeFileNameKeywords('''
+rules:
+  public_type_file_name:
+    keywords:
+      UseCase: ""
+''').length,
+        0,
+      );
+    });
+  });
+
+  group('resolveFileNameKeywordsForPath', () {
+    test('missing yaml yields empty', () {
+      final tempDir = Directory.systemTemp.createTempSync('file_layout_kw_');
+      try {
+        final packageRoot = p.join(tempDir.path, 'my_pkg');
+        Directory(p.join(packageRoot, 'lib')).createSync(recursive: true);
+        File(p.join(packageRoot, 'pubspec.yaml'))
+            .writeAsStringSync('name: my_pkg\n');
+        final dartFile = p.join(packageRoot, 'lib', 'x.dart');
+        File(dartFile).writeAsStringSync('void main() {}');
+        expectEquals(resolveFileNameKeywordsForPath(dartFile).length, 0);
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
+
+    test('reads keywords from layered_architecture.yaml', () {
+      final tempDir = Directory.systemTemp.createTempSync('file_layout_kw_');
+      try {
+        final packageRoot = p.join(tempDir.path, 'my_pkg');
+        Directory(p.join(packageRoot, 'lib')).createSync(recursive: true);
+        File(p.join(packageRoot, 'pubspec.yaml'))
+            .writeAsStringSync('name: my_pkg\n');
+        File(p.join(packageRoot, 'layered_architecture.yaml'))
+            .writeAsStringSync(
+              '''
+rules:
+  public_type_file_name:
+    keywords:
+      UseCase: usecase
+      ViewModel: viewmodel
+''',
+            );
+        final dartFile = p.join(packageRoot, 'lib', 'x.dart');
+        File(dartFile).writeAsStringSync('void main() {}');
+        final keywords = resolveFileNameKeywordsForPath(dartFile);
+        expectEquals(keywords.length, 2);
+        expectEquals(keywords[0].keySegments.length, 2);
+        expectEquals(keywords[0].keySegments[0], 'Use');
+        expectEquals(keywords[0].keySegments[1], 'Case');
+        expectEquals(keywords[0].replacement, 'usecase');
+        expectEquals(keywords[1].keySegments.length, 2);
+        expectEquals(keywords[1].keySegments[0], 'View');
+        expectEquals(keywords[1].keySegments[1], 'Model');
+        expectEquals(keywords[1].replacement, 'viewmodel');
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
     });
   });
 
