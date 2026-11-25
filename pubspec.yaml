@@ -13,8 +13,10 @@ workspace:
   - example/domain/todo
   - example/data/repository/todo
   - example/data/repository/todo/_impl
+  - example/data/injection
   - example/usecase/todo
   - example/usecase/todo/_impl
+  - example/usecase/injection
   - example/screen/feature/todo_list
 
 dev_dependencies:
