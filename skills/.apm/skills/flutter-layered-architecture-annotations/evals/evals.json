@@ -1,0 +1,48 @@
+{
+  "skill_name": "flutter-layered-architecture-annotations",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Todo 削除の Usecase interface を追加してください。Flutter Layered Architecture の annotation と形に合わせてください。成果物は Dart ファイルとして outputs/ に保存し、どの annotation を付けたか短い notes.md も書いてください。",
+      "expected_output": "@usecase 付きの DeleteTodoUsecase（public メソッド1つ・引数あり非 void・const コンストラクタ）と、付与理由の notes.md",
+      "files": [],
+      "assertions": [
+        "Uses @usecase on the Usecase type",
+        "Declares at most one public instance method",
+        "Public method has parameters and a non-void return type",
+        "Has a const constructor and final/const fields only",
+        "Imports flutter_layered_architecture_annotations",
+        "Does not put @injection or @implementation on the type"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "設定画面の ViewModel を作ってください。内部状態と表示用 entity を分け、設定保存ボタン用の処理も Delegate に切ってください。Flutter Layered Architecture の annotation 規約に従い、成果物は Dart ファイルとして outputs/ に保存し、付けた annotation を notes.md に列挙してください。",
+      "expected_output": "@internal @viewModel の ViewModel、Freezed 想定の State/Entity 分離、@internal @delegate の保存処理、on* メソッド、notes.md",
+      "files": [],
+      "assertions": [
+        "ViewModel type has @viewModel",
+        "ViewModel also has @internal",
+        "ViewModel declares StateStream get entity",
+        "Entity model type differs from MutableStateStream state model type",
+        "Delegate type has @delegate and @internal",
+        "Delegate exposes a single execute instance method",
+        "ViewModel/extension action methods use on-prefixed names (except close/_close)",
+        "Does not place @injection/@implementation on class types"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "data_repository_todo_impl 相当のバレルファイルに、実装 package として正しい annotation を付けてください。誰から依存してよいかも notes.md に書いてください。outputs/ にバレル Dart と notes.md を保存してください。",
+      "expected_output": "@implementation library; のバレルと、同一レイヤー @injection のみ依存可である旨の notes.md",
+      "files": [],
+      "assertions": [
+        "Barrel uses @implementation on library",
+        "Annotation targets library (library; present), not a class",
+        "Does not also annotate the same barrel with @injection",
+        "notes.md states only same-layer @injection packages may depend on it",
+        "Imports or references flutter_layered_architecture_annotations appropriately"
+      ]
+    }
+  ]
+}
