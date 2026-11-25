@@ -69,7 +69,11 @@ final class _Visitor extends SimpleAstVisitor<void> {
     }
 
     final type = types.single;
-    final expected = expectedFileNameForType(type.name.lexeme);
+    final keywords = resolveFileNameKeywordsForPath(path);
+    final expected = expectedFileNameForType(
+      type.name.lexeme,
+      keywords: keywords,
+    );
     final actual = fileBasename(path);
     if (actual == expected) {
       return;
