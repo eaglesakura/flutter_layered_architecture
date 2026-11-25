@@ -8,107 +8,15 @@ import 'package:package_config/package_config.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
-/// `layererd_architecture.yaml` の正本名（typo は意図的に維持する）.
+/// `layered_architecture.yaml` の正本名.
 @internal
-const layeredArchitectureFileName = 'layererd_architecture.yaml';
-
-/// パスを `/` 区切りへ正規化する.
-///
-/// Example:
-/// ```dart
-/// normalizePathForCompare(r'C:\a\b'); // 'C:/a/b'
-/// ```
-@internal
-String normalizePathForCompare(String path) {
-  return p.normalize(path).replaceAll(r'\', '/');
-}
-
-/// [path] が [prefix] 配下（または同一）か. 区切り境界を尊重する.
-///
-/// Example:
-/// ```dart
-/// isPathUnderPrefix(path: '/ws/example/data/repo', prefix: '/ws/example/data'); // true
-/// isPathUnderPrefix(path: '/ws/example/database', prefix: '/ws/example/data'); // false
-/// ```
-@internal
-bool isPathUnderPrefix({required String path, required String prefix}) {
-  final normalizedPath = normalizePathForCompare(path);
-  final normalizedPrefix = normalizePathForCompare(prefix);
-  if (normalizedPath == normalizedPrefix) {
-    return true;
-  }
-  return normalizedPath.startsWith('$normalizedPrefix/');
-}
-
-/// 定義ディレクトリ + 相対 path_prefix → 絶対正規化パス.
-///
-/// Example:
-/// ```dart
-/// resolvePathPrefix(definitionDir: '/ws', pathPrefix: 'example/data');
-/// // '/ws/example/data'
-/// ```
-@internal
-String resolvePathPrefix({
-  required String definitionDir,
-  required String pathPrefix,
-}) {
-  return normalizePathForCompare(p.join(definitionDir, pathPrefix));
-}
-
-/// [startPath]（ファイルまたはディレクトリ）から親へ辿り、`pubspec.yaml` があるディレクトリを返す.
-///
-/// Example:
-/// ```dart
-/// findPackageRoot('/ws/example/usecase/todo/lib/src/x.dart');
-/// // '/ws/example/usecase/todo'
-/// ```
-@internal
-String? findPackageRoot(String startPath) {
-  var directory = FileSystemEntity.isDirectorySync(startPath)
-      ? startPath
-      : p.dirname(startPath);
-  directory = p.normalize(directory);
-  while (true) {
-    final pubspecPath = p.join(directory, 'pubspec.yaml');
-    if (File(pubspecPath).existsSync()) {
-      return normalizePathForCompare(directory);
-    }
-    final parent = p.normalize(p.dirname(directory));
-    if (parent == directory) {
-      return null;
-    }
-    directory = parent;
-  }
-}
-
-/// [startDir] から親へ辿り、最初に見つかった [fileName] の絶対パスを返す.
-///
-/// Example:
-/// ```dart
-/// findUpwardsFile('/ws/example/usecase', 'layererd_architecture.yaml');
-/// // '/ws/layererd_architecture.yaml'
-/// ```
-@internal
-String? findUpwardsFile(String startDir, String fileName) {
-  var directory = p.normalize(startDir);
-  while (true) {
-    final candidate = p.join(directory, fileName);
-    if (File(candidate).existsSync()) {
-      return normalizePathForCompare(p.normalize(candidate));
-    }
-    final parent = p.normalize(p.dirname(directory));
-    if (parent == directory) {
-      return null;
-    }
-    directory = parent;
-  }
-}
+const layeredArchitectureFileName = 'layered_architecture.yaml';
 
 /// `findUpwardsFile(startDirectory, layeredArchitectureFileName)`.
 ///
 /// Example:
 /// ```dart
-/// // /ws/example/usecase から /ws/layererd_architecture.yaml を発見
+/// // /ws/example/usecase から /ws/layered_architecture.yaml を発見
 /// findLayeredArchitectureYaml('/ws/example/usecase');
 /// ```
 @internal
@@ -140,52 +48,289 @@ String? findPackageConfigJson(String startDir) {
   }
 }
 
-/// 同期でテキストを読む. 失敗時 null（`dart:io` File.readAsStringSync）.
-/// Analyzer プラグインでは同期 I/O を用いる（`avoid_slow_async_io` は非同期 File 向け）.
+/// [startPath]（ファイルまたはディレクトリ）から親へ辿り、`pubspec.yaml` があるディレクトリを返す.
 ///
 /// Example:
 /// ```dart
-/// readTextFile('/ws/layererd_architecture.yaml'); // yaml text or null
+/// findPackageRoot('/ws/example/usecase/todo/lib/src/x.dart');
+/// // '/ws/example/usecase/todo'
 /// ```
 @internal
-String? readTextFile(String path) {
-  try {
-    return File(path).readAsStringSync();
-  } on FileSystemException {
-    return null;
-  } on IOException {
-    return null;
+String? findPackageRoot(String startPath) {
+  var directory = FileSystemEntity.isDirectorySync(startPath)
+      ? startPath
+      : p.dirname(startPath);
+  directory = p.normalize(directory);
+  while (true) {
+    final pubspecPath = p.join(directory, 'pubspec.yaml');
+    if (File(pubspecPath).existsSync()) {
+      return normalizePathForCompare(directory);
+    }
+    final parent = p.normalize(p.dirname(directory));
+    if (parent == directory) {
+      return null;
+    }
+    directory = parent;
   }
 }
 
+/// duplicate / contains を返す. 無ければ空.
+///
+/// Example:
+/// ```dart
+/// findPathPrefixOverlaps(definitionDir: '/ws', layers: [data, dataChild]);
+/// // reason == 'contains'
+/// ```
 @internal
-sealed class LayerArchitectureParseResult {}
+List<PathPrefixOverlap> findPathPrefixOverlaps({
+  required String definitionDir,
+  required List<ArchitectureLayer> layers,
+}) {
+  final overlaps = <PathPrefixOverlap>[];
+  final resolved = [
+    for (final layer in layers)
+      (
+        layer: layer,
+        path: resolvePathPrefix(
+          definitionDir: definitionDir,
+          pathPrefix: layer.pathPrefix,
+        ),
+      ),
+  ];
 
-@internal
-final class LayerArchitectureParseFailure extends LayerArchitectureParseResult {
-  LayerArchitectureParseFailure(this.message);
-
-  final String message;
+  for (var indexA = 0; indexA < resolved.length; indexA++) {
+    for (var indexB = indexA + 1; indexB < resolved.length; indexB++) {
+      final entryA = resolved[indexA];
+      final entryB = resolved[indexB];
+      if (entryA.path == entryB.path) {
+        overlaps.add(
+          PathPrefixOverlap(
+            layerA: entryA.layer.name,
+            layerB: entryB.layer.name,
+            reason: 'duplicate',
+          ),
+        );
+        continue;
+      }
+      if (isPathUnderPrefix(path: entryB.path, prefix: entryA.path)) {
+        overlaps.add(
+          PathPrefixOverlap(
+            layerA: entryA.layer.name,
+            layerB: entryB.layer.name,
+            reason: 'contains',
+          ),
+        );
+      } else if (isPathUnderPrefix(path: entryA.path, prefix: entryB.path)) {
+        overlaps.add(
+          PathPrefixOverlap(
+            layerA: entryB.layer.name,
+            layerB: entryA.layer.name,
+            reason: 'contains',
+          ),
+        );
+      }
+    }
+  }
+  return overlaps;
 }
 
+/// [startDir] から親へ辿り、最初に見つかった [fileName] の絶対パスを返す.
+///
+/// Example:
+/// ```dart
+/// findUpwardsFile('/ws/example/usecase', 'layered_architecture.yaml');
+/// // '/ws/layered_architecture.yaml'
+/// ```
 @internal
-final class ArchitectureLayer {
-  const ArchitectureLayer({
-    required this.name,
-    required this.level,
-    required this.pathPrefix,
-  });
-
-  final String name;
-  final int? level;
-  final String pathPrefix;
+String? findUpwardsFile(String startDir, String fileName) {
+  var directory = p.normalize(startDir);
+  while (true) {
+    final candidate = p.join(directory, fileName);
+    if (File(candidate).existsSync()) {
+      return normalizePathForCompare(p.normalize(candidate));
+    }
+    final parent = p.normalize(p.dirname(directory));
+    if (parent == directory) {
+      return null;
+    }
+    directory = parent;
+  }
 }
 
+/// 自己 × 依存の各レイヤー組み合わせで、いずれか 1 つでも level 違反なら true.
+///
+/// 本番 Visitor は所属を単一に正規化したうえで [isLevelViolation] を使う。
+/// 本関数は単体テスト用の組み合わせ検査ヘルパーとして残す.
+///
+/// Example:
+/// ```dart
+/// hasAnyLevelViolation(selfLayers: [domain], dependencyLayers: [usecase]); // true
+/// ```
 @internal
-final class LayerArchitectureDefinition extends LayerArchitectureParseResult {
-  LayerArchitectureDefinition(this.layers);
+bool hasAnyLevelViolation({
+  required List<ArchitectureLayer> selfLayers,
+  required List<ArchitectureLayer> dependencyLayers,
+}) {
+  for (final selfLayer in selfLayers) {
+    for (final dependencyLayer in dependencyLayers) {
+      if (isLevelViolation(
+        selfLayer: selfLayer,
+        dependencyLayer: dependencyLayer,
+      )) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
-  final List<ArchitectureLayer> layers;
+/// 双方 level ありかつ dep.level > self.level のとき true.
+///
+/// Example:
+/// ```dart
+/// isLevelViolation(selfLayer: domainL2, dependencyLayer: usecaseL4); // true
+/// ```
+@internal
+bool isLevelViolation({
+  required ArchitectureLayer selfLayer,
+  required ArchitectureLayer dependencyLayer,
+}) {
+  final selfLevel = selfLayer.level;
+  final dependencyLevel = dependencyLayer.level;
+  if (selfLevel == null || dependencyLevel == null) {
+    return false;
+  }
+  return dependencyLevel > selfLevel;
+}
+
+/// [path] が [prefix] 配下（または同一）か. 区切り境界を尊重する.
+///
+/// Example:
+/// ```dart
+/// isPathUnderPrefix(path: '/ws/example/data/repo', prefix: '/ws/example/data'); // true
+/// isPathUnderPrefix(path: '/ws/example/database', prefix: '/ws/example/data'); // false
+/// ```
+@internal
+bool isPathUnderPrefix({required String path, required String prefix}) {
+  final normalizedPath = normalizePathForCompare(path);
+  final normalizedPrefix = normalizePathForCompare(prefix);
+  if (normalizedPath == normalizedPrefix) {
+    return true;
+  }
+  return normalizedPath.startsWith('$normalizedPrefix/');
+}
+
+/// package root がマッチするレイヤーをすべて返す.
+///
+/// 通常は 0 または 1 件。2 件以上は `path_prefix` 重複・包括であり **許可しない**。
+/// 呼び出し側は length > 1 を warning とし、依存方向検査を行わないこと.
+///
+/// Example:
+/// ```dart
+/// layersForPackagePath(..., packageRootPath: '/ws/example/usecase/todo/_impl');
+/// // usecase layer
+/// ```
+@internal
+List<ArchitectureLayer> layersForPackagePath({
+  required String definitionDir,
+  required List<ArchitectureLayer> layers,
+  required String packageRootPath,
+}) {
+  final normalizedPackageRoot = normalizePathForCompare(
+    p.normalize(packageRootPath),
+  );
+  final matched = <ArchitectureLayer>[];
+  for (final layer in layers) {
+    final prefix = resolvePathPrefix(
+      definitionDir: definitionDir,
+      pathPrefix: layer.pathPrefix,
+    );
+    if (isPathUnderPrefix(path: normalizedPackageRoot, prefix: prefix)) {
+      matched.add(layer);
+    }
+  }
+  return matched;
+}
+
+/// パスを `/` 区切りへ正規化する.
+///
+/// Example:
+/// ```dart
+/// normalizePathForCompare(r'C:\a\b'); // 'C:/a/b'
+/// ```
+@internal
+String normalizePathForCompare(String path) {
+  return p.normalize(path).replaceAll(r'\', '/');
+}
+
+/// `PackageConfig.parseString` で読み、各 package の rootUri を
+/// [packageConfigFileDirectory] 基準で絶対正規化パスへ変換した map を返す.
+/// パース失敗は空 map.
+///
+/// Example:
+/// ```dart
+/// packageRootsFromPackageConfig(
+///   packageConfigJsonText: json,
+///   packageConfigFileDirectory: '/ws/.dart_tool',
+/// );
+/// ```
+@internal
+Map<String, String> packageRootsFromPackageConfig({
+  required String packageConfigJsonText,
+  required String packageConfigFileDirectory,
+}) {
+  try {
+    final baseUri = Uri.directory(p.normalize(packageConfigFileDirectory));
+    final configuration = PackageConfig.parseString(
+      packageConfigJsonText,
+      baseUri,
+    );
+    final roots = <String, String>{};
+    for (final package in configuration.packages) {
+      final rootUri = package.root;
+      if (rootUri.scheme != 'file') {
+        continue;
+      }
+      roots[package.name] = normalizePathForCompare(
+        p.normalize(rootUri.toFilePath()),
+      );
+    }
+    return roots;
+  } on Object {
+    return {};
+  }
+}
+
+/// `dependencies` / `dev_dependencies` の直接依存パッケージ名を抽出する.
+///
+/// Example:
+/// ```dart
+/// parseDirectDependencyNames('dependencies:\n  domain_todo: any\n');
+/// // dependencies == ['domain_todo']
+/// ```
+@internal
+DirectDependencies parseDirectDependencyNames(String pubspecYamlText) {
+  final Object? document;
+  try {
+    document = loadYaml(pubspecYamlText);
+  } on YamlException {
+    return DirectDependencies(
+      dependencies: const [],
+      devDependencies: const [],
+    );
+  }
+
+  if (document is! YamlMap) {
+    return DirectDependencies(
+      dependencies: const [],
+      devDependencies: const [],
+    );
+  }
+
+  return DirectDependencies(
+    dependencies: _dependencyNames(document['dependencies']),
+    devDependencies: _dependencyNames(document['dev_dependencies']),
+  );
 }
 
 /// layers list / 単一キー map / path_prefix 必須非空.
@@ -263,151 +408,37 @@ LayerArchitectureParseResult parseLayerArchitectureYaml(String yamlText) {
   return LayerArchitectureDefinition(layers);
 }
 
-@internal
-final class PathPrefixOverlap {
-  PathPrefixOverlap({
-    required this.layerA,
-    required this.layerB,
-    required this.reason,
-  });
-
-  final String layerA;
-  final String layerB;
-
-  /// `duplicate` または `contains`.
-  final String reason;
-}
-
-/// duplicate / contains を返す. 無ければ空.
+/// 同期でテキストを読む. 失敗時 null（`dart:io` File.readAsStringSync）.
+/// Analyzer プラグインでは同期 I/O を用いる（`avoid_slow_async_io` は非同期 File 向け）.
 ///
 /// Example:
 /// ```dart
-/// findPathPrefixOverlaps(definitionDir: '/ws', layers: [data, dataChild]);
-/// // reason == 'contains'
+/// readTextFile('/ws/layered_architecture.yaml'); // yaml text or null
 /// ```
 @internal
-List<PathPrefixOverlap> findPathPrefixOverlaps({
-  required String definitionDir,
-  required List<ArchitectureLayer> layers,
-}) {
-  final overlaps = <PathPrefixOverlap>[];
-  final resolved = [
-    for (final layer in layers)
-      (
-        layer: layer,
-        path: resolvePathPrefix(
-          definitionDir: definitionDir,
-          pathPrefix: layer.pathPrefix,
-        ),
-      ),
-  ];
-
-  for (var indexA = 0; indexA < resolved.length; indexA++) {
-    for (var indexB = indexA + 1; indexB < resolved.length; indexB++) {
-      final entryA = resolved[indexA];
-      final entryB = resolved[indexB];
-      if (entryA.path == entryB.path) {
-        overlaps.add(
-          PathPrefixOverlap(
-            layerA: entryA.layer.name,
-            layerB: entryB.layer.name,
-            reason: 'duplicate',
-          ),
-        );
-        continue;
-      }
-      if (isPathUnderPrefix(path: entryB.path, prefix: entryA.path)) {
-        overlaps.add(
-          PathPrefixOverlap(
-            layerA: entryA.layer.name,
-            layerB: entryB.layer.name,
-            reason: 'contains',
-          ),
-        );
-      } else if (isPathUnderPrefix(path: entryA.path, prefix: entryB.path)) {
-        overlaps.add(
-          PathPrefixOverlap(
-            layerA: entryB.layer.name,
-            layerB: entryA.layer.name,
-            reason: 'contains',
-          ),
-        );
-      }
-    }
-  }
-  return overlaps;
-}
-
-/// package root がマッチするレイヤーをすべて返す（厳格 OR の元データ）.
-///
-/// Example:
-/// ```dart
-/// layersForPackagePath(..., packageRootPath: '/ws/example/usecase/todo/_impl');
-/// // usecase layer
-/// ```
-@internal
-List<ArchitectureLayer> layersForPackagePath({
-  required String definitionDir,
-  required List<ArchitectureLayer> layers,
-  required String packageRootPath,
-}) {
-  final normalizedPackageRoot = normalizePathForCompare(
-    p.normalize(packageRootPath),
-  );
-  final matched = <ArchitectureLayer>[];
-  for (final layer in layers) {
-    final prefix = resolvePathPrefix(
-      definitionDir: definitionDir,
-      pathPrefix: layer.pathPrefix,
-    );
-    if (isPathUnderPrefix(path: normalizedPackageRoot, prefix: prefix)) {
-      matched.add(layer);
-    }
-  }
-  return matched;
-}
-
-@internal
-final class DirectDependencies {
-  DirectDependencies({
-    required this.dependencies,
-    required this.devDependencies,
-  });
-
-  final List<String> dependencies;
-  final List<String> devDependencies;
-}
-
-/// `dependencies` / `dev_dependencies` の直接依存パッケージ名を抽出する.
-///
-/// Example:
-/// ```dart
-/// parseDirectDependencyNames('dependencies:\n  domain_todo: any\n');
-/// // dependencies == ['domain_todo']
-/// ```
-@internal
-DirectDependencies parseDirectDependencyNames(String pubspecYamlText) {
-  final Object? document;
+String? readTextFile(String path) {
   try {
-    document = loadYaml(pubspecYamlText);
-  } on YamlException {
-    return DirectDependencies(
-      dependencies: const [],
-      devDependencies: const [],
-    );
+    return File(path).readAsStringSync();
+  } on FileSystemException {
+    return null;
+  } on IOException {
+    return null;
   }
+}
 
-  if (document is! YamlMap) {
-    return DirectDependencies(
-      dependencies: const [],
-      devDependencies: const [],
-    );
-  }
-
-  return DirectDependencies(
-    dependencies: _dependencyNames(document['dependencies']),
-    devDependencies: _dependencyNames(document['dev_dependencies']),
-  );
+/// 定義ディレクトリ + 相対 path_prefix → 絶対正規化パス.
+///
+/// Example:
+/// ```dart
+/// resolvePathPrefix(definitionDir: '/ws', pathPrefix: 'example/data');
+/// // '/ws/example/data'
+/// ```
+@internal
+String resolvePathPrefix({
+  required String definitionDir,
+  required String pathPrefix,
+}) {
+  return normalizePathForCompare(p.join(definitionDir, pathPrefix));
 }
 
 List<String> _dependencyNames(Object? section) {
@@ -420,83 +451,59 @@ List<String> _dependencyNames(Object? section) {
   ];
 }
 
-/// `PackageConfig.parseString` で読み、各 package の rootUri を
-/// [packageConfigFileDirectory] 基準で絶対正規化パスへ変換した map を返す.
-/// パース失敗は空 map.
-///
-/// Example:
-/// ```dart
-/// packageRootsFromPackageConfig(
-///   packageConfigJsonText: json,
-///   packageConfigFileDirectory: '/ws/.dart_tool',
-/// );
-/// ```
 @internal
-Map<String, String> packageRootsFromPackageConfig({
-  required String packageConfigJsonText,
-  required String packageConfigFileDirectory,
-}) {
-  try {
-    final baseUri = Uri.directory(p.normalize(packageConfigFileDirectory));
-    final configuration = PackageConfig.parseString(
-      packageConfigJsonText,
-      baseUri,
-    );
-    final roots = <String, String>{};
-    for (final package in configuration.packages) {
-      final rootUri = package.root;
-      if (rootUri.scheme != 'file') {
-        continue;
-      }
-      roots[package.name] = normalizePathForCompare(
-        p.normalize(rootUri.toFilePath()),
-      );
-    }
-    return roots;
-  } on Object {
-    return {};
-  }
+final class ArchitectureLayer {
+  final String name;
+
+  final int? level;
+  final String pathPrefix;
+  const ArchitectureLayer({
+    required this.name,
+    required this.level,
+    required this.pathPrefix,
+  });
 }
 
-/// 双方 level ありかつ dep.level > self.level のとき true.
-///
-/// Example:
-/// ```dart
-/// isLevelViolation(selfLayer: domainL2, dependencyLayer: usecaseL4); // true
-/// ```
 @internal
-bool isLevelViolation({
-  required ArchitectureLayer selfLayer,
-  required ArchitectureLayer dependencyLayer,
-}) {
-  final selfLevel = selfLayer.level;
-  final dependencyLevel = dependencyLayer.level;
-  if (selfLevel == null || dependencyLevel == null) {
-    return false;
-  }
-  return dependencyLevel > selfLevel;
+final class DirectDependencies {
+  final List<String> dependencies;
+
+  final List<String> devDependencies;
+  DirectDependencies({
+    required this.dependencies,
+    required this.devDependencies,
+  });
 }
 
-/// 自己全マッチ × 依存全マッチの厳格 OR.
-///
-/// Example:
-/// ```dart
-/// hasAnyLevelViolation(selfLayers: [domain], dependencyLayers: [usecase]); // true
-/// ```
 @internal
-bool hasAnyLevelViolation({
-  required List<ArchitectureLayer> selfLayers,
-  required List<ArchitectureLayer> dependencyLayers,
-}) {
-  for (final selfLayer in selfLayers) {
-    for (final dependencyLayer in dependencyLayers) {
-      if (isLevelViolation(
-        selfLayer: selfLayer,
-        dependencyLayer: dependencyLayer,
-      )) {
-        return true;
-      }
-    }
-  }
-  return false;
+final class LayerArchitectureDefinition extends LayerArchitectureParseResult {
+  final List<ArchitectureLayer> layers;
+
+  LayerArchitectureDefinition(this.layers);
+}
+
+@internal
+final class LayerArchitectureParseFailure extends LayerArchitectureParseResult {
+  final String message;
+
+  LayerArchitectureParseFailure(this.message);
+}
+
+@internal
+sealed class LayerArchitectureParseResult {}
+
+@internal
+final class PathPrefixOverlap {
+  final String layerA;
+
+  final String layerB;
+
+  /// `duplicate` または `contains`.
+  final String reason;
+
+  PathPrefixOverlap({
+    required this.layerA,
+    required this.layerB,
+    required this.reason,
+  });
 }

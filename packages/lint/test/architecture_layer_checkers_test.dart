@@ -87,10 +87,10 @@ void main() {
       final tempDir = Directory.systemTemp.createTempSync('arch_layer_yaml_');
       try {
         final root = p.join(tempDir.path, 'ws');
-        final parentYaml = p.join(root, 'layererd_architecture.yaml');
+        final parentYaml = p.join(root, 'layered_architecture.yaml');
         final childDir = p.join(root, 'child');
         Directory(childDir).createSync(recursive: true);
-        final childYaml = p.join(childDir, 'layererd_architecture.yaml');
+        final childYaml = p.join(childDir, 'layered_architecture.yaml');
         File(parentYaml).writeAsStringSync('layers: []\n');
         File(childYaml).writeAsStringSync('layers: []\n');
         expectEquals(
@@ -314,6 +314,29 @@ dev_dependencies:
       );
       expectEquals(matched.length, 1);
       expectEquals(matched.single.name, 'usecase');
+    });
+
+    test('overlapping path_prefix yields multiple layer matches', () {
+      const definitionDir = '/ws';
+      const layers = [
+        ArchitectureLayer(
+          name: 'data',
+          level: 4,
+          pathPrefix: 'example/data',
+        ),
+        ArchitectureLayer(
+          name: 'data_repository',
+          level: 4,
+          pathPrefix: 'example/data/repository',
+        ),
+      ];
+      final matched = layersForPackagePath(
+        definitionDir: definitionDir,
+        layers: layers,
+        packageRootPath: '/ws/example/data/repository/todo',
+      );
+      // 複数マッチは許可しない。呼び出し側で warning し依存検査を止める前提.
+      expectEquals(matched.length, 2);
     });
   });
 

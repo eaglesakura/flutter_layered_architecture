@@ -11,7 +11,7 @@ import 'package:path/path.dart' as p;
 
 /// pubspec 依存のレイヤー level 制約を検証する Lint（すべて WARNING）.
 ///
-/// 検査対象は `layererd_architecture.yaml` のいずれかの `path_prefix` に所属する
+/// 検査対象は `layered_architecture.yaml` のいずれかの `path_prefix` に所属する
 /// package のみ。定義不在・YAML 不正・path_prefix 事前チェック・level 違反を報告する.
 ///
 /// Example:
@@ -97,7 +97,7 @@ final class _Visitor extends SimpleAstVisitor<void> {
         _reportedDefinitionPaths.add(definitionPath);
         _report(
           node,
-          'Invalid layererd_architecture.yaml: ${parseResult.message}',
+          'Invalid layered_architecture.yaml: ${parseResult.message}',
         );
       }
       return;
@@ -130,6 +130,17 @@ final class _Visitor extends SimpleAstVisitor<void> {
       }
     }
 
+    // 複数レイヤー所属は許可しない（path_prefix 重複・包括の結果）。所属が不定のため依存方向検査は行わない.
+    if (selfLayers.length > 1) {
+      final names = selfLayers.map((layer) => layer.name).join(', ');
+      _report(
+        node,
+        'Package matches multiple architecture layers ($names). '
+        'path_prefix overlap is not allowed; fix layered_architecture.yaml.',
+      );
+      return;
+    }
+
     final packageConfigPath = findPackageConfigJson(packageRoot);
     if (packageConfigPath == null) {
       return;
@@ -156,6 +167,8 @@ final class _Visitor extends SimpleAstVisitor<void> {
       packageConfigFileDirectory: p.dirname(packageConfigPath),
     );
 
+    final selfLayer = selfLayers.single;
+
     for (final dependencyName in dependencyNames) {
       final dependencyRoot = packageRoots[dependencyName];
       if (dependencyRoot == null) {
@@ -171,44 +184,32 @@ final class _Visitor extends SimpleAstVisitor<void> {
         continue;
       }
 
-      if (!hasAnyLevelViolation(
-        selfLayers: selfLayers,
-        dependencyLayers: dependencyLayers,
+      if (dependencyLayers.length > 1) {
+        final names = dependencyLayers.map((layer) => layer.name).join(', ');
+        _report(
+          node,
+          "Dependency '$dependencyName' matches multiple architecture "
+          'layers ($names). path_prefix overlap is not allowed; fix '
+          'layered_architecture.yaml.',
+        );
+        continue;
+      }
+
+      final dependencyLayer = dependencyLayers.single;
+      if (!isLevelViolation(
+        selfLayer: selfLayer,
+        dependencyLayer: dependencyLayer,
       )) {
         continue;
       }
 
-      final message = _dependencyViolationMessage(
-        dependencyName: dependencyName,
-        selfLayers: selfLayers,
-        dependencyLayers: dependencyLayers,
+      _report(
+        node,
+        "Dependency '$dependencyName' (layer ${dependencyLayer.name} "
+        'level ${dependencyLayer.level}) violates constraint from layer '
+        '${selfLayer.name} level ${selfLayer.level}.',
       );
-      if (message != null) {
-        _report(node, message);
-      }
     }
-  }
-
-  /// level 違反があれば、厳格 OR の最初の違反ペアからメッセージを組み立てる.
-  String? _dependencyViolationMessage({
-    required String dependencyName,
-    required List<ArchitectureLayer> selfLayers,
-    required List<ArchitectureLayer> dependencyLayers,
-  }) {
-    for (final selfLayer in selfLayers) {
-      for (final dependencyLayer in dependencyLayers) {
-        if (!isLevelViolation(
-          selfLayer: selfLayer,
-          dependencyLayer: dependencyLayer,
-        )) {
-          continue;
-        }
-        return "Dependency '$dependencyName' (layer ${dependencyLayer.name} "
-            'level ${dependencyLayer.level}) violates constraint from layer '
-            '${selfLayer.name} level ${selfLayer.level}.';
-      }
-    }
-    return null;
   }
 
   String _missingDefinitionDedupKey(String packageRoot) {
@@ -227,7 +228,7 @@ final class _Visitor extends SimpleAstVisitor<void> {
     _reportedDefinitionPaths.add(key);
     _report(
       node,
-      'layererd_architecture.yaml not found when searching upward from the '
+      'layered_architecture.yaml not found when searching upward from the '
       'package root.',
     );
   }

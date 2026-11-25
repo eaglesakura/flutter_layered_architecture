@@ -22,9 +22,9 @@ and `architecture_layer_dependency`) are reported as **WARNING**.
 
 | Lint code | Check |
 | --- | --- |
-| `architecture_layer_dependency` | Warns when a package under `layererd_architecture.yaml` depends on a higher layer (pubspec direct deps only) |
+| `architecture_layer_dependency` | Warns when a package under `layered_architecture.yaml` depends on a higher layer (pubspec direct deps only) |
 
-Uses the nearest `layererd_architecture.yaml` found upward from the package root.
+Uses the nearest `layered_architecture.yaml` found upward from the package root.
 Missing or invalid definitions, overlapping `path_prefix` values, and
 `dep.level > self.level` (when both sides have `level`) are warnings. Packages
 outside every `path_prefix` (e.g. this lint package) are skipped. Unused layer

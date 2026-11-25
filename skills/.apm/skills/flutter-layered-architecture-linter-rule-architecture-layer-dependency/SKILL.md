@@ -2,13 +2,13 @@
 name: flutter-layered-architecture-linter-rule-architecture-layer-dependency
 description: >-
   Flutter Layered Architecture の linter rule `architecture_layer_dependency`。
-  layererd_architecture.yaml に基づき、package のレイヤー所属と依存方向（level）を検査する。
+  layered_architecture.yaml に基づき、package のレイヤー所属と依存方向（level）を検査する。
   レイヤー境界・path_prefix・依存逆転、診断 `architecture_layer_dependency` の修正では必ず使う。
   プラグイン `flutter_layered_architecture_lint`（analysis_server_plugin）と対になる。
 ---
 # アーキテクチャレイヤー依存（`architecture_layer_dependency`）
 
-`layererd_architecture.yaml` のレイヤー定義に従い、**所属レイヤー内の package** について
+`layered_architecture.yaml` のレイヤー定義に従い、**所属レイヤー内の package** について
 pubspec の直接依存の方向を検査する。
 
 ## いつ使うか
@@ -19,8 +19,8 @@ pubspec の直接依存の方向を検査する。
 
 ## 定義ファイル
 
-* ファイル名: `layererd_architecture.yaml`（正本の例: `@flutter_layered_architecture/layererd_architecture.yaml`）
-* 探索: 検査対象 package のディレクトリから親へ辿り、**最初に見つかった** `layererd_architecture.yaml` を適用する
+* ファイル名: `layered_architecture.yaml`（正本の例: `@flutter_layered_architecture/layered_architecture.yaml`）
+* 探索: 検査対象 package のディレクトリから親へ辿り、**最初に見つかった** `layered_architecture.yaml` を適用する
 * ルートまで存在しなければ **warning**
 * `path_prefix` は、その定義ファイルがあるディレクトリからの相対パスとする
 * 配下に package が無いレイヤー定義（未使用レイヤー）は **許可**（将来予約）
@@ -39,18 +39,19 @@ pubspec の直接依存の方向を検査する。
 * package の実パス解決は `.dart_tool/package_config.json`（package 名 → root URI）で行う
 * 配下判定は path separator を OS 差含め正規化したうえで行う（パス区切り境界を尊重する）
 * 定義読み込み後、所属 package を解析する前に `path_prefix` の **重複・包括を事前チェック** し **warning**（定義ファイルあたり 1 回）
-* 複数レイヤーにマッチした場合、マッチした **全レイヤー** について level 比較し、**いずれか 1 つでも** 違反なら warning（**厳格 OR**）
+* **1 package が複数レイヤーにマッチすることは許可しない**。マッチした場合は **warning** とし、当該 package の依存方向検査は行わない（定義の `path_prefix` を直す）
+* 依存先 package が複数レイヤーにマッチした場合も **warning**（その依存エッジの level 比較は行わない）
 
 ### 依存方向
 
-* 依存元・依存先の双方に `level` があるとき、依存先の `level` が依存元の `level` **以下**（同レベル含む、`dep.level <= self.level`）でなければ **warning**
+* 依存元・依存先の双方に `level` があり、かつ双方の所属が単一のとき、依存先の `level` が依存元の `level` **以下**（同レベル含む、`dep.level <= self.level`）でなければ **warning**
 * `level` は optional。`level` 未記載のレイヤーは、任意のレイヤーと双方向に接続できる（level 比較の対象外）
 * 片方のみ `level` がある依存は level 比較の対象外（warning にしない）
 * いずれの `path_prefix` にも属さない依存先は比較しない
 
 ### 重要度
 
-本ルールが出す診断は **すべて warning**（定義不在・YAML 不正・path_prefix 事前チェック・level 違反）。
+本ルールが出す診断は **すべて warning**（定義不在・YAML 不正・path_prefix 事前チェック・複数レイヤー所属・level 違反）。
 必要なら `analysis_options.yaml` の `analyzer.errors` で個別に error 昇格する。
 既存の `@usecase` / `@delegate` 等の architecture 違反と同様 WARNING に揃える。
 
@@ -59,6 +60,7 @@ pubspec の直接依存の方向を検査する。
 | 定義ファイルがルートまで見つからない | warning |
 | 定義ファイルがパース不能／最小スキーマ違反 | warning（依存方向検査は行わない） |
 | `path_prefix` の重複・包括（事前チェック） | warning |
+| package（または依存先）が複数レイヤーにマッチ | warning（所属不定のため当該の level 比較は行わない） |
 | level 制約を破る依存 | warning |
 
 ## スコープ外（別手段）
@@ -73,7 +75,7 @@ pubspec の直接依存の方向を検査する。
 ## 良い例
 
 ```yaml
-# layererd_architecture.yaml（抜粋）
+# layered_architecture.yaml（抜粋）
 layers:
   - usecase:
       level: 4
@@ -94,8 +96,8 @@ layers:
 ## 悪い例
 
 * `domain_*`（2）の `dependencies` に `usecase_*`（4）→ `architecture_layer_dependency`（warning）
-* `path_prefix: example/data` と `path_prefix: example/data/repository` を別レイヤーで併記 → 包括として warning（事前チェック）
-* 親を辿っても `layererd_architecture.yaml` が無い → warning
+* `path_prefix: example/data` と `path_prefix: example/data/repository` を別レイヤーで併記 → 包括として warning（事前チェック）。配下 package は複数レイヤーマッチとしても warning
+* 親を辿っても `layered_architecture.yaml` が無い → warning
 
 ## 抑制コメント
 
@@ -105,6 +107,6 @@ layers:
 
 ## 関連
 
-* 定義ファイル: `@flutter_layered_architecture/layererd_architecture.yaml`
+* 定義ファイル: `@flutter_layered_architecture/layered_architecture.yaml`
 * プラグイン有効化: ワークスペースルート `analysis_options.yaml` の top-level `plugins:`
 * 標準ルール（import と pubspec の対応）: [`depend_on_referenced_packages`](https://dart.dev/tools/linter-rules/depend_on_referenced_packages)
