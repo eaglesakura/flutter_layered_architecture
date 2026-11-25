@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:meta/meta.dart';
 import 'package:screen_feature_todo_list/src/view/todo_list_screen_providers.dart';
 import 'package:screen_feature_todo_list/src/viewmodel/entity/todo_list_screen_entity.dart';
-import 'package:screen_feature_todo_list/src/viewmodel/todo_list_screen_view_model.dart';
+import 'package:screen_feature_todo_list/src/viewmodel/todo_list_screen_viewmodel.dart';
 
 /// Visual implementation of the todo list screen.
 @internal

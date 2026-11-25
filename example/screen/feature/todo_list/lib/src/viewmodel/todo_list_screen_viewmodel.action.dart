@@ -1,4 +1,4 @@
-part of 'todo_list_screen_view_model.dart';
+part of 'todo_list_screen_viewmodel.dart';
 
 /// Widget-facing actions for [TodoListScreenViewModel].
 extension TodoListScreenViewModelActions on TodoListScreenViewModel {

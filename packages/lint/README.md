@@ -47,6 +47,22 @@ cd packages/lint && dart run test/architecture_layer_checkers_test.dart
 | `public_type_file_name` | When exactly one public type exists, the file name must be its `lower_snake_case` form |
 | `unexported_public_must_be_internal` | Public top-level symbols not exported from a `lib/` barrel (`library;`) must be `@internal` or private |
 
+Optional keywords in the nearest `layered_architecture.yaml`:
+
+```yaml
+rules:
+  public_type_file_name:
+    keywords:
+      UseCase: usecase
+      ViewModel: viewmodel
+```
+
+With `UseCase: usecase`, type `AddTodoUseCase` expects `add_todo_usecase.dart`
+(without keywords it would be `add_todo_use_case.dart`). Keywords are applied in
+YAML declaration order (earlier keys win on overlapping segments). Missing or
+empty `rules` / `keywords` keeps the default PascalCase→snake conversion.
+Matching is case-sensitive (`UseCase` does not match type segment `Usecase`).
+
 Skipped for `part of` files and paths under `test/`. Private (`_`-prefixed) types and `typedef`s are ignored by the one-type / file-name rules. Zero public types is allowed.
 
 `unexported_public_must_be_internal` covers all public top-level symbols (`class` / `enum` / `mixin` / named `extension` / `extension type` / function / variable / `typedef`). Barrels are `lib/*.dart` files that declare `library;`. Packages with no such barrel are skipped.

@@ -19,11 +19,11 @@ import 'package:flutter_layered_architecture_lint/src/stateful/stateful_mutable_
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_immutable.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_method_signature.dart';
 import 'package:flutter_layered_architecture_lint/src/usecase/usecase_single_method.dart';
-import 'package:flutter_layered_architecture_lint/src/view_model/view_model_entity_differs_from_state.dart';
-import 'package:flutter_layered_architecture_lint/src/view_model/view_model_entity_freezed.dart';
-import 'package:flutter_layered_architecture_lint/src/view_model/view_model_has_entity_getter.dart';
-import 'package:flutter_layered_architecture_lint/src/view_model/view_model_internal.dart';
-import 'package:flutter_layered_architecture_lint/src/view_model/view_model_on_method_names.dart';
+import 'package:flutter_layered_architecture_lint/src/view_model/viewmodel_entity_differs_from_state.dart';
+import 'package:flutter_layered_architecture_lint/src/view_model/viewmodel_entity_freezed.dart';
+import 'package:flutter_layered_architecture_lint/src/view_model/viewmodel_has_entity_getter.dart';
+import 'package:flutter_layered_architecture_lint/src/view_model/viewmodel_internal.dart';
+import 'package:flutter_layered_architecture_lint/src/view_model/viewmodel_on_method_names.dart';
 
 /// Analyzer プラグインのエントリポイント.
 final plugin = FlutterLayeredArchitecturePlugin();

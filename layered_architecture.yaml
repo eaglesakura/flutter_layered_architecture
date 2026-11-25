@@ -63,3 +63,8 @@ layers:
         Unit Testサポート用.
         任意のレイヤーに接続することができる.
       path_prefix: example/testing
+rules:
+  public_type_file_name:
+    keywords:
+      UseCase: usecase
+      ViewModel: viewmodel

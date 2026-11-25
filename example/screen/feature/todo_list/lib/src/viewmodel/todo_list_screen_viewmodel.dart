@@ -12,7 +12,7 @@ import 'package:screen_feature_todo_list/src/viewmodel/state/todo_list_screen_st
 import 'package:state_stream/state_stream.dart';
 import 'package:usecase_todo/usecase_todo.dart';
 
-part 'todo_list_screen_view_model.action.dart';
+part 'todo_list_screen_viewmodel.action.dart';
 
 /// ViewModel for the todo list screen.
 @internal

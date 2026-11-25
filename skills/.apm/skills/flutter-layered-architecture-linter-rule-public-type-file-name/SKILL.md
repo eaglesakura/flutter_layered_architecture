@@ -30,7 +30,11 @@ description: >-
 
 ## ルールが検証すること
 
-* 唯一の public 名前付き型について、ファイル basename が `pascal_to_snake(型名).dart` でないと WARNING
+* 唯一の public 名前付き型について、ファイル basename が期待名と一致しないと WARNING
+* 期待名は型名の lower_snake_case。任意で最寄りの `layered_architecture.yaml` の
+  `rules.public_type_file_name.keywords` により、CamelCase キーワードをファイル名用文字列へ置換できる
+* キーワードは YAML 記載順。先勝ち。大文字小文字は厳密一致（`UseCase` 設定は型名 `Usecase` に効かない）
+* `rules` / `keywords` 未設定なら従来どおりの変換のみ
 
 ## 良い例
 
@@ -38,6 +42,12 @@ description: >-
 // add_todo_usecase.dart
 @usecase
 abstract interface class AddTodoUsecase { ... }
+```
+
+```dart
+// add_todo_usecase.dart（keywords: UseCase: usecase）
+@usecase
+abstract interface class AddTodoUseCase { ... }
 ```
 
 ## 悪い例
