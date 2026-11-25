@@ -49,61 +49,18 @@ final class ArchitectureLayerDependency extends AnalysisRule {
 
 /// CompilationUnit ごとに package 単位の依存検査を 1 回だけ実行する Visitor.
 final class _Visitor extends SimpleAstVisitor<void> {
-  _Visitor(this.rule, this.context);
-
-  final ArchitectureLayerDependency rule;
-  final RuleContext context;
-
   /// 正規化 package root → 依存検査の二重実行防止（プロセス生存中クリアなし）.
   static final Set<String> _reportedPackageRoots = {};
 
   /// 定義 yaml 正規化パス（または missing 用 synthetic キー）→ 定義スコープ診断の二重報告防止.
   static final Set<String> _reportedDefinitionPaths = {};
-
   static const _missingDefinitionKeyPrefix = '__missing__:';
 
-  void _report(CompilationUnit node, String message) {
-    rule.reportAtNode(node, arguments: [message]);
-  }
+  final ArchitectureLayerDependency rule;
 
-  String _missingDefinitionDedupKey(String packageRoot) {
-    return '$_missingDefinitionKeyPrefix$packageRoot';
-  }
+  final RuleContext context;
 
-  void _reportMissingDefinitionOnce(CompilationUnit node, String packageRoot) {
-    final key = _missingDefinitionDedupKey(packageRoot);
-    if (_reportedDefinitionPaths.contains(key)) {
-      return;
-    }
-    _reportedDefinitionPaths.add(key);
-    _report(
-      node,
-      'layererd_architecture.yaml not found when searching upward from the '
-      'package root.',
-    );
-  }
-
-  /// level 違反があれば、厳格 OR の最初の違反ペアからメッセージを組み立てる.
-  String? _dependencyViolationMessage({
-    required String dependencyName,
-    required List<ArchitectureLayer> selfLayers,
-    required List<ArchitectureLayer> dependencyLayers,
-  }) {
-    for (final selfLayer in selfLayers) {
-      for (final dependencyLayer in dependencyLayers) {
-        if (!isLevelViolation(
-          selfLayer: selfLayer,
-          dependencyLayer: dependencyLayer,
-        )) {
-          continue;
-        }
-        return "Dependency '$dependencyName' (layer ${dependencyLayer.name} "
-            'level ${dependencyLayer.level}) violates constraint from layer '
-            '${selfLayer.name} level ${selfLayer.level}.';
-      }
-    }
-    return null;
-  }
+  _Visitor(this.rule, this.context);
 
   @override
   void visitCompilationUnit(CompilationUnit node) {
@@ -230,5 +187,48 @@ final class _Visitor extends SimpleAstVisitor<void> {
         _report(node, message);
       }
     }
+  }
+
+  /// level 違反があれば、厳格 OR の最初の違反ペアからメッセージを組み立てる.
+  String? _dependencyViolationMessage({
+    required String dependencyName,
+    required List<ArchitectureLayer> selfLayers,
+    required List<ArchitectureLayer> dependencyLayers,
+  }) {
+    for (final selfLayer in selfLayers) {
+      for (final dependencyLayer in dependencyLayers) {
+        if (!isLevelViolation(
+          selfLayer: selfLayer,
+          dependencyLayer: dependencyLayer,
+        )) {
+          continue;
+        }
+        return "Dependency '$dependencyName' (layer ${dependencyLayer.name} "
+            'level ${dependencyLayer.level}) violates constraint from layer '
+            '${selfLayer.name} level ${selfLayer.level}.';
+      }
+    }
+    return null;
+  }
+
+  String _missingDefinitionDedupKey(String packageRoot) {
+    return '$_missingDefinitionKeyPrefix$packageRoot';
+  }
+
+  void _report(CompilationUnit node, String message) {
+    rule.reportAtNode(node, arguments: [message]);
+  }
+
+  void _reportMissingDefinitionOnce(CompilationUnit node, String packageRoot) {
+    final key = _missingDefinitionDedupKey(packageRoot);
+    if (_reportedDefinitionPaths.contains(key)) {
+      return;
+    }
+    _reportedDefinitionPaths.add(key);
+    _report(
+      node,
+      'layererd_architecture.yaml not found when searching upward from the '
+      'package root.',
+    );
   }
 }

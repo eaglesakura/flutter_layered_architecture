@@ -107,8 +107,16 @@ void main() {
     test('detects duplicate and contains', () {
       const definitionDir = '/ws';
       final duplicateLayers = [
-        ArchitectureLayer(name: 'a', level: 1, pathPrefix: 'example/data'),
-        ArchitectureLayer(name: 'b', level: 2, pathPrefix: 'example/data'),
+        const ArchitectureLayer(
+          name: 'a',
+          level: 1,
+          pathPrefix: 'example/data',
+        ),
+        const ArchitectureLayer(
+          name: 'b',
+          level: 2,
+          pathPrefix: 'example/data',
+        ),
       ];
       final duplicates = findPathPrefixOverlaps(
         definitionDir: definitionDir,
@@ -118,8 +126,12 @@ void main() {
       expectEquals(duplicates.single.reason, 'duplicate');
 
       final containsLayers = [
-        ArchitectureLayer(name: 'data', level: 4, pathPrefix: 'example/data'),
-        ArchitectureLayer(
+        const ArchitectureLayer(
+          name: 'data',
+          level: 4,
+          pathPrefix: 'example/data',
+        ),
+        const ArchitectureLayer(
           name: 'data_child',
           level: 3,
           pathPrefix: 'example/data/repo',
@@ -133,8 +145,12 @@ void main() {
       expectEquals(contains.single.reason, 'contains');
 
       final distinctLayers = [
-        ArchitectureLayer(name: 'data', level: 4, pathPrefix: 'example/data'),
-        ArchitectureLayer(
+        const ArchitectureLayer(
+          name: 'data',
+          level: 4,
+          pathPrefix: 'example/data',
+        ),
+        const ArchitectureLayer(
           name: 'domain',
           level: 2,
           pathPrefix: 'example/domain',
@@ -203,12 +219,12 @@ layers:
 
   group('isLevelViolation / hasAnyLevelViolation', () {
     test('detects upward dependency', () {
-      final domain = ArchitectureLayer(
+      const domain = ArchitectureLayer(
         name: 'domain',
         level: 2,
         pathPrefix: 'example/domain',
       );
-      final usecase = ArchitectureLayer(
+      const usecase = ArchitectureLayer(
         name: 'usecase',
         level: 4,
         pathPrefix: 'example/usecase',
@@ -253,7 +269,7 @@ dev_dependencies:
         Directory(dartTool).createSync(recursive: true);
         final packageRoot = p.join(tempDir.path, 'example', 'domain', 'todo');
         Directory(packageRoot).createSync(recursive: true);
-        final json = '''
+        const json = '''
 {
   "configVersion": 2,
   "packages": [
