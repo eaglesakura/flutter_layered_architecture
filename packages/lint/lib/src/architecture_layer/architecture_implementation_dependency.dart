@@ -99,13 +99,10 @@ final class _Visitor extends SimpleAstVisitor<void> {
       readTextFile: readTextFile,
     );
     if (selfRole == PackageRole.both) {
-      rule.reportAtNode(
-        node,
-        arguments: [
+      const message =
           'Package declares both @injection and @implementation on barrel '
-              'libraries; keep exactly one role.',
-        ],
-      );
+          'libraries; keep exactly one role.';
+      rule.reportAtNode(node, arguments: [message]);
       return;
     }
 
@@ -155,15 +152,12 @@ final class _Visitor extends SimpleAstVisitor<void> {
         dependencyRole: dependencyRole,
         dependencyLayerName: dependencyLayer.name,
       )) {
-        rule.reportAtNode(
-          node,
-          arguments: [
+        final message =
             "Dependency '$dependencyName' is @implementation (or both) and "
-                'may only be depended on by same-layer @injection packages '
-                '(self role=${selfRole.name}, layer=${selfLayer.name} → '
-                'dep layer=${dependencyLayer.name}).',
-          ],
-        );
+            'may only be depended on by same-layer @injection packages '
+            '(self role=${selfRole.name}, layer=${selfLayer.name} → '
+            'dep layer=${dependencyLayer.name}).';
+        rule.reportAtNode(node, arguments: [message]);
       }
     }
   }
