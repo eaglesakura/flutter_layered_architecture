@@ -18,7 +18,9 @@
 │   ├── foundation/dependency_injection/ # foundation_dependency_injection
 │   ├── domain/todo/          # domain_todo
 │   ├── data/repository/todo/ # data_repository_todo (+ _impl)
+│   ├── data/injection/       # data_injection
 │   ├── usecase/todo/         # usecase_todo (+ _impl)
+│   ├── usecase/injection/    # usecase_injection
 │   └── screen/feature/todo_list/ # screen_feature_todo_list
 └── skills/                   # 本リポジトリ連動の SKILL
 ```
