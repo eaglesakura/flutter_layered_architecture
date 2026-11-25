@@ -63,8 +63,12 @@ layers:
         Unit Testサポート用.
         任意のレイヤーに接続することができる.
       path_prefix: example/testing
+
 rules:
   public_type_file_name:
+    # ファイル名の命名規則を定義
+    # {キーワード}: {変換されるファイル名}
+    # ClassName: classname
     keywords:
       UseCase: usecase
       ViewModel: viewmodel
