@@ -14,7 +14,8 @@ plugins:
 Pair with `flutter_layered_architecture_annotations`.
 
 Architecture violations (`@usecase` / `@delegate` / `@stateful` / `@viewModel`,
-and `architecture_layer_dependency`) are reported as **WARNING**.
+`architecture_layer_dependency`, and `architecture_implementation_dependency`)
+are reported as **WARNING**.
 
 ## Rules
 
@@ -23,6 +24,7 @@ and `architecture_layer_dependency`) are reported as **WARNING**.
 | Lint code | Check |
 | --- | --- |
 | `architecture_layer_dependency` | Warns when a package under `layered_architecture.yaml` depends on a higher layer (pubspec direct deps only) |
+| `architecture_implementation_dependency` | Warns when a non-`@injection` or cross-layer package depends on `@implementation` barrels (pubspec direct deps only) |
 
 Uses the nearest `layered_architecture.yaml` found upward from the package root.
 Missing or invalid definitions, overlapping `path_prefix` values, and
