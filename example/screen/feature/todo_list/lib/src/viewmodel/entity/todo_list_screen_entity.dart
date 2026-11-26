@@ -1,3 +1,4 @@
+import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:screen_feature_todo_list/src/viewmodel/entity/todo_list_item_entity.dart';
 
@@ -7,6 +8,7 @@ part 'todo_list_screen_entity.freezed.dart';
 
 /// Display model for the todo list screen.
 @internal
+@entity
 @freezed
 abstract class TodoListScreenEntity with _$TodoListScreenEntity {
   /// Creates a [TodoListScreenEntity].

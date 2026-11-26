@@ -50,7 +50,7 @@ final class ProbeViewModelEntityNotFreezed {
 
   const ProbeViewModelEntityNotFreezed({required this.state});
 
-  // expect_lint: viewmodel_entity_freezed
+  // expect_lint: viewmodel_entity_annotated
   StateStream<List<int>> get entity => throw UnimplementedError();
 
   Future<void> close() => state.close();
@@ -114,4 +114,26 @@ extension ProbeViewModelBadExtensionMethodActions
     on ProbeViewModelBadExtensionMethod {
   // expect_lint: viewmodel_on_method_names, stateful_methods_use_delegate
   Future<void> save() async {}
+}
+
+/// Probe: entity の T が @state のみ（@entity 欠落）.
+@internal
+@viewModel
+final class ProbeViewModelEntityStateAnnotationOnly {
+  final MutableStateStream<TodoListScreenState> state;
+
+  const ProbeViewModelEntityStateAnnotationOnly({required this.state});
+
+  // expect_lint: viewmodel_entity_annotated
+  StateStream<ProbeStateOnlyModel> get entity => throw UnimplementedError();
+
+  Future<void> close() => state.close();
+}
+
+/// Probe 専用の手書きモデル（freezed 生成・part 無し）.
+@internal
+@state
+final class ProbeStateOnlyModel {
+  const ProbeStateOnlyModel({required this.value});
+  final int value;
 }

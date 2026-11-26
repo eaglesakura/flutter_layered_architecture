@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$TodoListScreenState {
 
 /// Whether the first load is in progress.
- bool get isLoading;/// Current todo items.
- List<Todo> get todos;/// Draft title in the input field.
+ bool get isLoading; List<Todo> get todos;/// Draft title in the input field.
  String get draftTitle;
 /// Create a copy of TodoListScreenState
 /// with the given fields replaced by the non-null parameter values.
@@ -211,14 +210,16 @@ return $default(_that.isLoading,_that.todos,_that.draftTitle);case _:
 
 
 class _TodoListScreenState implements TodoListScreenState {
-  const _TodoListScreenState({required this.isLoading, required  List<Todo> todos, required this.draftTitle}): _todos = todos;
+  const _TodoListScreenState({
+    required this.isLoading,
+    required List<Todo> todos,
+    required this.draftTitle,
+  }) : _todos = todos;
   
 
 /// Whether the first load is in progress.
 @override final  bool isLoading;
-/// Current todo items.
  final  List<Todo> _todos;
-/// Current todo items.
 @override List<Todo> get todos {
   if (_todos is EqualUnmodifiableListView) return _todos;
   // ignore: implicit_dynamic_type

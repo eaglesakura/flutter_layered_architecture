@@ -1,4 +1,5 @@
-import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
+import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart'
+    hide state;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:screen_feature_todo_list/src/viewmodel/delegate/on_add_todo_delegate.dart';
@@ -27,7 +28,13 @@ final class TodoListScreenViewModel {
       final deleteTodoUsecase = ref.watch(DeleteTodoUsecase.provider);
 
       final result = TodoListScreenViewModel._(
-        state: MutableStateStream(TodoListScreenState.initial()),
+        state: MutableStateStream(
+          const TodoListScreenState(
+            isLoading: true,
+            todos: [],
+            draftTitle: '',
+          ),
+        ),
         listTodosUsecase: listTodosUsecase,
         addTodoUsecase: addTodoUsecase,
         toggleTodoUsecase: toggleTodoUsecase,

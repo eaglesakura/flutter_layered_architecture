@@ -5,7 +5,8 @@ import 'package:data_repository_todo_impl/src/delegate/list_todos_in_memory_dele
 import 'package:data_repository_todo_impl/src/delegate/update_todo_in_memory_delegate.dart';
 import 'package:data_repository_todo_impl/src/in_memory_todo_repository_state.dart';
 import 'package:domain_todo/domain_todo.dart';
-import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
+import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart'
+    hide state;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:state_stream/state_stream.dart';
 
@@ -16,7 +17,9 @@ final class InMemoryTodoRepository implements TodoRepository {
   static final provider = Provider<InMemoryTodoRepository>(
     (ref) {
       final result = InMemoryTodoRepository(
-        state: MutableStateStream(const InMemoryTodoRepositoryState()),
+        state: MutableStateStream(
+          const InMemoryTodoRepositoryState(items: []),
+        ),
       );
       ref.onDispose(result._close);
       return result;

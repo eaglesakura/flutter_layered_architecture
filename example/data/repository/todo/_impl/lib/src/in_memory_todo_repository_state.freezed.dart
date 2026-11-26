@@ -14,7 +14,6 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$InMemoryTodoRepositoryState {
 
-/// 保持中の Todo 一覧（新しい順）.
  List<Todo> get items;
 /// Create a copy of InMemoryTodoRepositoryState
 /// with the given fields replaced by the non-null parameter values.
@@ -207,13 +206,11 @@ return $default(_that.items);case _:
 
 
 class _InMemoryTodoRepositoryState implements InMemoryTodoRepositoryState {
-  const _InMemoryTodoRepositoryState({ List<Todo> items = const []}): _items = items;
+  const _InMemoryTodoRepositoryState({required List<Todo> items}): _items = items;
   
 
-/// 保持中の Todo 一覧（新しい順）.
  final  List<Todo> _items;
-/// 保持中の Todo 一覧（新しい順）.
-@override@JsonKey() List<Todo> get items {
+@override List<Todo> get items {
   if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_items);
