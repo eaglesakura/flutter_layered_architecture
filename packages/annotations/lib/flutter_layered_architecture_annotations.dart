@@ -9,4 +9,4 @@ export 'src/implementation.dart';
 export 'src/injection.dart';
 export 'src/stateful.dart';
 export 'src/usecase.dart';
-export 'src/view_model.dart';
+export 'src/viewmodel.dart';
