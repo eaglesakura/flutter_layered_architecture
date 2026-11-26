@@ -5,8 +5,10 @@
 library;
 
 export 'src/delegate.dart';
+export 'src/entity.dart';
 export 'src/implementation.dart';
 export 'src/injection.dart';
+export 'src/state.dart';
 export 'src/stateful.dart';
 export 'src/usecase.dart';
 export 'src/viewmodel.dart';

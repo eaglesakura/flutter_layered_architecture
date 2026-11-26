@@ -23,11 +23,11 @@ const viewModel = ViewModel();
 ///
 /// NOTE.
 /// `@stateful` と同じく、フィールドはすべて `final`、コンストラクタは `const`、
-/// `MutableStateStream<T>`（`T` は Freezed）を持ち、
+/// `MutableStateStream<T>`（`T` は `@state` 付き Freezed）を持ち、
 /// `MutableStateStream.close()` 呼び出しと `@delegate` への委譲が必要である.
 /// 加えて `@internal` の併記、`StateStream<T> get entity` の宣言が必須である.
-/// `entity` の `T` は Freezed 付き class であり、かつ
-/// `MutableStateStream` の状態モデル型とは異なる必要がある.
+/// `entity` の `T` には `@entity` が必須（構造はゲート A で検査）.
+/// `entity` のモデル型は `MutableStateStream` の状態モデル型とは異なる必要がある.
 /// `close` / `_close` を除くインスタンスメソッドおよび
 /// 当該型への extension method は、名前が `on` で始まる必要がある.
 ///

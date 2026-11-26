@@ -22,7 +22,7 @@ const stateful = Stateful();
 /// フィールドはすべて `final`、コンストラクタは `const` とする.
 /// `MutableStateStream<T>` フィールドを持ち、いずれかの経路で
 /// `MutableStateStream.close()` が呼ばれている必要がある.
-/// `T` は Freezed（`@freezed` / `@Freezed()`）付きの class である必要がある.
+/// `MutableStateStream<T>` の型引数 `T` には `@state` が必須（Freezed 等の構造は `@state` 型のゲート A で検査）.
 /// インスタンスメソッドの処理は `@delegate` の `execute` へ委譲する
 /// （`close` / `_close` による `MutableStateStream.close()` のみは例外）.
 ///
