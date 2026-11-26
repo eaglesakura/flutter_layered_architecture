@@ -5,37 +5,38 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/state_entity/state_entity_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/view_model/view_model_checkers.dart';
 import 'package:meta/meta.dart';
 
-/// `@viewModel` の `entity` 型引数が Freezed 型であることを検証する Lint.
+/// `@viewModel` の `entity` 型引数に `@entity` があることを検証する Lint.
 ///
 /// Example:
 /// ```dart
 /// // @internal
 /// // @viewModel
 /// // final class Bad {
-/// //   StateStream<List<int>> get entity => ...;
+/// //   StateStream<List<int>> get entity => throw UnimplementedError();
 /// // }
-/// // → viewmodel_entity_freezed
+/// // → viewmodel_entity_annotated
 /// ```
 @internal
-final class ViewModelEntityFreezed extends AnalysisRule {
-  /// [ViewModelEntityFreezed] の診断コード.
+final class ViewModelEntityAnnotated extends AnalysisRule {
+  /// [ViewModelEntityAnnotated] の診断コード.
   static const LintCode code = LintCode(
-    'viewmodel_entity_freezed',
+    'viewmodel_entity_annotated',
     'StateStream type argument of entity on @viewModel types must be a '
-        'Freezed-annotated class.',
+        'class annotated with @entity.',
     severity: architectureViolationSeverity,
   );
 
-  /// [ViewModelEntityFreezed] ルールを生成する.
-  ViewModelEntityFreezed()
+  /// [ViewModelEntityAnnotated] ルールを生成する.
+  ViewModelEntityAnnotated()
     : super(
-        name: 'viewmodel_entity_freezed',
+        name: 'viewmodel_entity_annotated',
         description:
             'StateStream type argument of entity on @viewModel types must be '
-            'a Freezed-annotated class.',
+            'a class annotated with @entity.',
       );
 
   @override
@@ -53,7 +54,7 @@ final class ViewModelEntityFreezed extends AnalysisRule {
 final class _Visitor extends SimpleAstVisitor<void> {
   _Visitor(this.rule);
 
-  final ViewModelEntityFreezed rule;
+  final ViewModelEntityAnnotated rule;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
@@ -67,7 +68,7 @@ final class _Visitor extends SimpleAstVisitor<void> {
     }
 
     final entityType = entityModelTypeOf(node);
-    if (isFreezedAnnotatedType(entityType)) {
+    if (typeHasEntityAnnotation(entityType)) {
       return;
     }
 

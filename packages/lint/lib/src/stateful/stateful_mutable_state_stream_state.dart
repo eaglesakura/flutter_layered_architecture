@@ -5,10 +5,11 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
+import 'package:flutter_layered_architecture_lint/src/state_entity/state_entity_checkers.dart';
 import 'package:flutter_layered_architecture_lint/src/stateful/stateful_checkers.dart';
 import 'package:meta/meta.dart';
 
-/// `@stateful` の `MutableStateStream<T>` について、`T` が Freezed 型であることを検証する Lint.
+/// `@stateful` の `MutableStateStream<T>` について、型引数 `T` に `@state` があることを検証する Lint.
 ///
 /// Example:
 /// ```dart
@@ -18,25 +19,25 @@ import 'package:meta/meta.dart';
 /// //   final MutableStateStream<List<int>> state;
 /// //   Future<void> close() => state.close();
 /// // }
-/// // → stateful_mutable_state_stream_freezed
+/// // → stateful_mutable_state_stream_state
 /// ```
 @internal
-final class StatefulMutableStateStreamFreezed extends AnalysisRule {
-  /// [StatefulMutableStateStreamFreezed] の診断コード.
+final class StatefulMutableStateStreamState extends AnalysisRule {
+  /// [StatefulMutableStateStreamState] の診断コード.
   static const LintCode code = LintCode(
-    'stateful_mutable_state_stream_freezed',
+    'stateful_mutable_state_stream_state',
     'MutableStateStream type argument on @stateful types must be a '
-        'Freezed-annotated class.',
+        'class annotated with @state.',
     severity: architectureViolationSeverity,
   );
 
-  /// [StatefulMutableStateStreamFreezed] ルールを生成する.
-  StatefulMutableStateStreamFreezed()
+  /// [StatefulMutableStateStreamState] ルールを生成する.
+  StatefulMutableStateStreamState()
     : super(
-        name: 'stateful_mutable_state_stream_freezed',
+        name: 'stateful_mutable_state_stream_state',
         description:
             'MutableStateStream type argument on @stateful types must be a '
-            'Freezed-annotated class.',
+            'class annotated with @state.',
       );
 
   @override
@@ -54,7 +55,7 @@ final class StatefulMutableStateStreamFreezed extends AnalysisRule {
 final class _Visitor extends SimpleAstVisitor<void> {
   _Visitor(this.rule);
 
-  final StatefulMutableStateStreamFreezed rule;
+  final StatefulMutableStateStreamState rule;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
@@ -65,7 +66,7 @@ final class _Visitor extends SimpleAstVisitor<void> {
     for (final variable in mutableStateStreamFieldsOf(node)) {
       final streamType = variable.declaredFragment?.element.type;
       final stateType = mutableStateStreamStateType(streamType);
-      if (isFreezedAnnotatedType(stateType)) {
+      if (typeHasStateAnnotation(stateType)) {
         continue;
       }
       rule.reportAtNode(variable);
