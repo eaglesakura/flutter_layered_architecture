@@ -1,0 +1,71 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "[layered] dart format",
+            "command": "mise",
+            "args": [
+                "exec",
+                "--",
+                "bash",
+                "-lc",
+                "set -euo pipefail; pkgs=(packages/annotations packages/lint example/app example/foundation/dependency_injection example/domain/todo example/data/repository/todo example/data/repository/todo/_impl example/data/injection example/usecase/todo example/usecase/todo/_impl example/usecase/injection example/screen/feature/todo_list); for d in \"${pkgs[@]}\"; do [ -d \"$d/lib\" ] && dart format \"$d/lib\"; [ -d \"$d/test\" ] && dart format \"$d/test\"; done"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "[layered] dart analyze",
+            "command": "mise",
+            "args": [
+                "exec",
+                "--",
+                "bash",
+                "-lc",
+                "set -euo pipefail; dart analyze --fatal-infos --fatal-warnings; dart analyze --fatal-infos --fatal-warnings packages/lint"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "[layered] flutter test",
+            "command": "mise",
+            "args": [
+                "exec",
+                "--",
+                "bash",
+                "-lc",
+                "set -euo pipefail; pkgs=(packages/annotations example/app example/foundation/dependency_injection example/domain/todo example/data/repository/todo example/data/repository/todo/_impl example/data/injection example/usecase/todo example/usecase/todo/_impl example/usecase/injection example/screen/feature/todo_list); for d in \"${pkgs[@]}\"; do if compgen -G \"$d/test/*_test.dart\" > /dev/null; then (cd \"$d\" && flutter test ./test/); fi; done"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "type": "shell",
+            "label": "[layered] lint unit tests",
+            "command": "mise",
+            "args": [
+                "exec",
+                "--",
+                "bash",
+                "-lc",
+                "set -euo pipefail; cd packages/lint; dart run test/architecture_layer_checkers_test.dart; dart run test/architecture_implementation_checkers_test.dart; dart run test/file_layout_checkers_test.dart; dart run test/public_api_checkers_test.dart"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": "test"
+        }
+    ]
+}

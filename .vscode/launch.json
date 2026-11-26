@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "[layered] example_app / debug (chrome)",
+            "request": "launch",
+            "type": "dart",
+            "cwd": "${workspaceFolder}/example/app",
+            "program": "lib/main.dart",
+            "deviceId": "chrome",
+            "flutterMode": "debug"
+        }
+    ]
+}
