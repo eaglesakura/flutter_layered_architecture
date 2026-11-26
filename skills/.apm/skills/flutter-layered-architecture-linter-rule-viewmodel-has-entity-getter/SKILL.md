@@ -17,7 +17,7 @@ description: >-
 
 * `viewmodel_has_entity_getter` 診断の修正・抑制判断
 * @viewModel / Screen ViewModel の実装・修正
-* 関連ルール（`viewmodel_entity_freezed`, `viewmodel_entity_differs_from_state`）と合わせて規約を満たす設計をするとき
+* 関連ルール（`viewmodel_entity_annotated`, `viewmodel_entity_differs_from_state`）と合わせて規約を満たす設計をするとき
 
 ## 関連アノテーション
 
@@ -65,4 +65,4 @@ final class Bad {
 
 * プラグイン有効化: ワークスペースルート `analysis_options.yaml` の top-level `plugins:`
 * アノテーション package: `flutter_layered_architecture_annotations`
-* 関連 linter rule: `viewmodel_entity_freezed`, `viewmodel_entity_differs_from_state`
+* 関連 linter rule: `viewmodel_entity_annotated`, `viewmodel_entity_differs_from_state`

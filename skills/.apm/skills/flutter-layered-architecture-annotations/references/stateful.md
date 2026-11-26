@@ -17,6 +17,7 @@
 ## 必須併記
 
 * なし（公開境界は file_layout / `@internal` 側）
+* `MutableStateStream<T>` の **ルート** `T` には [`@state`](./state.md) を付けた Freezed モデルを使う
 
 ## 付与後に効く Lint
 
@@ -25,7 +26,7 @@
 | `stateful_immutable` | フィールドは `final`/`const`、`const` コンストラクタあり |
 | `stateful_has_mutable_state_stream` | `MutableStateStream` フィールドを持つ |
 | `stateful_closes_mutable_state_stream` | いずれかの経路で `MutableStateStream.close()` を呼ぶ |
-| `stateful_mutable_state_stream_freezed` | `MutableStateStream<T>` の `T` は Freezed 付き class |
+| `stateful_mutable_state_stream_state` | `MutableStateStream<T>` の `T` に `@state` 必須（構造はゲート A） |
 | `stateful_methods_use_delegate` | インスタンス／extension メソッドは `@delegate.execute` へ委譲（`close` / `_close` 除く） |
 
 詳細は次の SKILL を正とする。
@@ -33,14 +34,15 @@
 * `flutter-layered-architecture-linter-rule-stateful-immutable`
 * `flutter-layered-architecture-linter-rule-stateful-has-mutable-state-stream`
 * `flutter-layered-architecture-linter-rule-stateful-closes-mutable-state-stream`
-* `flutter-layered-architecture-linter-rule-stateful-mutable-state-stream-freezed`
+* `flutter-layered-architecture-linter-rule-stateful-mutable-state-stream-state`
 * `flutter-layered-architecture-linter-rule-stateful-methods-use-delegate`
 
 ## 推奨形
 
-* 状態モデル `T` は Freezed
+* 状態モデル `T` は `@internal` + `@state` + `@freezed`
 * 更新ロジックは `@delegate` に切り出す
 * ライフサイクル終了時に `close` / `_close` で stream を閉じる
+* 状態の初期化は named factory ではなく、呼び出し側で主 factory の全引数を明示する
 
 ## 良い例
 
@@ -62,6 +64,8 @@ final class InMemoryTodoRepository implements TodoRepository {
 }
 ```
 
+（`InMemoryTodoRepositoryState` には `@state` を付与する。）
+
 ## 悪い例
 
 ```dart
@@ -79,5 +83,5 @@ final class Bad {
 ## DO NOT
 
 * 画面 ViewModel に `@stateful` だけ付けて `@viewModel` を省略しない（画面は `@viewModel`）
-* 状態モデルに Freezed 以外を使わない（lint が要求する）
+* Freezed のみで `@state` 無しの型を `MutableStateStream` に使わない
 * 業務メソッドをクラス内に直書きしたままにしない

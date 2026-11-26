@@ -99,7 +99,7 @@ cd packages/lint && dart run test/public_api_checkers_test.dart
 | `stateful_immutable` | All fields are `final`/`const`, and a `const` constructor exists |
 | `stateful_has_mutable_state_stream` | Declares at least one `MutableStateStream` field |
 | `stateful_closes_mutable_state_stream` | Calls `MutableStateStream.close()` somewhere in the class |
-| `stateful_mutable_state_stream_freezed` | `MutableStateStream<T>` requires `T` to be a Freezed-annotated class |
+| `stateful_mutable_state_stream_state` | `MutableStateStream<T>` requires `T` to be annotated with `@state` |
 | `stateful_methods_use_delegate` | Instance/extension methods must call `@delegate.execute` (`close`/`_close` excepted) |
 
 `@viewModel` also inherits these `@stateful` checks.
@@ -110,6 +110,22 @@ cd packages/lint && dart run test/public_api_checkers_test.dart
 | --- | --- |
 | `viewmodel_internal` | Also annotated with `@internal` |
 | `viewmodel_has_entity_getter` | Declares `StateStream<T> get entity` |
-| `viewmodel_entity_freezed` | `entity` type argument `T` must be a Freezed-annotated class |
+| `viewmodel_entity_annotated` | `entity` type argument `T` requires `@entity` |
 | `viewmodel_entity_differs_from_state` | `entity` model type must differ from the `MutableStateStream` state model |
 | `viewmodel_on_method_names` | Instance/extension methods are named `on...` (`close`/`_close` excepted) |
+
+### `@state` / `@entity` (gate A)
+
+Types annotated with `@state` or `@entity` are checked for structure even when not referenced elsewhere.
+Freezed shape, `@internal`, factory parameters, and named factories are enforced here (gate B on `@stateful` / `@viewModel` only requires the annotation on the root type argument).
+
+| Lint code | Check |
+| --- | --- |
+| `state_entity_freezed` | `@state` / `@entity` types must be Freezed-annotated |
+| `state_entity_internal` | Must also be `@internal` |
+| `state_entity_exclusive` | Must not carry both `@state` and `@entity` |
+| `state_entity_required_parameters` | Primary factory: all `required`, no `@Default`, no Dart defaults |
+| `state_entity_no_named_factory` | No named factories on the type |
+
+**Breaking change:** gate B no longer inspects Freezed on `MutableStateStream` / `entity` type arguments directly.
+Annotate root state and entity models with `@state` / `@entity` and satisfy gate A (Freezed, `@internal`, factories).

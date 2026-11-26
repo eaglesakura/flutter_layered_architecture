@@ -17,7 +17,7 @@ description: >-
 
 * `stateful_has_mutable_state_stream` 診断の修正・抑制判断
 * @viewModel / Screen ViewModel の実装・修正
-* 関連ルール（`stateful_closes_mutable_state_stream`, `stateful_mutable_state_stream_freezed`, `pub-flutter-state-stream`）と合わせて規約を満たす設計をするとき
+* 関連ルール（`stateful_closes_mutable_state_stream`, `stateful_mutable_state_stream_state`, `pub-flutter-state-stream`）と合わせて規約を満たす設計をするとき
 
 ## 関連アノテーション
 
@@ -63,4 +63,4 @@ final class Bad {
 
 * プラグイン有効化: ワークスペースルート `analysis_options.yaml` の top-level `plugins:`
 * アノテーション package: `flutter_layered_architecture_annotations`
-* 関連 linter rule: `stateful_closes_mutable_state_stream`, `stateful_mutable_state_stream_freezed`, `pub-flutter-state-stream`
+* 関連 linter rule: `stateful_closes_mutable_state_stream`, `stateful_mutable_state_stream_state`, `pub-flutter-state-stream`

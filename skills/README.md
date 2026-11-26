@@ -35,5 +35,6 @@ skills/
 | file_layout | `one_public_type_per_file`, `public_type_file_name`, `unexported_public_must_be_internal` |
 | usecase | `usecase_single_method`, `usecase_method_signature`, `usecase_immutable` |
 | delegate | `delegate_execute_method`, `delegate_immutable`, `delegate_internal`, `delegate_no_nested_delegate`, `delegate_no_usecase_instantiation` |
-| stateful | `stateful_immutable`, `stateful_has_mutable_state_stream`, `stateful_closes_mutable_state_stream`, `stateful_mutable_state_stream_freezed`, `stateful_methods_use_delegate` |
-| viewmodel | `viewmodel_internal`, `viewmodel_has_entity_getter`, `viewmodel_entity_freezed`, `viewmodel_entity_differs_from_state`, `viewmodel_on_method_names` |
+| stateful | `stateful_immutable`, `stateful_has_mutable_state_stream`, `stateful_closes_mutable_state_stream`, `stateful_mutable_state_stream_state`, `stateful_methods_use_delegate` |
+| viewmodel | `viewmodel_internal`, `viewmodel_has_entity_getter`, `viewmodel_entity_annotated`, `viewmodel_entity_differs_from_state`, `viewmodel_on_method_names` |
+| state_entity | `state_entity_freezed`, `state_entity_internal`, `state_entity_exclusive`, `state_entity_required_parameters`, `state_entity_no_named_factory` |

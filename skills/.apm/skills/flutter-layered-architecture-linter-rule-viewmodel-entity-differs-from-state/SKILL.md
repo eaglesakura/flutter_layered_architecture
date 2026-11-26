@@ -17,7 +17,7 @@ description: >-
 
 * `viewmodel_entity_differs_from_state` 診断の修正・抑制判断
 * @viewModel / Screen ViewModel の実装・修正
-* 関連ルール（`viewmodel_has_entity_getter`, `viewmodel_entity_freezed`）と合わせて規約を満たす設計をするとき
+* 関連ルール（`viewmodel_has_entity_getter`, `viewmodel_entity_annotated`）と合わせて規約を満たす設計をするとき
 
 ## 関連アノテーション
 
@@ -56,4 +56,4 @@ StateStream<TodoListScreenState> get entity => state; // → viewmodel_entity_di
 
 * プラグイン有効化: ワークスペースルート `analysis_options.yaml` の top-level `plugins:`
 * アノテーション package: `flutter_layered_architecture_annotations`
-* 関連 linter rule: `viewmodel_has_entity_getter`, `viewmodel_entity_freezed`
+* 関連 linter rule: `viewmodel_has_entity_getter`, `viewmodel_entity_annotated`

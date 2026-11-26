@@ -2,8 +2,8 @@
 name: flutter-layered-architecture-annotations
 description: >-
   Flutter Layered Architecture のアノテーション付与ガイド。
-  `@usecase` / `@delegate` / `@stateful` / `@viewModel` / `@injection` /
-  `@implementation` のどれを・どこに・何と併記して付けるかを決めるときに必ず使う。
+  `@usecase` / `@delegate` / `@state` / `@entity` / `@stateful` / `@viewModel` /
+  `@injection` / `@implementation` のどれを・どこに・何と併記して付けるかを決めるときに必ず使う。
   Usecase・Delegate・ViewModel・Repository 実装の新規作成、バレル library の役割宣言、
   「annotation を付ける」「lint が効くようにする」「injection / implementation」でもロードする。
   個別診断コードの深い修正手順だけなら対応する
@@ -41,6 +41,8 @@ description: >-
 | --- | --- | --- | --- |
 | `@usecase` | 型 | 1 操作の Usecase IF / 実装 | [references/usecase.md](./references/usecase.md) |
 | `@delegate` | 型 | 単一処理の切り出し（`execute`） | [references/delegate.md](./references/delegate.md) |
+| `@state` | 型 | 状態モデル（`MutableStateStream<T>` の `T`） | [references/state.md](./references/state.md) |
+| `@entity` | 型 | 表示モデル（`entity` の `T`） | [references/entity.md](./references/entity.md) |
 | `@stateful` | 型 | `MutableStateStream` を持つ状態保持型 | [references/stateful.md](./references/stateful.md) |
 | `@viewModel` | 型 | 画面 ViewModel（`@stateful` 制約を継承） | [references/view-model.md](./references/view-model.md) |
 | `@injection` | バレル `library` | DI 結線専用 package | [references/injection.md](./references/injection.md) |
