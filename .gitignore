@@ -36,3 +36,5 @@ pubspec_overrides.yaml
 
 # Skill-creator eval workspaces (local review artifacts)
 skills/.apm/skills/*-workspace/
+devtools_options.yaml
+
