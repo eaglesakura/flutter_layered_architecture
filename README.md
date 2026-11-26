@@ -24,6 +24,42 @@ plugins:
 
 Requires Dart 3.14+ (Flutter 3.50+). After changing `plugins:`, restart the Dart Analysis Server in the IDE.
 
+## Installing APM SKILLs
+
+`skills/` is an [APM (Agent Package Manager)](https://microsoft.github.io/apm/) package. Use it to bring agent-facing annotation and linter-rule guides into a consuming project.
+
+APM CLI is required. If it is not installed yet, see [Installation](https://microsoft.github.io/apm/getting-started/installation/).
+
+```bash
+apm --version
+```
+
+From the consuming repository root:
+
+```bash
+# Once, if the project is not initialized yet
+apm init
+
+# Add the skills subdirectory as a virtual package
+apm install eaglesakura/flutter_layered_architecture/skills
+```
+
+To pin a tag (recommended):
+
+```bash
+apm install eaglesakura/flutter_layered_architecture/skills#v0.1.0
+```
+
+To reference this repository via a local path:
+
+```bash
+apm install ./path/to/flutter_layered_architecture/skills
+```
+
+Commit `apm.yml`, `apm.lock.yaml`, and `.gitignore` (plus any authored `.apm/`). Do not commit `apm_modules/`. Teammates restore dependencies with `apm install` after `git clone`.
+
+For the list of shipped SKILLs, see [`skills/README.md`](skills/README.md).
+
 ## Recommended libraries
 
 | Category | Recommended libraries |
