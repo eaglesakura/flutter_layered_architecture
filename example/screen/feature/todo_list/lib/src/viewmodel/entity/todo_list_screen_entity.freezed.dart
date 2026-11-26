@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'todo_list_screen_entity.dart';
@@ -9,6 +9,7 @@ part of 'todo_list_screen_entity.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -29,16 +30,21 @@ $TodoListScreenEntityCopyWith<TodoListScreenEntity> get copyWith => _$TodoListSc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodoListScreenEntity&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.draftTitle, draftTitle) || other.draftTitle == draftTitle)&&(identical(other.canAdd, canAdd) || other.canAdd == canAdd));
+  final _this = this as TodoListScreenEntity;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodoListScreenEntity&&(identical(other.isLoading, _this.isLoading) || other.isLoading == _this.isLoading)&&const DeepCollectionEquality().equals(other.items, _this.items)&&(identical(other.draftTitle, _this.draftTitle) || other.draftTitle == _this.draftTitle)&&(identical(other.canAdd, _this.canAdd) || other.canAdd == _this.canAdd));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(items),draftTitle,canAdd);
+int get hashCode {
+  final _this = this as TodoListScreenEntity;
+  return Object.hash(runtimeType,_this.isLoading,const DeepCollectionEquality().hash(_this.items),_this.draftTitle,_this.canAdd);
+}
 
 @override
 String toString() {
-  return 'TodoListScreenEntity(isLoading: $isLoading, items: $items, draftTitle: $draftTitle, canAdd: $canAdd)';
+  final _this = this as TodoListScreenEntity;
+  return 'TodoListScreenEntity(isLoading: ${_this.isLoading}, items: ${_this.items}, draftTitle: ${_this.draftTitle}, canAdd: ${_this.canAdd})';
 }
 
 
@@ -67,7 +73,7 @@ class _$TodoListScreenEntityCopyWithImpl<$Res>
 /// Create a copy of TodoListScreenEntity
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? items = null,Object? draftTitle = null,Object? canAdd = null,}) {
-  return _then(_self.copyWith(
+  return _then(TodoListScreenEntity(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<TodoListItemEntity>,draftTitle: null == draftTitle ? _self.draftTitle : draftTitle // ignore: cast_nullable_to_non_nullable
@@ -213,12 +219,7 @@ return $default(_that.isLoading,_that.items,_that.draftTitle,_that.canAdd);case 
 
 
 class _TodoListScreenEntity implements TodoListScreenEntity {
-  const _TodoListScreenEntity({
-    required this.isLoading,
-    required List<TodoListItemEntity> items,
-    required this.draftTitle,
-    required this.canAdd,
-  }) : _items = items;
+  const _TodoListScreenEntity({required this.isLoading, required  List<TodoListItemEntity> items, required this.draftTitle, required this.canAdd}): _items = items;
   
 
 /// Whether a loading indicator should be shown.
@@ -247,16 +248,18 @@ _$TodoListScreenEntityCopyWith<_TodoListScreenEntity> get copyWith => __$TodoLis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodoListScreenEntity&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.draftTitle, draftTitle) || other.draftTitle == draftTitle)&&(identical(other.canAdd, canAdd) || other.canAdd == canAdd));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodoListScreenEntity&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.draftTitle, draftTitle) || other.draftTitle == draftTitle)&&(identical(other.canAdd, canAdd) || other.canAdd == canAdd));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(_items),draftTitle,canAdd);
+int get hashCode {
+    return Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(_items),draftTitle,canAdd);
+}
 
 @override
 String toString() {
-  return 'TodoListScreenEntity(isLoading: $isLoading, items: $items, draftTitle: $draftTitle, canAdd: $canAdd)';
+    return 'TodoListScreenEntity(isLoading: $isLoading, items: $items, draftTitle: $draftTitle, canAdd: $canAdd)';
 }
 
 

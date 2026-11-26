@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'in_memory_todo_repository_state.dart';
@@ -9,6 +9,7 @@ part of 'in_memory_todo_repository_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $InMemoryTodoRepositoryStateCopyWith<InMemoryTodoRepositoryState> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InMemoryTodoRepositoryState&&const DeepCollectionEquality().equals(other.items, items));
+  final _this = this as InMemoryTodoRepositoryState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InMemoryTodoRepositoryState&&const DeepCollectionEquality().equals(other.items, _this.items));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items));
+int get hashCode {
+  final _this = this as InMemoryTodoRepositoryState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.items));
+}
 
 @override
 String toString() {
-  return 'InMemoryTodoRepositoryState(items: $items)';
+  final _this = this as InMemoryTodoRepositoryState;
+  return 'InMemoryTodoRepositoryState(items: ${_this.items})';
 }
 
 
@@ -63,7 +69,7 @@ class _$InMemoryTodoRepositoryStateCopyWithImpl<$Res>
 /// Create a copy of InMemoryTodoRepositoryState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? items = null,}) {
-  return _then(_self.copyWith(
+  return _then(InMemoryTodoRepositoryState(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<Todo>,
   ));
@@ -206,7 +212,7 @@ return $default(_that.items);case _:
 
 
 class _InMemoryTodoRepositoryState implements InMemoryTodoRepositoryState {
-  const _InMemoryTodoRepositoryState({required List<Todo> items}): _items = items;
+  const _InMemoryTodoRepositoryState({required  List<Todo> items}): _items = items;
   
 
  final  List<Todo> _items;
@@ -227,16 +233,18 @@ _$InMemoryTodoRepositoryStateCopyWith<_InMemoryTodoRepositoryState> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InMemoryTodoRepositoryState&&const DeepCollectionEquality().equals(other._items, _items));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _InMemoryTodoRepositoryState&&const DeepCollectionEquality().equals(other.items, _items));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items));
+}
 
 @override
 String toString() {
-  return 'InMemoryTodoRepositoryState(items: $items)';
+    return 'InMemoryTodoRepositoryState(items: $items)';
 }
 
 
