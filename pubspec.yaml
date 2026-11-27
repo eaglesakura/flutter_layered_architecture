@@ -18,6 +18,7 @@ workspace:
   - example/usecase/todo/_impl
   - example/usecase/injection
   - example/screen/feature/todo_list
+  - example/infra/ignore
 
 dev_dependencies:
   flutter_lints: ^6.0.0

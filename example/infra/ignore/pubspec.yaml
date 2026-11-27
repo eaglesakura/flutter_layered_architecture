@@ -1,0 +1,12 @@
+name: infra_example_ignore
+description: Minimal infra package used to demonstrate architecture_layer_dependency ignore.
+version: 0.1.0
+publish_to: "none"
+resolution: workspace
+
+environment:
+  sdk: ">=3.14.0 <4.0.0"
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  lints: ^6.0.0

@@ -65,6 +65,10 @@ layers:
       path_prefix: example/testing
 
 rules:
+  architecture_layer_dependency:
+    # 特定packageのみ無視する
+    ignore:
+      - infra_example_ignore
   public_type_file_name:
     # ファイル名の命名規則を定義
     # {キーワード}: {変換されるファイル名}
