@@ -1,0 +1,44 @@
+{
+  "skill_name": "flutter-layered-architecture-resolve-package-layer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "flutter_layered_architecture リポジトリで、package `domain_todo` の所属アーキテクチャレイヤーを特定してください。名前から推測せず、layered_architecture.yaml と package_config に基づいて判定し、判定結果を報告してください。",
+      "expected_output": "verdict: in-layer、matches: domain（level: 2）。定義ファイルパスと package_root を明示。usecase 等への誤所属なし。",
+      "files": [],
+      "expectations": [
+        "Reports verdict as in-layer (or equivalent wording)",
+        "Identifies layer match as domain",
+        "Reports domain level as 2",
+        "Mentions layered_architecture.yaml path used for the definition",
+        "Mentions package root resolved via package_config or absolute path under example/domain",
+        "Does not assign usecase, data, or another wrong layer as the sole match"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "同じリポジトリの `flutter_layered_architecture_lint`（packages/lint）はどのレイヤーに属しますか？レイヤー依存 lint の対象になるかも合わせて答えてください。",
+      "expected_output": "verdict: out-of-architecture（matches: none）。いずれの path_prefix にも属さないため、レイヤー依存検査の対象外になりうる、と述べる。",
+      "files": [],
+      "expectations": [
+        "Reports verdict as out-of-architecture or matches none",
+        "States the package is under packages/lint (or equivalent absolute root)",
+        "States it matches no path_prefix from layered_architecture.yaml",
+        "States layer-dependency checks are skipped or out of scope for this package",
+        "Does not claim membership in domain, usecase, data, or another architecture layer"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "新規に `usecase_billing` という名前の package を足したいです。名前が usecase_ で始まるので usecase レイヤーでよいですか？配置と所属判定の正しい考え方を教えてください。",
+      "expected_output": "名前だけでは所属を決めない、と明記。example/usecase（または当該 path_prefix）配下に置く必要があること、判定手順（YAML → package_config → path_prefix）を示す。",
+      "files": [],
+      "expectations": [
+        "Explicitly says package name alone does not determine layer membership",
+        "Says the package must be placed under the usecase path_prefix (e.g. example/usecase) to belong to usecase",
+        "Describes resolution order: find layered_architecture.yaml, resolve package_config path, match path_prefix",
+        "Does not conclude that the usecase_ prefix alone makes it a usecase-layer package"
+      ]
+    }
+  ]
+}

@@ -11,6 +11,8 @@ skills/
     ├── flutter-layered-architecture-annotations/
     │   ├── SKILL.md
     │   └── references/          # アノテーション別（拡張時もこの形式）
+    ├── flutter-layered-architecture-resolve-package-layer/
+    │   └── SKILL.md             # package → レイヤー所属の解決
     └── flutter-layered-architecture-linter-rule-{rule}/
         └── SKILL.md
 ```
@@ -20,6 +22,12 @@ skills/
 付与判断・必須併記・連動 lint の入口。
 
 * `flutter-layered-architecture-annotations`
+
+### Architecture layer
+
+package の所属レイヤーを `layered_architecture.yaml` から機械的に解決する。
+
+* `flutter-layered-architecture-resolve-package-layer`
 
 ### Linter rules
 

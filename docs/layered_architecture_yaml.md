@@ -196,6 +196,7 @@ layers:
 ## See also
 
 * Canonical file: [`layered_architecture.yaml`](../layered_architecture.yaml)
+* Package layer resolution (Agent SKILL): `flutter-layered-architecture-resolve-package-layer`
 * Rule details (dependency direction): [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.md)
 * Rule details (implementation deps): [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.md)
 * Rule details (file names): [`public_type_file_name`](linter-rules/public_type_file_name.md)

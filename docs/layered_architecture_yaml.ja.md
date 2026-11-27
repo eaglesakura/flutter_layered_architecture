@@ -196,6 +196,7 @@ layers:
 ## 参考リンク
 
 * リポジトリ正本: [`layered_architecture.yaml`](../layered_architecture.yaml)
+* package 所属レイヤーの解決（Agent SKILL）: `flutter-layered-architecture-resolve-package-layer`
 * ルール詳細（依存方向）: [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.ja.md)
 * ルール詳細（実装依存）: [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.ja.md)
 * ルール詳細（ファイル名）: [`public_type_file_name`](linter-rules/public_type_file_name.ja.md)

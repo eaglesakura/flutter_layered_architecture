@@ -54,14 +54,8 @@
 
 package の所属レイヤーは、`layered_architecture.yaml` の定義と package 実パスから機械的に決める。手作業の命名推測（`usecase_*` など）では判定しない。
 
-1. **定義ファイルを探す**  
-   対象 package の package root から親ディレクトリへ辿り、最初に見つかった `layered_architecture.yaml` を適用する（正本の例: `@flutter_layered_architecture/layered_architecture.yaml`）。ルートまで無ければアーキテクチャ定義なし（lint は warning）。
-2. **package 実パスを取る**  
-   `.dart_tool/package_config.json` の package 名 → root URI で絶対パスを解決する。
-3. **`path_prefix` 配下か判定する**  
-   各レイヤーの `path_prefix` は定義ファイル所在ディレクトリからの相対パス。正規化（`/` 区切り・パス区切り境界）したうえで、package root がその配下（または同一）なら当該レイヤー所属とする。
-4. **所属は高々 1 つ**  
-   いずれの `path_prefix` にも属さない package はアーキテクチャ外（検査スキップ）。複数レイヤーにマッチすることは許可しない（`path_prefix` の重複・包括を避ける）。
+手順・判定結果の扱いの正本は  
+`flutter-layered-architecture-resolve-package-layer` SKILL とする。
 
-詳細（依存方向の `level`、診断、例外）は  
-`/flutter-layered-architecture-linter-rule-architecture-layer-dependency` SKILL を正とする。
+* YAML スキーマ: `docs/layered_architecture_yaml.ja.md`
+* 依存方向（`level`）・診断: `flutter-layered-architecture-linter-rule-architecture-layer-dependency`

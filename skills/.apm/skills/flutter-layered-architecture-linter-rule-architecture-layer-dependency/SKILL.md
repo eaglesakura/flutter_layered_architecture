@@ -118,6 +118,8 @@ layers:
 
 ## 関連
 
+* package 所属レイヤーの解決: `flutter-layered-architecture-resolve-package-layer`
 * 定義ファイル: `@flutter_layered_architecture/layered_architecture.yaml`
+* YAML スキーマ: `@flutter_layered_architecture/docs/layered_architecture_yaml.ja.md`
 * プラグイン有効化: ワークスペースルート `analysis_options.yaml` の top-level `plugins:`
 * 標準ルール（import と pubspec の対応）: [`depend_on_referenced_packages`](https://dart.dev/tools/linter-rules/depend_on_referenced_packages)
