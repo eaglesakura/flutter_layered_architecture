@@ -2,6 +2,8 @@
 
 `layered_architecture.yaml` 配下の package が、より高いアーキテクチャレイヤーに依存すると警告する。
 
+YAML のスキーマ・探索・`ignore` 設定の全体は [layered_architecture_yaml.ja.md](../layered_architecture_yaml.ja.md) を参照する。
+
 ## Details
 
 DO pubspec の直接依存を、レイヤー `level` に沿って下方向または同レベルに保つ。プラグインは package root から親へ辿り、最初に見つかった `layered_architecture.yaml` を使う。各レイヤーは `path_prefix`（YAML 所在ディレクトリからの相対パス）と optional の `level` を持つ。双方に `level` があるとき、`dep.level > self.level` は warning である（`dep.level <= self.level`、同レベル含む、が許可）。
@@ -10,7 +12,7 @@ DO pubspec の直接依存を、レイヤー `level` に沿って下方向また
 
 定義不在・YAML 不正・`path_prefix` の重複・包括、および複数レイヤーへのマッチも warning する。package が無い未使用レイヤー定義は許可する。`level` 未記載のレイヤーは任意レイヤーと接続できる（level 比較対象外）。これらの Severity はいずれも WARNING である。
 
-#### rules.architecture_layer_dependency.ignore
+### rules.architecture_layer_dependency.ignore
 
 移行中や特殊事情のため、特定 package 名だけ **依存方向検査**をスキップできる。
 

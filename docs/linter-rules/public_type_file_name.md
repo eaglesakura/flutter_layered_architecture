@@ -2,6 +2,8 @@
 
 The file name must be the `lower_snake_case` form of the single public type name.
 
+For the `layered_architecture.yaml` schema including `keywords`, see [layered_architecture_yaml.md](../layered_architecture_yaml.md).
+
 ## Details
 
 DO name the file after its only public named type, converted to `lower_snake_case`. When there are zero or two or more public types, this rule does not report (count violations are covered by `one_public_type_per_file`).

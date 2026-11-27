@@ -2,6 +2,8 @@
 
 `@injection` 以外、または別レイヤーの package が `@implementation` バレルに依存すると警告する。
 
+レイヤー所属に使う `layered_architecture.yaml` のスキーマは [layered_architecture_yaml.ja.md](../layered_architecture_yaml.ja.md) を参照する。
+
 ## Details
 
 DO `@implementation` package への依存を、同一レイヤーの `@injection` package のみに限定する。役割は `lib/` 直下かつ `library;` があるバレルから読む（名前ベースの `@injection` / `@implementation`。URI は見ない）。`lib/src/` は見ない。

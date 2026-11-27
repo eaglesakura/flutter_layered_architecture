@@ -2,6 +2,8 @@
 
 唯一の public 型名を `lower_snake_case` にしたファイル名にする。
 
+`keywords` を含む `layered_architecture.yaml` のスキーマは [layered_architecture_yaml.ja.md](../layered_architecture_yaml.ja.md) を参照する。
+
 ## Details
 
 DO ファイル内に唯一の public な名前付き型があるとき、ファイル名をその型名の `lower_snake_case` にする。public 型が 0 個または 2 個以上のときは本ルールは報告しない（件数は `one_public_type_per_file` が扱う）。

@@ -28,6 +28,8 @@ Dart 3.14+（Flutter 3.50+）が必要である。`plugins:` を変更したら 
 
 [`docs/`](docs/) 配下のリファレンスは、Dart の linter rule ドキュメント（例: [always_declare_return_types](https://dart.dev/tools/linter-rules/always_declare_return_types)）に合わせている。短い要約、Details（BAD/GOOD）、Enable / Usage の順である。
 
+レイヤー所属・依存方向・ファイル名キーワードなどの正本はワークスペース（または祖先）の `layered_architecture.yaml` である。スキーマと探索規則は [layered_architecture_yaml.ja.md](docs/layered_architecture_yaml.ja.md) を参照する。
+
 ### 個別ルールの有効・無効
 
 プラグイン直下の `diagnostics:` でルール単位に切り替える。キーはルールコード（ドキュメントのファイル名／LintCode と同じ）である。
@@ -53,6 +55,12 @@ plugins:
 // ignore: flutter_layered_architecture_lint/one_public_type_per_file
 // ignore_for_file: flutter_layered_architecture_lint/one_public_type_per_file
 ```
+
+## 構成ファイル
+
+| ファイル | ドキュメント |
+| --- | --- |
+| `layered_architecture.yaml` | [layered_architecture_yaml.ja.md](docs/layered_architecture_yaml.ja.md) |
 
 ## アノテーション
 
@@ -207,9 +215,11 @@ apm install ./path/to/flutter_layered_architecture/skills
 flutter_layered_architecture/
 ├── pubspec.yaml              # Dart workspace ルート
 ├── analysis_options.yaml     # 共有静的解析設定
-├── docs/                     # アノテーション / linter-rule リファレンス
+├── docs/                     # 構成ファイル / アノテーション / linter-rule リファレンス
+│   ├── layered_architecture_yaml.ja.md
 │   ├── annotations/
 │   └── linter-rules/
+├── layered_architecture.yaml # アーキテクチャレイヤー定義（正本）
 ├── packages/                 # 公開・利用する Dart/Flutter package
 │   ├── annotations/          # flutter_layered_architecture_annotations
 │   └── lint/                 # flutter_layered_architecture_lint

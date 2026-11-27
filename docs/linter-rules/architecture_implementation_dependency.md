@@ -2,6 +2,8 @@
 
 Warns when a non-`@injection` or cross-layer package depends on `@implementation` barrels.
 
+For the `layered_architecture.yaml` schema used for layer membership, see [layered_architecture_yaml.md](../layered_architecture_yaml.md).
+
 ## Details
 
 DO allow only same-layer `@injection` packages to depend on `@implementation` packages. Role is read from barrel files under `lib/` that declare `library;` (name-based `@injection` / `@implementation`; URI is not checked). `lib/src/` is ignored.

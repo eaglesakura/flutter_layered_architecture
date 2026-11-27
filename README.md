@@ -28,6 +28,8 @@ Pair with `flutter_layered_architecture_annotations`. All rules in this plugin a
 
 Reference pages under [`docs/`](docs/) follow the Dart linter rule docs style (for example [always_declare_return_types](https://dart.dev/tools/linter-rules/always_declare_return_types)): short summary, Details with BAD/GOOD, then Enable / Usage.
 
+Layer membership, dependency direction, file-name keywords, and related settings live in the workspace (or an ancestor) `layered_architecture.yaml`. Schema and discovery rules are documented in [layered_architecture_yaml.md](docs/layered_architecture_yaml.md).
+
 ### Enable or disable individual rules
 
 Toggle rules under `diagnostics:` for the plugin. Use the rule code (same as the docs file name / LintCode):
@@ -53,6 +55,12 @@ To suppress a finding in code (not disable the rule globally):
 // ignore: flutter_layered_architecture_lint/one_public_type_per_file
 // ignore_for_file: flutter_layered_architecture_lint/one_public_type_per_file
 ```
+
+## Configuration files
+
+| File | Docs |
+| --- | --- |
+| `layered_architecture.yaml` | [layered_architecture_yaml.md](docs/layered_architecture_yaml.md) |
 
 ## Annotations
 
@@ -207,9 +215,11 @@ For the list of shipped SKILLs, see [`skills/README.md`](skills/README.md).
 flutter_layered_architecture/
 ├── pubspec.yaml              # Dart workspace root
 ├── analysis_options.yaml     # Shared static analysis settings
-├── docs/                     # Annotation / linter-rule reference pages
+├── docs/                     # Config / annotation / linter-rule reference pages
+│   ├── layered_architecture_yaml.md
 │   ├── annotations/
 │   └── linter-rules/
+├── layered_architecture.yaml # Architecture layer definition (canonical)
 ├── packages/                 # Published / consumed Dart/Flutter packages
 │   ├── annotations/          # flutter_layered_architecture_annotations
 │   └── lint/                 # flutter_layered_architecture_lint

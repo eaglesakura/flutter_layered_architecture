@@ -2,6 +2,8 @@
 
 Warns when a package under `layered_architecture.yaml` depends on a higher architecture layer.
 
+For the full YAML schema, discovery rules, and `ignore` settings, see [layered_architecture_yaml.md](../layered_architecture_yaml.md).
+
 ## Details
 
 DO keep pubspec direct dependencies flowing downward or sideways by layer `level`. The plugin uses the nearest `layered_architecture.yaml` found upward from the package root. Each layer has a `path_prefix` (relative to the YAML directory) and an optional `level`. When both packages have a `level`, `dep.level > self.level` is a warning (`dep.level <= self.level` is allowed, including same level).
@@ -10,7 +12,7 @@ Only packages under some `path_prefix` are checked. Packages outside every `path
 
 Also warns for a missing or invalid YAML, overlapping `path_prefix` values, and a package matching multiple layers. Unused layer entries with no packages are allowed. Layers without `level` may connect to any layer (no level comparison). Severity is WARNING for all of these cases.
 
-#### rules.architecture_layer_dependency.ignore
+### rules.architecture_layer_dependency.ignore
 
 Skip **dependency-direction** checks for listed package names during migration or special cases.
 
