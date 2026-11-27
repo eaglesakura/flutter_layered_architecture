@@ -12,9 +12,9 @@ It combines an analyzer plugin (`dart analyze` / IDE), Runtime libraries, and SK
 | Runtime | Provides libraries that support layered architecture at runtime |
 | SKILL | Provides agent-oriented guides for adoption and day-to-day use |
 
-## Enabling the analyzer plugin
+## Enabling the analyzer plugin (linter)
 
-In the workspace root `analysis_options.yaml`:
+Add a top-level `plugins:` section in the **workspace / package root** `analysis_options.yaml` (not under `analyzer:`, and not in a nested options file):
 
 ```yaml
 plugins:
@@ -24,9 +24,35 @@ plugins:
 
 Requires Dart 3.14+ (Flutter 3.50+). After changing `plugins:`, restart the Dart Analysis Server in the IDE.
 
-Pair with `flutter_layered_architecture_annotations`. Violations are reported as **WARNING**.
+Pair with `flutter_layered_architecture_annotations`. All rules in this plugin are registered as warning rules, so they are **on by default** when the plugin is enabled. Violations are reported as **WARNING**.
 
 Reference pages under [`docs/`](docs/) follow the Dart linter rule docs style (for example [always_declare_return_types](https://dart.dev/tools/linter-rules/always_declare_return_types)): short summary, Details with BAD/GOOD, then Enable / Usage.
+
+### Enable or disable individual rules
+
+Toggle rules under `diagnostics:` for the plugin. Use the rule code (same as the docs file name / LintCode):
+
+```yaml
+plugins:
+  flutter_layered_architecture_lint:
+    path: packages/lint
+    diagnostics:
+      one_public_type_per_file: false
+      public_type_file_name: false
+      usecase_single_method: true
+```
+
+- `true` / `false` — enable or disable that rule
+- `info` / `warning` / `error` — enable with that severity (when supported by the analyzer)
+
+Restart the Analysis Server after changing `diagnostics:`.
+
+To suppress a finding in code (not disable the rule globally):
+
+```dart
+// ignore: flutter_layered_architecture_lint/one_public_type_per_file
+// ignore_for_file: flutter_layered_architecture_lint/one_public_type_per_file
+```
 
 ## Annotations
 
@@ -118,27 +144,50 @@ APM CLI is required. If it is not installed yet, see [Installation](https://micr
 apm --version
 ```
 
-From the consuming repository root:
+From the consuming repository root, initialize once if needed:
 
 ```bash
-# Once, if the project is not initialized yet
 apm init
+```
 
-# Add the skills subdirectory as a virtual package
+Then add this package with either approach below. Pin a tag in production (recommended): `eaglesakura/flutter_layered_architecture/skills#v0.1.0`.
+
+### Declare in `apm.yml`, then install
+
+Edit the consuming project's `apm.yml` and list the package under `dependencies.apm`:
+
+```yaml
+name: my-app
+version: 0.1.0
+dependencies:
+  apm:
+    - eaglesakura/flutter_layered_architecture/skills#v0.1.0
+    # Local path (development):
+    # - ./path/to/flutter_layered_architecture/skills
+```
+
+Install (or restore after `git clone`):
+
+```bash
+apm install
+```
+
+### Install with a direct package argument
+
+Pass the package to `apm install`. APM resolves it and updates `apm.yml` / `apm.lock.yaml`:
+
+```bash
+# GitHub shorthand (subdirectory virtual package)
 apm install eaglesakura/flutter_layered_architecture/skills
-```
 
-To pin a tag (recommended):
-
-```bash
+# Pin a tag (recommended)
 apm install eaglesakura/flutter_layered_architecture/skills#v0.1.0
-```
 
-To reference this repository via a local path:
-
-```bash
+# Local path (development)
 apm install ./path/to/flutter_layered_architecture/skills
 ```
+
+### What to commit
 
 Commit `apm.yml`, `apm.lock.yaml`, and `.gitignore` (plus any authored `.apm/`). Do not commit `apm_modules/`. Teammates restore dependencies with `apm install` after `git clone`.
 

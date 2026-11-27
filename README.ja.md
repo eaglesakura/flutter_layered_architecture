@@ -12,9 +12,9 @@ Analyzer プラグイン（`dart analyze` / IDE）・Runtime・SKILL の組み�
 | Runtime | 実行時にレイヤード構成を支えるライブラリを提供する |
 | SKILL | Agent 向けの導入・運用手順を提供する |
 
-## Analyzer プラグインの有効化
+## Analyzer プラグイン（linter）の導入
 
-ワークスペースルートの `analysis_options.yaml`:
+**ワークスペース／package ルート**の `analysis_options.yaml` に、トップレベルで `plugins:` を追加する（`analyzer:` 配下ではない。ネストした options では指定できない）:
 
 ```yaml
 plugins:
@@ -22,11 +22,37 @@ plugins:
     path: packages/lint
 ```
 
-Dart 3.14+（Flutter 3.50+）が必要。`plugins:` を変更したら IDE の Dart Analysis Server を再起動すること。
+Dart 3.14+（Flutter 3.50+）が必要である。`plugins:` を変更したら IDE の Dart Analysis Server を再起動すること。
 
-`flutter_layered_architecture_annotations` と併用する。違反はすべて **WARNING** として報告される。
+`flutter_layered_architecture_annotations` と併用する。本プラグインのルールはすべて warning rule として登録されているため、プラグイン有効時は**既定でオン**である。違反は **WARNING** として報告される。
 
 [`docs/`](docs/) 配下のリファレンスは、Dart の linter rule ドキュメント（例: [always_declare_return_types](https://dart.dev/tools/linter-rules/always_declare_return_types)）に合わせている。短い要約、Details（BAD/GOOD）、Enable / Usage の順である。
+
+### 個別ルールの有効・無効
+
+プラグイン直下の `diagnostics:` でルール単位に切り替える。キーはルールコード（ドキュメントのファイル名／LintCode と同じ）である。
+
+```yaml
+plugins:
+  flutter_layered_architecture_lint:
+    path: packages/lint
+    diagnostics:
+      one_public_type_per_file: false
+      public_type_file_name: false
+      usecase_single_method: true
+```
+
+- `true` / `false` — そのルールを有効／無効にする
+- `info` / `warning` / `error` — 有効にしたうえで重要度を指定する（analyzer が対応している場合）
+
+`diagnostics:` を変更したら Analysis Server を再起動すること。
+
+ルール自体は無効にせず、該当箇所だけ抑止する場合:
+
+```dart
+// ignore: flutter_layered_architecture_lint/one_public_type_per_file
+// ignore_for_file: flutter_layered_architecture_lint/one_public_type_per_file
+```
 
 ## アノテーション
 
@@ -110,7 +136,7 @@ Dart 3.14+（Flutter 3.50+）が必要。`plugins:` を変更したら IDE の D
 
 ## APM SKILL の導入
 
-`skills/` は [APM (Agent Package Manager)](https://microsoft.github.io/apm/) パッケージである。Agent 向けの annotations / linter rule ガイドを、利用側プロジェクトへ次の手順で入れる。
+`skills/` は [APM (Agent Package Manager)](https://microsoft.github.io/apm/) パッケージである。Agent 向けの annotations / linter rule ガイドを、利用側プロジェクトへ入れる。
 
 前提として APM CLI が必要である。未導入なら [Installation](https://microsoft.github.io/apm/getting-started/installation/) を参照する。
 
@@ -118,27 +144,50 @@ Dart 3.14+（Flutter 3.50+）が必要。`plugins:` を変更したら IDE の D
 apm --version
 ```
 
-利用側リポジトリのルートで:
+利用側リポジトリのルートで、未初期化なら一度だけ初期化する:
 
 ```bash
-# 未初期化なら一度だけ
 apm init
+```
 
-# skills サブディレクトリを仮想パッケージとして追加
+その後、次のいずれかで本パッケージを追加する。本番ではタグ固定を推奨する: `eaglesakura/flutter_layered_architecture/skills#v0.1.0`。
+
+### `apm.yml` に記載してから install する
+
+利用側の `apm.yml` を編集し、`dependencies.apm` に本パッケージを列挙する:
+
+```yaml
+name: my-app
+version: 0.1.0
+dependencies:
+  apm:
+    - eaglesakura/flutter_layered_architecture/skills#v0.1.0
+    # ローカル path（開発時）:
+    # - ./path/to/flutter_layered_architecture/skills
+```
+
+インストール（または `git clone` 後の復元）:
+
+```bash
+apm install
+```
+
+### `apm install` でパッケージを直接指定する
+
+`apm install` にパッケージを渡す。APM が解決し、`apm.yml` / `apm.lock.yaml` を更新する:
+
+```bash
+# GitHub ショートハンド（サブディレクトリの仮想パッケージ）
 apm install eaglesakura/flutter_layered_architecture/skills
-```
 
-タグで固定する場合（推奨）:
-
-```bash
+# タグで固定する場合（推奨）
 apm install eaglesakura/flutter_layered_architecture/skills#v0.1.0
-```
 
-このリポジトリをローカル path 参照する場合:
-
-```bash
+# ローカル path（開発時）
 apm install ./path/to/flutter_layered_architecture/skills
 ```
+
+### コミット対象
 
 コミットするのは `apm.yml`・`apm.lock.yaml`・`.gitignore`（および自作の `.apm/`）までとする。`apm_modules/` はコミットしない。チームは `git clone` 後に `apm install` で復元する。
 
