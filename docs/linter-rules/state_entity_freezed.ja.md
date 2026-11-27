@@ -1,0 +1,49 @@
+# state_entity_freezed
+
+`@state` / `@entity` 型には `@freezed` または `@Freezed` を併記する。
+
+## Details
+
+DO `@state` / `@entity` 型に `@freezed` または `@Freezed()` を付ける。ゲート A（注釈付き型自身の構造）である。Severity は WARNING である。
+
+関連アノテーション: `@state`, `@entity`。
+
+BAD:
+
+```dart
+@state
+final class PlainState {}
+```
+
+GOOD:
+
+```dart
+@internal
+@state
+@freezed
+abstract class TodoListScreenState with _$TodoListScreenState {
+  const factory TodoListScreenState({
+    required bool isLoading,
+    required List<Todo> todos,
+    required String draftTitle,
+  }) = _TodoListScreenState;
+}
+```
+
+## Enable
+
+本ルールは `flutter_layered_architecture_lint` analyzer プラグインに含まれる。ワークスペースルートの `analysis_options.yaml` でプラグインを有効化する:
+
+```yaml
+plugins:
+  flutter_layered_architecture_lint:
+    path: packages/lint
+```
+
+Dart 3.14+（Flutter 3.50+）が必要である。`plugins:` を変更したら Dart Analysis Server を再起動する。
+
+## Suppress
+
+```dart
+// ignore: flutter_layered_architecture_lint/state_entity_freezed
+```

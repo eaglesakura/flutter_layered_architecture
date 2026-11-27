@@ -24,6 +24,90 @@ plugins:
 
 Dart 3.14+（Flutter 3.50+）が必要。`plugins:` を変更したら IDE の Dart Analysis Server を再起動すること。
 
+`flutter_layered_architecture_annotations` と併用する。違反はすべて **WARNING** として報告される。
+
+[`docs/`](docs/) 配下のリファレンスは、Dart の linter rule ドキュメント（例: [always_declare_return_types](https://dart.dev/tools/linter-rules/always_declare_return_types)）に合わせている。短い要約、Details（BAD/GOOD）、Enable / Usage の順である。
+
+## アノテーション
+
+| アノテーション | ドキュメント |
+| --- | --- |
+| `@usecase` | [usecase.ja.md](docs/annotations/usecase.ja.md) |
+| `@delegate` | [delegate.ja.md](docs/annotations/delegate.ja.md) |
+| `@state` | [state.ja.md](docs/annotations/state.ja.md) |
+| `@entity` | [entity.ja.md](docs/annotations/entity.ja.md) |
+| `@stateful` | [stateful.ja.md](docs/annotations/stateful.ja.md) |
+| `@viewModel` | [viewmodel.ja.md](docs/annotations/viewmodel.ja.md) |
+| `@injection` | [injection.ja.md](docs/annotations/injection.ja.md) |
+| `@implementation` | [implementation.ja.md](docs/annotations/implementation.ja.md) |
+
+## Linter ルール
+
+### Architecture layer
+
+| ルール | ドキュメント |
+| --- | --- |
+| `architecture_layer_dependency` | [architecture_layer_dependency.ja.md](docs/linter-rules/architecture_layer_dependency.ja.md) |
+| `architecture_implementation_dependency` | [architecture_implementation_dependency.ja.md](docs/linter-rules/architecture_implementation_dependency.ja.md) |
+
+### File layout
+
+| ルール | ドキュメント |
+| --- | --- |
+| `one_public_type_per_file` | [one_public_type_per_file.ja.md](docs/linter-rules/one_public_type_per_file.ja.md) |
+| `public_type_file_name` | [public_type_file_name.ja.md](docs/linter-rules/public_type_file_name.ja.md) |
+| `unexported_public_must_be_internal` | [unexported_public_must_be_internal.ja.md](docs/linter-rules/unexported_public_must_be_internal.ja.md) |
+
+### `@usecase`
+
+| ルール | ドキュメント |
+| --- | --- |
+| `usecase_single_method` | [usecase_single_method.ja.md](docs/linter-rules/usecase_single_method.ja.md) |
+| `usecase_method_signature` | [usecase_method_signature.ja.md](docs/linter-rules/usecase_method_signature.ja.md) |
+| `usecase_immutable` | [usecase_immutable.ja.md](docs/linter-rules/usecase_immutable.ja.md) |
+
+### `@delegate`
+
+| ルール | ドキュメント |
+| --- | --- |
+| `delegate_execute_method` | [delegate_execute_method.ja.md](docs/linter-rules/delegate_execute_method.ja.md) |
+| `delegate_immutable` | [delegate_immutable.ja.md](docs/linter-rules/delegate_immutable.ja.md) |
+| `delegate_internal` | [delegate_internal.ja.md](docs/linter-rules/delegate_internal.ja.md) |
+| `delegate_no_nested_delegate` | [delegate_no_nested_delegate.ja.md](docs/linter-rules/delegate_no_nested_delegate.ja.md) |
+| `delegate_no_usecase_instantiation` | [delegate_no_usecase_instantiation.ja.md](docs/linter-rules/delegate_no_usecase_instantiation.ja.md) |
+
+### `@state` / `@entity`（ゲート A）
+
+| ルール | ドキュメント |
+| --- | --- |
+| `state_entity_freezed` | [state_entity_freezed.ja.md](docs/linter-rules/state_entity_freezed.ja.md) |
+| `state_entity_internal` | [state_entity_internal.ja.md](docs/linter-rules/state_entity_internal.ja.md) |
+| `state_entity_exclusive` | [state_entity_exclusive.ja.md](docs/linter-rules/state_entity_exclusive.ja.md) |
+| `state_entity_required_parameters` | [state_entity_required_parameters.ja.md](docs/linter-rules/state_entity_required_parameters.ja.md) |
+| `state_entity_no_named_factory` | [state_entity_no_named_factory.ja.md](docs/linter-rules/state_entity_no_named_factory.ja.md) |
+
+### `@stateful`
+
+| ルール | ドキュメント |
+| --- | --- |
+| `stateful_immutable` | [stateful_immutable.ja.md](docs/linter-rules/stateful_immutable.ja.md) |
+| `stateful_has_mutable_state_stream` | [stateful_has_mutable_state_stream.ja.md](docs/linter-rules/stateful_has_mutable_state_stream.ja.md) |
+| `stateful_closes_mutable_state_stream` | [stateful_closes_mutable_state_stream.ja.md](docs/linter-rules/stateful_closes_mutable_state_stream.ja.md) |
+| `stateful_mutable_state_stream_state` | [stateful_mutable_state_stream_state.ja.md](docs/linter-rules/stateful_mutable_state_stream_state.ja.md) |
+| `stateful_methods_use_delegate` | [stateful_methods_use_delegate.ja.md](docs/linter-rules/stateful_methods_use_delegate.ja.md) |
+
+`@viewModel` はこれらの `@stateful` 検査も継承する。
+
+### `@viewModel`
+
+| ルール | ドキュメント |
+| --- | --- |
+| `viewmodel_internal` | [viewmodel_internal.ja.md](docs/linter-rules/viewmodel_internal.ja.md) |
+| `viewmodel_has_entity_getter` | [viewmodel_has_entity_getter.ja.md](docs/linter-rules/viewmodel_has_entity_getter.ja.md) |
+| `viewmodel_entity_annotated` | [viewmodel_entity_annotated.ja.md](docs/linter-rules/viewmodel_entity_annotated.ja.md) |
+| `viewmodel_entity_differs_from_state` | [viewmodel_entity_differs_from_state.ja.md](docs/linter-rules/viewmodel_entity_differs_from_state.ja.md) |
+| `viewmodel_on_method_names` | [viewmodel_on_method_names.ja.md](docs/linter-rules/viewmodel_on_method_names.ja.md) |
+
 ## APM SKILL の導入
 
 `skills/` は [APM (Agent Package Manager)](https://microsoft.github.io/apm/) パッケージである。Agent 向けの annotations / linter rule ガイドを、利用側プロジェクトへ次の手順で入れる。
@@ -73,6 +157,9 @@ apm install ./path/to/flutter_layered_architecture/skills
 flutter_layered_architecture/
 ├── pubspec.yaml              # Dart workspace ルート
 ├── analysis_options.yaml     # 共有静的解析設定
+├── docs/                     # アノテーション / linter-rule リファレンス
+│   ├── annotations/
+│   └── linter-rules/
 ├── packages/                 # 公開・利用する Dart/Flutter package
 │   ├── annotations/          # flutter_layered_architecture_annotations
 │   └── lint/                 # flutter_layered_architecture_lint
