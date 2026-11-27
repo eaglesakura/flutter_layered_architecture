@@ -32,6 +32,9 @@ Missing or invalid definitions, overlapping `path_prefix` values, and
 outside every `path_prefix` (e.g. this lint package) are skipped. Unused layer
 entries with no packages are allowed. Import-only deps are covered by
 `depend_on_referenced_packages`, not this rule.
+Optional `rules.architecture_layer_dependency.ignore` lists package names
+(exact match) that skip dependency-direction checks only; unresolved or
+malformed ignore entries warn and disable skipping.
 
 Helper unit test:
 

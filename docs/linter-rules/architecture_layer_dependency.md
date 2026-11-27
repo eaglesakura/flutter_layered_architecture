@@ -10,6 +10,16 @@ Only packages under some `path_prefix` are checked. Packages outside every `path
 
 Also warns for a missing or invalid YAML, overlapping `path_prefix` values, and a package matching multiple layers. Unused layer entries with no packages are allowed. Layers without `level` may connect to any layer (no level comparison). Severity is WARNING for all of these cases.
 
+#### rules.architecture_layer_dependency.ignore
+
+Skip **dependency-direction** checks for listed package names during migration or special cases.
+
+* `ignore` is a list of pubspec package names. Matching is **exact** only (no glob/regex; no trimming).
+* Only the **depending** package (self) skips level checks when its name matches. Definition-scope diagnostics (missing/invalid YAML, overlapping `path_prefix`, etc.) still report even when ignored.
+* Depending on an ignored package does **not** skip checks for a non-ignored depender.
+* Missing/`[]`/absent parent keys mean “no ignore”.
+* Malformed entries, or any name not resolvable in `package_config.json`, yield a **WARNING** (config error) and disable ignore skipping.
+
 GOOD `layered_architecture.yaml` (excerpt):
 
 ```yaml

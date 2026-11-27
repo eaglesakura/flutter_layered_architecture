@@ -49,9 +49,19 @@ pubspec の直接依存の方向を検査する。
 * 片方のみ `level` がある依存は level 比較の対象外（warning にしない）
 * いずれの `path_prefix` にも属さない依存先は比較しない
 
+### ignore
+
+移行中や特殊事情のため、特定 package 名だけ **依存方向検査**をスキップできる。
+
+* `rules.architecture_layer_dependency.ignore` は pubspec の package 名（文字列）のリスト。**完全一致**のみ（部分一致・正規表現なし。trim しない）
+* 一致した **依存元** の level 違反検査のみスキップする。定義不在・YAML 不正・`path_prefix` 重複／包括などの定義スコープ診断は、ignore していても報告する
+* 依存先が ignore に載っていても、依存元が ignore に無ければ通常どおり検査する
+* `ignore` 未記載・空リスト・親キー欠落は「設定なし」と同等
+* 形式不正、または `package_config.json` で解決できない名前が 1 件でもあれば **WARNING（記述エラー）** とし、ignore によるスキップは適用しない
+
 ### 重要度
 
-本ルールが出す診断は **すべて warning**（定義不在・YAML 不正・path_prefix 事前チェック・複数レイヤー所属・level 違反）。
+本ルールが出す診断は **すべて warning**（定義不在・YAML 不正・path_prefix 事前チェック・複数レイヤー所属・level 違反・ignore 記述エラー）。
 必要なら `analysis_options.yaml` の `analyzer.errors` で個別に error 昇格する。
 既存の `@usecase` / `@delegate` 等の architecture 違反と同様 WARNING に揃える。
 
@@ -62,6 +72,7 @@ pubspec の直接依存の方向を検査する。
 | `path_prefix` の重複・包括（事前チェック） | warning |
 | package（または依存先）が複数レイヤーにマッチ | warning（所属不定のため当該の level 比較は行わない） |
 | level 制約を破る依存 | warning |
+| ignore の形式不正または未解決 package 名 | warning（ignore スキップは無効） |
 
 ## スコープ外（別手段）
 
