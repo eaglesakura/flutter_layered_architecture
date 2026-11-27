@@ -47,8 +47,9 @@ void main() {
       try {
         final packageRoot = p.join(tempDir.path, 'my_pkg');
         Directory(p.join(packageRoot, 'lib')).createSync(recursive: true);
-        File(p.join(packageRoot, 'pubspec.yaml'))
-            .writeAsStringSync('name: my_pkg\n');
+        File(
+          p.join(packageRoot, 'pubspec.yaml'),
+        ).writeAsStringSync('name: my_pkg\n');
         final dartFile = p.join(packageRoot, 'lib', 'foo.dart');
         File(dartFile).writeAsStringSync('void main() {}');
         expectEquals(
@@ -337,6 +338,206 @@ dev_dependencies:
       );
       // 複数マッチは許可しない。呼び出し側で warning し依存検査を止める前提.
       expectEquals(matched.length, 2);
+    });
+  });
+
+  group('parseArchitectureLayerDependencyIgnore', () {
+    test('missing rules yields empty success', () {
+      final result = parseArchitectureLayerDependencyIgnore('layers: []\n');
+      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
+      expectEquals(
+        (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
+        0,
+      );
+    });
+
+    test('rules without architecture_layer_dependency yields empty', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  public_type_file_name:
+    keywords: {}
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
+      expectEquals(
+        (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
+        0,
+      );
+    });
+
+    test('architecture_layer_dependency without ignore yields empty', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  architecture_layer_dependency: {}
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
+      expectEquals(
+        (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
+        0,
+      );
+    });
+
+    test('empty ignore list yields empty success', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  architecture_layer_dependency:
+    ignore: []
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
+      expectEquals(
+        (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
+        0,
+      );
+    });
+
+    test('multiple string entries preserved in order', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  architecture_layer_dependency:
+    ignore:
+      - a_pkg
+      - b_pkg
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
+      final entries = (result as ArchitectureLayerIgnoreParseSuccess).entries;
+      expectEquals(entries.length, 2);
+      expectEquals(entries[0], 'a_pkg');
+      expectEquals(entries[1], 'b_pkg');
+    });
+
+    test('preserves leading and trailing spaces in entry', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  architecture_layer_dependency:
+    ignore:
+      - " pkg "
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
+      expectEquals(
+        (result as ArchitectureLayerIgnoreParseSuccess).entries.single,
+        ' pkg ',
+      );
+    });
+
+    test('non-list ignore is failure', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  architecture_layer_dependency:
+    ignore: not_a_list
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+    });
+
+    test('empty string entry is failure', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  architecture_layer_dependency:
+    ignore:
+      - ""
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+    });
+
+    test('non-string entry is failure', () {
+      final result = parseArchitectureLayerDependencyIgnore('''
+rules:
+  architecture_layer_dependency:
+    ignore:
+      - 1
+''');
+      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+    });
+
+    test('invalid yaml is failure', () {
+      // 既存 parseLayerArchitectureYaml と同じ YamlException 入力.
+      final result = parseArchitectureLayerDependencyIgnore('layers: [');
+      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+    });
+  });
+
+  group('parsePackageNameFromPubspecYaml', () {
+    test(
+      'reads name without trimming spaces inside value only as yaml gives',
+      () {
+        expectEquals(parsePackageNameFromPubspecYaml('name: foo\n'), 'foo');
+      },
+    );
+
+    test('missing name returns null', () {
+      expectEquals(parsePackageNameFromPubspecYaml('description: x\n'), null);
+    });
+  });
+
+  group('unresolvedIgnorePackageNames', () {
+    test('returns missing names in order', () {
+      final missing = unresolvedIgnorePackageNames(
+        ignoreNames: ['a', 'missing', 'b', 'gone'],
+        packageRoots: {'a': '/x', 'b': '/y'},
+      );
+      expectEquals(missing.length, 2);
+      expectEquals(missing[0], 'missing');
+      expectEquals(missing[1], 'gone');
+    });
+  });
+
+  group('shouldSkipDependencyDirectionForPackage', () {
+    test('skips on exact match when valid', () {
+      expectTrue(
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: true,
+          ignoreEntries: const ['infra_example_ignore'],
+          selfPackageName: 'infra_example_ignore',
+        ),
+      );
+    });
+
+    test('does not skip on partial match', () {
+      expectFalse(
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: true,
+          ignoreEntries: const ['infra'],
+          selfPackageName: 'infra_example_ignore',
+        ),
+      );
+    });
+
+    test('does not skip on case mismatch', () {
+      expectFalse(
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: true,
+          ignoreEntries: const ['Infra_Example_Ignore'],
+          selfPackageName: 'infra_example_ignore',
+        ),
+      );
+    });
+
+    test('does not skip when entry has spaces but self does not', () {
+      expectFalse(
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: true,
+          ignoreEntries: const [' pkg '],
+          selfPackageName: 'pkg',
+        ),
+      );
+    });
+
+    test('does not skip when invalid config', () {
+      expectFalse(
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: false,
+          ignoreEntries: const ['infra_example_ignore'],
+          selfPackageName: 'infra_example_ignore',
+        ),
+      );
+    });
+
+    test('does not skip when self name null', () {
+      expectFalse(
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: true,
+          ignoreEntries: const ['infra_example_ignore'],
+          selfPackageName: null,
+        ),
+      );
     });
   });
 

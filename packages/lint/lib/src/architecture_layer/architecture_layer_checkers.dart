@@ -492,6 +492,154 @@ final class LayerArchitectureParseFailure extends LayerArchitectureParseResult {
 @internal
 sealed class LayerArchitectureParseResult {}
 
+/// ignore パース成功. [entries] は記載順（trim しない。重複はそのまま）.
+@internal
+final class ArchitectureLayerIgnoreParseSuccess
+    extends ArchitectureLayerIgnoreParseResult {
+  final List<String> entries;
+
+  ArchitectureLayerIgnoreParseSuccess(this.entries);
+}
+
+/// ignore 形式不正.
+@internal
+final class ArchitectureLayerIgnoreParseFailure
+    extends ArchitectureLayerIgnoreParseResult {
+  final String message;
+
+  ArchitectureLayerIgnoreParseFailure(this.message);
+}
+
+@internal
+sealed class ArchitectureLayerIgnoreParseResult {}
+
+/// yaml 全文から `rules.architecture_layer_dependency.ignore` を読む.
+///
+/// * 辿り方は keywords に倣うが、不正時は空成功にせず Failure.
+/// * 要素不正はスキップせず全体 Failure（以降の要素は見ない）.
+/// * 文字列は trim しない.
+///
+/// Example:
+/// ```dart
+/// parseArchitectureLayerDependencyIgnore('rules:\n  architecture_layer_dependency:\n    ignore:\n      - a\n');
+/// ```
+@internal
+ArchitectureLayerIgnoreParseResult parseArchitectureLayerDependencyIgnore(
+  String yamlText,
+) {
+  final Object? document;
+  try {
+    document = loadYaml(yamlText);
+  } on YamlException catch (error) {
+    return ArchitectureLayerIgnoreParseFailure(
+      'Invalid YAML: ${error.message}',
+    );
+  }
+  if (document is! YamlMap) {
+    return ArchitectureLayerIgnoreParseFailure('Top-level YAML must be a map');
+  }
+
+  final rules = document['rules'];
+  if (rules == null) {
+    return ArchitectureLayerIgnoreParseSuccess(const []);
+  }
+  if (rules is! YamlMap) {
+    return ArchitectureLayerIgnoreParseFailure('rules must be a map');
+  }
+
+  final ruleConfig = rules['architecture_layer_dependency'];
+  if (ruleConfig == null) {
+    return ArchitectureLayerIgnoreParseSuccess(const []);
+  }
+  if (ruleConfig is! YamlMap) {
+    return ArchitectureLayerIgnoreParseFailure(
+      'rules.architecture_layer_dependency must be a map',
+    );
+  }
+
+  if (!ruleConfig.keys.contains('ignore')) {
+    return ArchitectureLayerIgnoreParseSuccess(const []);
+  }
+
+  final ignoreNode = ruleConfig['ignore'];
+  if (ignoreNode == null) {
+    return ArchitectureLayerIgnoreParseSuccess(const []);
+  }
+  if (ignoreNode is! YamlList) {
+    return ArchitectureLayerIgnoreParseFailure(
+      'rules.architecture_layer_dependency.ignore must be a list',
+    );
+  }
+
+  final entries = <String>[];
+  for (final item in ignoreNode) {
+    if (item is! String) {
+      return ArchitectureLayerIgnoreParseFailure(
+        'ignore entries must be non-empty strings',
+      );
+    }
+    if (item.isEmpty) {
+      return ArchitectureLayerIgnoreParseFailure(
+        'ignore entries must be non-empty strings',
+      );
+    }
+    entries.add(item);
+  }
+  return ArchitectureLayerIgnoreParseSuccess(entries);
+}
+
+/// pubspec yaml 全文から `name` を取る. 非 String・空・欠落は null. trim しない.
+///
+/// Example:
+/// ```dart
+/// parsePackageNameFromPubspecYaml('name: foo\n'); // 'foo'
+/// ```
+@internal
+String? parsePackageNameFromPubspecYaml(String pubspecYamlText) {
+  final Object? document;
+  try {
+    document = loadYaml(pubspecYamlText);
+  } on YamlException {
+    return null;
+  }
+  if (document is! YamlMap) {
+    return null;
+  }
+  final name = document['name'];
+  if (name is! String || name.isEmpty) {
+    return null;
+  }
+  return name;
+}
+
+/// ignore 名のうち [packageRoots] に無いものを記載順で返す.
+@internal
+List<String> unresolvedIgnorePackageNames({
+  required List<String> ignoreNames,
+  required Map<String, String> packageRoots,
+}) {
+  return [
+    for (final name in ignoreNames)
+      if (!packageRoots.containsKey(name)) name,
+  ];
+}
+
+/// ignore が有効かつ self 名が entries に完全一致するとき true.
+@internal
+bool shouldSkipDependencyDirectionForPackage({
+  required bool ignoreConfigValid,
+  required List<String> ignoreEntries,
+  required String? selfPackageName,
+}) {
+  if (!ignoreConfigValid) {
+    return false;
+  }
+  if (selfPackageName == null || selfPackageName.isEmpty) {
+    return false;
+  }
+  return ignoreEntries.contains(selfPackageName);
+}
+
 @internal
 final class PathPrefixOverlap {
   final String layerA;
