@@ -4,7 +4,7 @@
 
 ## Details
 
-DO annotate the root type argument `T` of every `MutableStateStream<T>` on a `@stateful` / `@viewModel` type with `@state`. This is gate B; Freezed and other structure checks are gate A on the `@state` type itself. Freezed alone on `T` is not enough. Also applies to `@viewModel` (inherits `@stateful`). Severity: WARNING.
+DO annotate the root type argument `T` of every `MutableStateStream<T>` on a `@stateful` / `@viewModel` type with `@state`. This checks only the annotation on the root type argument; Freezed and other structure checks are `state_entity_*` on the `@state` type itself. Freezed alone on `T` is not enough. Also applies to `@viewModel` (inherits `@stateful`). Severity: WARNING.
 
 Related annotations: `@stateful`, `@viewModel`, `@state`.
 

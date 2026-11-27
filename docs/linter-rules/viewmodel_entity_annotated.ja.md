@@ -4,7 +4,7 @@
 
 ## Details
 
-DO `StateStream<T> get entity` のモデル型 `T` に `@entity` を付ける。これはゲート B であり、ルート型引数に `@entity` があることだけを検査する。Freezed 形状、`@internal`、factory 制約はゲート A（`state_entity_*` ルール群）が `@entity` 型そのものに対して検査する。
+DO `StateStream<T> get entity` のモデル型 `T` に `@entity` を付ける。ルート型引数に `@entity` があることだけを検査する。Freezed 形状、`@internal`、factory 制約は `state_entity_*` ルール群が `@entity` 型そのものに対して検査する。
 
 Severity は WARNING である。
 

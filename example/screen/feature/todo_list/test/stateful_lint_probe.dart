@@ -65,7 +65,7 @@ final class ProbeStatefulStreamEntityAnnotationOnly {
   Future<void> close() => state.close();
 }
 
-/// Probe 専用の手書きモデル（freezed 生成・part 無し。ゲート B の annotation 欠落検出用）.
+/// Probe 専用の手書きモデル（freezed 生成・part 無し。参照元の annotation 欠落検出用）.
 @internal
 @entity
 final class ProbeEntityOnlyModel {

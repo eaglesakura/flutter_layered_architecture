@@ -1,18 +1,18 @@
 # @entity
 
-Marks a Freezed presentation model that may be the type argument `T` of `StateStream<T> get entity`, so lint can validate gate A structure and gate B ViewModel references.
+Marks a Freezed presentation model that may be the type argument `T` of `StateStream<T> get entity`, so lint can validate the model structure and ViewModel references.
 
 ## Details
 
 DO attach `@entity` to the Freezed model used as the root `T` of `StateStream<T> get entity`. Companion annotations `@internal` (`package:meta`) and `@freezed` / `@Freezed()` (`freezed_annotation`) are required. Do not also attach `@state` to the same type.
 
-Gate A structure rules are the same as `@state`:
+Structure rules are the same as `@state`:
 
 * Every parameter of the primary data factory must be explicitly `required`
 * `@Default` and Dart default parameter values are forbidden
 * Named factories are WARNING
 
-Nesting `@entity` on nested presentation models is optional; gate B only requires the root `entity` `T`. The `entity` model type must differ from the `MutableStateStream` state model type.
+Nesting `@entity` on nested presentation models is optional; reference-side checks only require the root `entity` `T`. The `entity` model type must differ from the `MutableStateStream` state model type.
 
 Severity of related lint checks: WARNING.
 

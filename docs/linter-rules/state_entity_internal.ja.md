@@ -4,7 +4,7 @@
 
 ## Details
 
-DO `@state` / `@entity` 型に `@internal` を付ける。ゲート A（注釈付き型自身の構造）である。Severity は WARNING である。
+DO `@state` / `@entity` 型に `@internal` を付ける。注釈付き型自身の構造を検査する。Severity は WARNING である。
 
 関連アノテーション: `@state`, `@entity`。
 

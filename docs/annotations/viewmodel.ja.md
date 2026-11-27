@@ -15,7 +15,7 @@ DO Screen 層の ViewModel に `@viewModel` を付与する。`@stateful` を二
 
 ViewModel 固有の追加規約:
 
-* `StateStream<T> get entity` を宣言し、ルート `T` には `@entity` が必須（構造はゲート A）
+* `StateStream<T> get entity` を宣言し、ルート `T` には `@entity` が必須（構造は `state_entity_*` が検査）
 * `entity` のモデル型は `MutableStateStream` の状態モデル型と異なる
 * インスタンス／extension メソッド（`close` / `_close` を除く）は名前が `on` で始まる
 

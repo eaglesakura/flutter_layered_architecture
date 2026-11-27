@@ -206,7 +206,7 @@ class F with _$F {
       if (result) {
         expectTrue(result);
       }
-      // 要素解決不可時は false 許容（ゲート A の統合検証は example に委譲）.
+      // 要素解決不可時は false 許容（型構造の統合検証は example に委譲）.
     });
   });
 

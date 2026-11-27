@@ -4,7 +4,7 @@
 
 ## Details
 
-DO `@stateful` / `@viewModel` 型の `MutableStateStream<T>` について、ルート型引数 `T` に `@state` を付ける。ゲート B である。Freezed 等の構造は `@state` 型自身のゲート A が検査する。`T` が Freezed のみでは不足である。`@viewModel` にも適用する（`@stateful` を継承する）。Severity は WARNING である。
+DO `@stateful` / `@viewModel` 型の `MutableStateStream<T>` について、ルート型引数 `T` に `@state` を付ける。Freezed 等の構造は `@state` 型に対する `state_entity_*` が検査する。`T` が Freezed のみでは不足である。`@viewModel` にも適用する（`@stateful` を継承する）。Severity は WARNING である。
 
 関連アノテーション: `@stateful`, `@viewModel`, `@state`。
 

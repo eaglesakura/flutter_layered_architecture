@@ -4,7 +4,7 @@
 
 ## Details
 
-DO `MutableStateStream` をフィールドに持ち、状態更新の中核になる型（画面以外の in-memory Repository なども含む）に `@stateful` を付与する。フィールドはすべて `final`/`const`、コンストラクタは `const` とする。`MutableStateStream<T>` フィールドを持ち、いずれかの経路で `MutableStateStream.close()` が呼ばれている必要がある（`close` / `_close` による close 呼び出しのみは例外）。ルートの型引数 `T` には `@state` が必須である（Freezed 等の構造は `@state` 型のゲート A で検査する）。インスタンス／extension メソッドの処理は `@delegate` の `execute` へ委譲する（stream を閉じるだけの `close` / `_close` は例外）。
+DO `MutableStateStream` をフィールドに持ち、状態更新の中核になる型（画面以外の in-memory Repository なども含む）に `@stateful` を付与する。フィールドはすべて `final`/`const`、コンストラクタは `const` とする。`MutableStateStream<T>` フィールドを持ち、いずれかの経路で `MutableStateStream.close()` が呼ばれている必要がある（`close` / `_close` による close 呼び出しのみは例外）。ルートの型引数 `T` には `@state` が必須である（Freezed 等のFreezed 等の構造は `@state` 型に対する `state_entity_*` が検査する）。インスタンス／extension メソッドの処理は `@delegate` の `execute` へ委譲する（stream を閉じるだけの `close` / `_close` は例外）。
 
 画面向け ViewModel には本アノテーションではなく `@viewModel` を付ける。`@viewModel` は本制約を継承する。
 

@@ -114,10 +114,10 @@ cd packages/lint && dart run test/public_api_checkers_test.dart
 | `viewmodel_entity_differs_from_state` | `entity` model type must differ from the `MutableStateStream` state model |
 | `viewmodel_on_method_names` | Instance/extension methods are named `on...` (`close`/`_close` excepted) |
 
-### `@state` / `@entity` (gate A)
+### `@state` / `@entity`
 
 Types annotated with `@state` or `@entity` are checked for structure even when not referenced elsewhere.
-Freezed shape, `@internal`, factory parameters, and named factories are enforced here (gate B on `@stateful` / `@viewModel` only requires the annotation on the root type argument).
+Freezed shape, `@internal`, factory parameters, and named factories are enforced here (`@stateful` / `@viewModel` only require the annotation on the root type argument).
 
 | Lint code | Check |
 | --- | --- |
@@ -127,5 +127,5 @@ Freezed shape, `@internal`, factory parameters, and named factories are enforced
 | `state_entity_required_parameters` | Primary factory: all `required`, no `@Default`, no Dart defaults |
 | `state_entity_no_named_factory` | No named factories on the type |
 
-**Breaking change:** gate B no longer inspects Freezed on `MutableStateStream` / `entity` type arguments directly.
-Annotate root state and entity models with `@state` / `@entity` and satisfy gate A (Freezed, `@internal`, factories).
+**Breaking change:** reference-side checks no longer inspect Freezed on `MutableStateStream` / `entity` type arguments directly.
+Annotate root state and entity models with `@state` / `@entity` and satisfy `state_entity_*` (Freezed, `@internal`, factories).

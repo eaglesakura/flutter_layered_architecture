@@ -8,9 +8,9 @@ description: >-
 ---
 # entity 型引数は @entity（`viewmodel_entity_annotated`）
 
-ゲート B: `@viewModel` の `StateStream<T> get entity` について、型引数 `T` に `@entity` があることだけを検証する。Freezed 等の構造はゲート A に委譲する。
+`@viewModel` の `StateStream<T> get entity` について、型引数 `T` に `@entity` があることだけを検証する。Freezed 等の構造は `state_entity_*` に委譲する。
 
-**破壊的変更:** ゲート B の Freezed 直接検査は廃止され、`@entity` 必須に置き換わった。
+**破壊的変更:** 参照元での Freezed 直接検査は廃止され、`@entity` 必須に置き換わった。
 
 診断は analyzer プラグイン `flutter_layered_architecture_lint` が WARNING として報告する。
 
@@ -62,5 +62,5 @@ StateStream<TodoListScreenEntity> get entity => ...; // → viewmodel_entity_ann
 ## 関連
 
 * プラグイン有効化: ワークスペースルート `analysis_options.yaml` の top-level `plugins:`
-* ゲート A: `state_entity_*` ルール群
+* 型構造: `state_entity_*` ルール群
 * 関連 linter rule: `viewmodel_has_entity_getter`, `stateful_mutable_state_stream_state`

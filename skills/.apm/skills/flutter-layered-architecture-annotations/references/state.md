@@ -1,14 +1,14 @@
 # `@state`
 
 `MutableStateStream<T>` の型引数 `T` になりうる **状態保持モデル** に付与する。
-Freezed の構造・構築規約は **ゲート A** の lint が検査し、`@stateful` / `@viewModel` は **ゲート B** で `T` に `@state` があることだけを要求する。
+Freezed の構造・構築規約は `state_entity_*` lint が検査し、`@stateful` / `@viewModel` 側は `T` に `@state` があることだけを要求する。
 
 ## いつ付けるか
 
 * 画面 ViewModel や Repository が保持する状態モデルを定義するとき
 * ルートの `MutableStateStream<T>` の `T` として使う Freezed 型
 
-ネストした型への `@state` は任意（ゲート B はルートの `T` のみを見る）。
+ネストした型への `@state` は任意（参照元検査 はルートの `T` のみを見る）。
 
 ## 付与先
 
@@ -21,7 +21,7 @@ Freezed の構造・構築規約は **ゲート A** の lint が検査し、`@st
 * `@freezed` / `@Freezed()`（`freezed_annotation`）
 * 同一型に `@entity` は付けない（併記は `state_entity_exclusive`）
 
-## 構築規約（ゲート A）
+## 構築規約
 
 * 主データ factory の全パラメータは `required` 明示
 * `@Default` 禁止
@@ -30,7 +30,7 @@ Freezed の構造・構築規約は **ゲート A** の lint が検査し、`@st
 
 ## 付与後に効く Lint
 
-### ゲート A（`@state` 型そのもの）
+### 注釈付き型自身（`@state` / `@entity`）
 
 | Lint code | 要点 |
 | --- | --- |
@@ -40,7 +40,7 @@ Freezed の構造・構築規約は **ゲート A** の lint が検査し、`@st
 | `state_entity_required_parameters` | 主 factory: 全 `required`、デフォルト無し |
 | `state_entity_no_named_factory` | named factory 禁止 |
 
-### ゲート B（参照元）
+### 参照元（`@stateful` / `@viewModel`）
 
 | Lint code | 要点 |
 | --- | --- |
@@ -50,7 +50,7 @@ Freezed の構造・構築規約は **ゲート A** の lint が検査し、`@st
 
 ## 破壊的変更
 
-* ゲート B の Freezed 直接検査は廃止。Freezed だけでは不十分で、**`@state` が必須**
+* 参照元での Freezed 直接検査は廃止。Freezed だけでは不十分で、**`@state` が必須**
 * `.initial()` 等の named factory は推奨されない（`state_entity_no_named_factory`）
 
 ## 良い例

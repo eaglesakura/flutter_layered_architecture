@@ -4,7 +4,7 @@ Primary data factory parameters on `@state` / `@entity` types must be required w
 
 ## Details
 
-DO make every parameter on the primary (unnamed) data factory of a `@state` / `@entity` type `required`. Do not use `@Default` or Dart default values. Each violating parameter is reported. This is gate A: structure of the annotated type itself. Severity: WARNING.
+DO make every parameter on the primary (unnamed) data factory of a `@state` / `@entity` type `required`. Do not use `@Default` or Dart default values. Each violating parameter is reported. This checks the structure of the annotated type itself. Severity: WARNING.
 
 Related annotations: `@state`, `@entity`.
 

@@ -3,11 +3,11 @@ name: flutter-layered-architecture-linter-rule-state-entity-internal
 description: >-
   Flutter Layered Architecture の linter rule `state_entity_internal`。
   `@state` / `@entity` 型には `@internal` を併記する。
-  状態・表示モデルの新規作成、ゲート A 診断の修正では必ず使う。
+  状態・表示モデルの新規作成、`@state` / `@entity` 型の構造診断の修正では必ず使う。
 ---
 # `@state` / `@entity` に @internal（`state_entity_internal`）
 
-ゲート A: `@state` または `@entity` が付いた型には `@internal` を併記する。
+`@state` または `@entity` が付いた型には `@internal` を併記する。
 
 診断は analyzer プラグイン `flutter_layered_architecture_lint` が WARNING として報告する。
 

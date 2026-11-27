@@ -1,18 +1,18 @@
 # @state
 
-Marks a Freezed state-holding model that may be the type argument `T` of `MutableStateStream<T>`, so lint can validate gate A structure and gate B references from `@stateful` / `@viewModel`.
+Marks a Freezed state-holding model that may be the type argument `T` of `MutableStateStream<T>`, so lint can validate the model structure and references from `@stateful` / `@viewModel`.
 
 ## Details
 
 DO attach `@state` to the Freezed model used as the root `T` of `MutableStateStream<T>`. Companion annotations `@internal` (`package:meta`) and `@freezed` / `@Freezed()` (`freezed_annotation`) are required. Do not also attach `@entity` to the same type.
 
-Gate A structure rules:
+Structure rules:
 
 * Every parameter of the primary data factory must be explicitly `required`
 * `@Default` and Dart default parameter values are forbidden
 * Named factories (for example `.initial()`) are WARNING; callers must pass all arguments at the call site
 
-Nesting `@state` on nested types is optional; gate B only requires the root `T`.
+Nesting `@state` on nested types is optional; reference-side checks only require the root `T`.
 
 Severity of related lint checks: WARNING.
 

@@ -4,7 +4,7 @@ Named factories on `@state` / `@entity` types are discouraged; require all argum
 
 ## Details
 
-DO NOT define named factories (for example `factory Foo.initial()`) on `@state` / `@entity` types. Call sites must pass every argument to the primary factory. This is gate A: structure of the annotated type itself. Severity: WARNING.
+DO NOT define named factories (for example `factory Foo.initial()`) on `@state` / `@entity` types. Call sites must pass every argument to the primary factory. This checks the structure of the annotated type itself. Severity: WARNING.
 
 Related annotations: `@state`, `@entity`.
 

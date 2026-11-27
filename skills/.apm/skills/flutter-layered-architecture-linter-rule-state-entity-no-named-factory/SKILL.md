@@ -3,11 +3,11 @@ name: flutter-layered-architecture-linter-rule-state-entity-no-named-factory
 description: >-
   Flutter Layered Architecture の linter rule `state_entity_no_named_factory`。
   `@state` / `@entity` 型に named factory（例: `.initial()`）を定義しない。
-  状態・表示モデルの新規作成、ゲート A 診断の修正では必ず使う。
+  状態・表示モデルの新規作成、`@state` / `@entity` 型の構造診断の修正では必ず使う。
 ---
 # named factory 禁止（`state_entity_no_named_factory`）
 
-ゲート A: `@state` / `@entity` 型では named factory（`factory Foo.bar()`）を定義しない。
+`@state` / `@entity` 型では named factory（`factory Foo.bar()`）を定義しない。
 
 初期値の省略は呼び出し側で主 factory の全引数を明示する。
 

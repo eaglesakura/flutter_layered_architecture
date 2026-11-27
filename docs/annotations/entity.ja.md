@@ -1,18 +1,18 @@
 # @entity
 
-`StateStream<T> get entity` の型引数 `T` になりうる画面表示モデル型を示し、ゲート A の構造とゲート B の ViewModel 参照を lint が検証できるようにするアノテーションである。
+`StateStream<T> get entity` の型引数 `T` になりうる画面表示モデル型を示し、型自身の構造と ViewModel からの参照を lint が検証できるようにするアノテーションである。
 
 ## Details
 
 DO `StateStream<T> get entity` のルート `T` として使う Freezed モデルに `@entity` を付与する。併記として `@internal`（`package:meta`）と `@freezed` / `@Freezed()`（`freezed_annotation`）が必須である。同一型に `@state` を付けてはならない。
 
-ゲート A の構築規約は `@state` と同じである。
+構築規約は `@state` と同じである。
 
 * 主データ factory の全パラメータは `required` 明示
 * `@Default` および Dart のデフォルト引数は禁止
 * named factory の定義は WARNING
 
-ネストした表示モデルへの `@entity` は任意である。ゲート B はルートの `entity` の `T` のみを見る。`entity` のモデル型は `MutableStateStream` の状態モデル型と異なっていなければならない。
+ネストした表示モデルへの `@entity` は任意である。参照元の検査はルートの `entity` の `T` のみを見る。`entity` のモデル型は `MutableStateStream` の状態モデル型と異なっていなければならない。
 
 関連 lint の Severity: WARNING。
 

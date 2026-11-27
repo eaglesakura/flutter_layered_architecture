@@ -4,7 +4,7 @@
 
 ## Details
 
-DO annotate every `@state` / `@entity` type with `@freezed` or `@Freezed()`. This is gate A: structure of the annotated type itself. Severity: WARNING.
+DO annotate every `@state` / `@entity` type with `@freezed` or `@Freezed()`. This checks the structure of the annotated type itself. Severity: WARNING.
 
 Related annotations: `@state`, `@entity`.
 

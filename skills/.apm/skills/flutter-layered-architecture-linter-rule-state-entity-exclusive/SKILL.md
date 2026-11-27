@@ -3,11 +3,11 @@ name: flutter-layered-architecture-linter-rule-state-entity-exclusive
 description: >-
   Flutter Layered Architecture の linter rule `state_entity_exclusive`。
   同一型に `@state` と `@entity` を同時付与しない。
-  状態・表示モデル設計、ゲート A 診断の修正では必ず使う。
+  状態・表示モデル設計、`@state` / `@entity` 型の構造診断の修正では必ず使う。
 ---
 # `@state` と `@entity` の併記禁止（`state_entity_exclusive`）
 
-ゲート A: 同一型に `@state` と `@entity` を両方付けない（どちらか一方のみ）。
+同一型に `@state` と `@entity` を両方付けない（どちらか一方のみ）。
 
 State と Entity に同じ型を使わせないための制約である。
 

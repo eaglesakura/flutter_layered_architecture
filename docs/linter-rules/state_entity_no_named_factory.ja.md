@@ -4,7 +4,7 @@
 
 ## Details
 
-DO `@state` / `@entity` 型で named factory（`factory Foo.bar()`）を定義しない。初期値の省略はせず、呼び出し側で主 factory の全引数を明示する。ゲート A（注釈付き型自身の構造）である。Severity は WARNING である。
+DO `@state` / `@entity` 型で named factory（`factory Foo.bar()`）を定義しない。初期値の省略はせず、呼び出し側で主 factory の全引数を明示する。注釈付き型自身の構造を検査する。Severity は WARNING である。
 
 関連アノテーション: `@state`, `@entity`。
 

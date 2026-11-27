@@ -28,7 +28,7 @@ const entityAnnotationChecker = TypeChecker.fromName(
   packageName: 'flutter_layered_architecture_annotations',
 );
 
-/// ゲート A の検査対象（`@state` / `@entity` いずれか）か.
+/// `@state` / `@entity` いずれかが付いた型か.
 ///
 /// Example:
 /// ```dart
@@ -63,15 +63,15 @@ bool hasEntityAnnotation(AnnotatedNode node) =>
 bool hasStateAndEntityAnnotation(AnnotatedNode node) =>
     hasStateAnnotation(node) && hasEntityAnnotation(node);
 
-/// 解決済み型に `@state` が付いているか（ゲート B）.
+/// 解決済み型に `@state` が付いているか（参照元検査）.
 ///
 /// NOTE: `parseString` 単体の assert では要素解決できないため **ユニットテスト対象外**。
-/// ゲート B は example 正例の `dart analyze` と probe で担保する.
+/// 参照元検査は example 正例の `dart analyze` と probe で担保する.
 @internal
 bool typeHasStateAnnotation(DartType? type) =>
     typeHasAnnotation(type, stateAnnotationChecker);
 
-/// 解決済み型に `@entity` が付いているか（ゲート B）. テスト方針は [typeHasStateAnnotation] と同じ.
+/// 解決済み型に `@entity` が付いているか（参照元検査）. テスト方針は [typeHasStateAnnotation] と同じ.
 @internal
 bool typeHasEntityAnnotation(DartType? type) =>
     typeHasAnnotation(type, entityAnnotationChecker);

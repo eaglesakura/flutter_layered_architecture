@@ -4,7 +4,7 @@
 
 ## Details
 
-DO 同一型に `@state` と `@entity` のどちらか一方のみを付ける。State と Entity を別型に保つための制約である。ゲート A（注釈付き型自身の構造）である。Severity は WARNING である。
+DO 同一型に `@state` と `@entity` のどちらか一方のみを付ける。State と Entity を別型に保つための制約である。注釈付き型自身の構造を検査する。Severity は WARNING である。
 
 関連アノテーション: `@state`, `@entity`。
 

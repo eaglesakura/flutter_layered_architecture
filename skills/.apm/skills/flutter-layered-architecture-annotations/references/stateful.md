@@ -26,7 +26,7 @@
 | `stateful_immutable` | フィールドは `final`/`const`、`const` コンストラクタあり |
 | `stateful_has_mutable_state_stream` | `MutableStateStream` フィールドを持つ |
 | `stateful_closes_mutable_state_stream` | いずれかの経路で `MutableStateStream.close()` を呼ぶ |
-| `stateful_mutable_state_stream_state` | `MutableStateStream<T>` の `T` に `@state` 必須（構造はゲート A） |
+| `stateful_mutable_state_stream_state` | `MutableStateStream<T>` の `T` に `@state` 必須（構造は `state_entity_*` が検査） |
 | `stateful_methods_use_delegate` | インスタンス／extension メソッドは `@delegate.execute` へ委譲（`close` / `_close` 除く） |
 
 詳細は次の SKILL を正とする。

@@ -102,7 +102,7 @@ To suppress a finding in code (not disable the rule globally):
 | `delegate_no_nested_delegate` | [delegate_no_nested_delegate.md](docs/linter-rules/delegate_no_nested_delegate.md) |
 | `delegate_no_usecase_instantiation` | [delegate_no_usecase_instantiation.md](docs/linter-rules/delegate_no_usecase_instantiation.md) |
 
-### `@state` / `@entity` (gate A)
+### `@state` / `@entity`
 
 | Rule | Docs |
 | --- | --- |

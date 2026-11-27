@@ -12,7 +12,7 @@ const entity = Entity();
 /// Flutter Layered Architecture における画面表示モデル型を示すアノテーション.
 ///
 /// `StateStream<T> get entity` の型引数 `T` になりうる Freezed モデルに付与する.
-/// ネストした表示モデルへの付与は任意（ルートの `T` のみゲート B が必須とする）.
+/// ネストした表示モデルへの付与は任意（ルートの `T` のみ参照元検査で必須とする）.
 ///
 /// NOTE.
 /// `@state` との同時付与は WARNING.

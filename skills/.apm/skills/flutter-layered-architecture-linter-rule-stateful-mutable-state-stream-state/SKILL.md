@@ -8,9 +8,9 @@ description: >-
 ---
 # MutableStateStream の型引数は @state（`stateful_mutable_state_stream_state`）
 
-ゲート B: `@stateful` / `@viewModel` の `MutableStateStream<T>` について、型引数 `T` に `@state` があることだけを検証する。Freezed 等の構造は `@state` 型のゲート A に委譲する。
+`@stateful` / `@viewModel` の `MutableStateStream<T>` について、型引数 `T` に `@state` があることだけを検証する。Freezed 等の構造は `@state` 型に対する `state_entity_*` に委譲する。
 
-**破壊的変更:** ゲート B の Freezed 直接検査は廃止され、`@state` 必須に置き換わった。
+**破壊的変更:** 参照元での Freezed 直接検査は廃止され、`@state` 必須に置き換わった。
 
 診断は analyzer プラグイン `flutter_layered_architecture_lint` が WARNING として報告する。
 
@@ -74,5 +74,5 @@ final class Store {
 ## 関連
 
 * プラグイン有効化: ワークスペースルート `analysis_options.yaml` の top-level `plugins:`
-* ゲート A: `state_entity_*` ルール群
+* 型構造: `state_entity_*` ルール群
 * 関連 linter rule: `stateful_has_mutable_state_stream`, `viewmodel_entity_annotated`

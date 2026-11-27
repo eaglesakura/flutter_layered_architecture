@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 part 'state_entity_lint_probe.freezed.dart';
 
-/// ゲート A 各診断の固定 probe（手書き declaration ファイル）.
+/// `@state` / `@entity` 各診断の固定 probe（手書き declaration ファイル）.
 
 // expect_lint: state_entity_freezed
 @state

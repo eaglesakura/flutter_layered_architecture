@@ -4,7 +4,7 @@
 
 ## Details
 
-DO `@state` / `@entity` 型の主データ factory（名前なし `factory`）の全パラメータに `required` を明示する。`@Default` と Dart のデフォルト引数は使わない。違反パラメータごとに報告する。ゲート A（注釈付き型自身の構造）である。Severity は WARNING である。
+DO `@state` / `@entity` 型の主データ factory（名前なし `factory`）の全パラメータに `required` を明示する。`@Default` と Dart のデフォルト引数は使わない。違反パラメータごとに報告する。注釈付き型自身の構造を検査する。Severity は WARNING である。
 
 関連アノテーション: `@state`, `@entity`。
 

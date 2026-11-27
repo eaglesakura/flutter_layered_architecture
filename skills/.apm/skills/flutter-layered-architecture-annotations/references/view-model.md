@@ -28,7 +28,7 @@
 | --- | --- |
 | `viewmodel_internal` | `@internal` 併記 |
 | `viewmodel_has_entity_getter` | `StateStream<T> get entity` を宣言 |
-| `viewmodel_entity_annotated` | `entity` の `T` に `@entity` 必須（構造はゲート A） |
+| `viewmodel_entity_annotated` | `entity` の `T` に `@entity` 必須（構造は `state_entity_*` が検査） |
 | `viewmodel_entity_differs_from_state` | `entity` のモデル型は `MutableStateStream` の状態型と異なる |
 | `viewmodel_on_method_names` | インスタンス／extension メソッドは `on...`（`close` / `_close` 除く） |
 

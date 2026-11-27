@@ -15,7 +15,7 @@ Inherited `@stateful` constraints:
 
 Additional ViewModel rules:
 
-* Declare `StateStream<T> get entity`; root `T` must carry `@entity` (structure via gate A)
+* Declare `StateStream<T> get entity`; root `T` must carry `@entity` (structure via `state_entity_*`)
 * The `entity` model type must differ from the `MutableStateStream` state model type
 * Instance and extension methods (except `close` / `_close`) must start with `on`
 

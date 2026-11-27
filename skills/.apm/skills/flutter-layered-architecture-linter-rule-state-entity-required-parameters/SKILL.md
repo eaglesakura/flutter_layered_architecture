@@ -4,11 +4,11 @@ description: >-
   Flutter Layered Architecture の linter rule `state_entity_required_parameters`。
   `@state` / `@entity` の主データ factory は全パラメータ `required` で、
   `@Default` や Dart デフォルト引数を使わない。
-  状態・表示モデルの新規作成、ゲート A 診断の修正では必ず使う。
+  状態・表示モデルの新規作成、`@state` / `@entity` 型の構造診断の修正では必ず使う。
 ---
 # 主 factory は全引数 required（`state_entity_required_parameters`）
 
-ゲート A: `@state` / `@entity` 型の主データ factory（名前なし `factory`）では、
+`@state` / `@entity` 型の主データ factory（名前なし `factory`）では、
 
 * 全パラメータに `required` 明示
 * `@Default` 禁止

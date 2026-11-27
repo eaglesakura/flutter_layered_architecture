@@ -4,7 +4,7 @@
 
 ## Details
 
-DO also annotate every `@state` / `@entity` type with `@internal`. This is gate A: structure of the annotated type itself. Severity: WARNING.
+DO also annotate every `@state` / `@entity` type with `@internal`. This checks the structure of the annotated type itself. Severity: WARNING.
 
 Related annotations: `@state`, `@entity`.
 

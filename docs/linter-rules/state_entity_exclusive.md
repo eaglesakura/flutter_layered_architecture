@@ -4,7 +4,7 @@ Types must not be annotated with both `@state` and `@entity`.
 
 ## Details
 
-DO NOT put both `@state` and `@entity` on the same type; use exactly one. This keeps State and Entity as distinct types. This is gate A: structure of the annotated type itself. Severity: WARNING.
+DO NOT put both `@state` and `@entity` on the same type; use exactly one. This keeps State and Entity as distinct types. This checks the structure of the annotated type itself. Severity: WARNING.
 
 Related annotations: `@state`, `@entity`.
 

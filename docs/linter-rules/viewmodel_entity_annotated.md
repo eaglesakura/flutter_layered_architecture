@@ -4,7 +4,7 @@ The `StateStream<T>` type argument of `entity` on `@viewModel` must be a class a
 
 ## Details
 
-DO annotate the model type `T` in `StateStream<T> get entity` with `@entity`. This is gate B: the rule checks only that `@entity` is present on the root type argument. Freezed shape, `@internal`, and factory constraints are enforced by gate A (`state_entity_*` rules) on the `@entity` type itself.
+DO annotate the model type `T` in `StateStream<T> get entity` with `@entity`. The rule checks only that `@entity` is present on the root type argument. Freezed shape, `@internal`, and factory constraints are enforced by `state_entity_*` rules on the `@entity` type itself.
 
 Severity is WARNING.
 

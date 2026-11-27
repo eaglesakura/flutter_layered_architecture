@@ -1,7 +1,7 @@
 # `@entity`
 
 `StateStream<T> get entity` の型引数 `T` になりうる **画面表示モデル** に付与する。
-構造・構築規約は **ゲート A**、ゲート B ではルートの `entity` の `T` に `@entity` があることだけを要求する。
+構造・構築規約は型自身に対して検査し、参照元ではルートの `entity` の `T` に `@entity` があることだけを要求する。
 
 ## いつ付けるか
 
@@ -21,13 +21,13 @@
 * `@freezed` / `@Freezed()`（`freezed_annotation`）
 * 同一型に `@state` は付けない（併記は `state_entity_exclusive`）
 
-## 構築規約（ゲート A）
+## 構築規約
 
 `@state` と同じ（全引数 `required`、named factory 禁止）。詳細は [state.md](./state.md) の構築規約を参照。
 
 ## 付与後に効く Lint
 
-### ゲート A
+### 注釈付き型自身（`@state` / `@entity`）
 
 | Lint code | 要点 |
 | --- | --- |
@@ -37,7 +37,7 @@
 | `state_entity_required_parameters` | 主 factory: 全 `required`、デフォルト無し |
 | `state_entity_no_named_factory` | named factory 禁止 |
 
-### ゲート B
+### 参照元（`@stateful` / `@viewModel`）
 
 | Lint code | 要点 |
 | --- | --- |
@@ -46,7 +46,7 @@
 
 ## 破壊的変更
 
-* ゲート B の Freezed 直接検査は廃止。Freezed だけでは不十分で、**`@entity` が必須**
+* 参照元での Freezed 直接検査は廃止。Freezed だけでは不十分で、**`@entity` が必須**
 
 ## 良い例
 

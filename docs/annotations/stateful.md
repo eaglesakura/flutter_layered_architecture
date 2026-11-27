@@ -4,7 +4,7 @@ Marks a state-holding type that owns a `MutableStateStream` so `flutter_layered_
 
 ## Details
 
-DO attach `@stateful` to types that hold `MutableStateStream` and act as a state update core (including non-screen types such as an in-memory Repository). Fields must be `final`/`const`, and a `const` constructor is required. The type must own a `MutableStateStream<T>` field and call `MutableStateStream.close()` on some path (`close` / `_close` are allowed exceptions for that call). The root type argument `T` must carry `@state` (Freezed and other structure rules are enforced by gate A on the `@state` type). Instance and extension methods must delegate to `@delegate.execute` (`close` / `_close` that only close the stream are excepted).
+DO attach `@stateful` to types that hold `MutableStateStream` and act as a state update core (including non-screen types such as an in-memory Repository). Fields must be `final`/`const`, and a `const` constructor is required. The type must own a `MutableStateStream<T>` field and call `MutableStateStream.close()` on some path (`close` / `_close` are allowed exceptions for that call). The root type argument `T` must carry `@state` (Freezed and other structure rules are enforced by `state_entity_*` on the `@state` type). Instance and extension methods must delegate to `@delegate.execute` (`close` / `_close` that only close the stream are excepted).
 
 For screen ViewModels, prefer `@viewModel` instead; it inherits these constraints.
 

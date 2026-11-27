@@ -102,7 +102,7 @@ plugins:
 | `delegate_no_nested_delegate` | [delegate_no_nested_delegate.ja.md](docs/linter-rules/delegate_no_nested_delegate.ja.md) |
 | `delegate_no_usecase_instantiation` | [delegate_no_usecase_instantiation.ja.md](docs/linter-rules/delegate_no_usecase_instantiation.ja.md) |
 
-### `@state` / `@entity`（ゲート A）
+### `@state` / `@entity`
 
 | ルール | ドキュメント |
 | --- | --- |
