@@ -144,7 +144,7 @@ To suppress a finding in code (not disable the rule globally):
 
 ## Installing APM SKILLs
 
-`skills/` is an [APM (Agent Package Manager)](https://microsoft.github.io/apm/) package. Use it to bring agent-facing annotation and linter-rule guides into a consuming project.
+This repository root is an [APM (Agent Package Manager)](https://microsoft.github.io/apm/) package (`apm.yml` / `.apm/skills/`). Use it to bring agent-facing annotation and linter-rule guides into a consuming project.
 
 APM CLI is required. If it is not installed yet, see [Installation](https://microsoft.github.io/apm/getting-started/installation/).
 
@@ -158,7 +158,7 @@ From the consuming repository root, initialize once if needed:
 apm init
 ```
 
-Then add this package with either approach below. Pin a tag in production (recommended): `eaglesakura/flutter_layered_architecture/skills#v0.1.0`.
+Then add this package with either approach below. Pin a tag in production (recommended): `eaglesakura/flutter_layered_architecture#v0.1.0`.
 
 ### Declare in `apm.yml`, then install
 
@@ -169,9 +169,9 @@ name: my-app
 version: 0.1.0
 dependencies:
   apm:
-    - eaglesakura/flutter_layered_architecture/skills#v0.1.0
+    - eaglesakura/flutter_layered_architecture#v0.1.0
     # Local path (development):
-    # - ./path/to/flutter_layered_architecture/skills
+    # - ./path/to/flutter_layered_architecture
 ```
 
 Install (or restore after `git clone`):
@@ -185,21 +185,29 @@ apm install
 Pass the package to `apm install`. APM resolves it and updates `apm.yml` / `apm.lock.yaml`:
 
 ```bash
-# GitHub shorthand (subdirectory virtual package)
-apm install eaglesakura/flutter_layered_architecture/skills
+# GitHub shorthand
+apm install eaglesakura/flutter_layered_architecture
 
 # Pin a tag (recommended)
-apm install eaglesakura/flutter_layered_architecture/skills#v0.1.0
+apm install eaglesakura/flutter_layered_architecture#v0.1.0
 
 # Local path (development)
-apm install ./path/to/flutter_layered_architecture/skills
+apm install ./path/to/flutter_layered_architecture
 ```
 
 ### What to commit
 
 Commit `apm.yml`, `apm.lock.yaml`, and `.gitignore` (plus any authored `.apm/`). Do not commit `apm_modules/`. Teammates restore dependencies with `apm install` after `git clone`.
 
-For the list of shipped SKILLs, see [`skills/README.md`](skills/README.md).
+### Shipped SKILLs
+
+| Kind | SKILL |
+| --- | --- |
+| Annotations | `flutter-layered-architecture-annotations` |
+| Architecture layer | `flutter-layered-architecture-resolve-package-layer` |
+| Linter rules | `flutter-layered-architecture-linter-rule-{rule}` (rule code with `_` replaced by `-`) |
+
+For linter-rule categories and the full rule list, see [AGENTS.md](AGENTS.md).
 
 ## Recommended libraries
 
@@ -215,6 +223,7 @@ For the list of shipped SKILLs, see [`skills/README.md`](skills/README.md).
 flutter_layered_architecture/
 ├── pubspec.yaml              # Dart workspace root
 ├── analysis_options.yaml     # Shared static analysis settings
+├── apm.yml                   # APM package definition
 ├── docs/                     # Config / annotation / linter-rule reference pages
 │   ├── layered_architecture_yaml.md
 │   ├── annotations/
@@ -230,5 +239,5 @@ flutter_layered_architecture/
 │   ├── data/repository/todo/ # data_repository_todo (+ _impl)
 │   ├── usecase/todo/         # usecase_todo (+ _impl)
 │   └── screen/feature/todo_list/ # screen_feature_todo_list
-└── skills/                   # SKILLs tied to this repository
+└── .apm/skills/              # Agent-facing SKILLs
 ```

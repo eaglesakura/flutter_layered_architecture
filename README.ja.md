@@ -144,7 +144,7 @@ plugins:
 
 ## APM SKILL の導入
 
-`skills/` は [APM (Agent Package Manager)](https://microsoft.github.io/apm/) パッケージである。Agent 向けの annotations / linter rule ガイドを、利用側プロジェクトへ入れる。
+本リポジトリルートは [APM (Agent Package Manager)](https://microsoft.github.io/apm/) パッケージである（`apm.yml` / `.apm/skills/`）。Agent 向けの annotations / linter rule ガイドを、利用側プロジェクトへ入れる。
 
 前提として APM CLI が必要である。未導入なら [Installation](https://microsoft.github.io/apm/getting-started/installation/) を参照する。
 
@@ -158,7 +158,7 @@ apm --version
 apm init
 ```
 
-その後、次のいずれかで本パッケージを追加する。本番ではタグ固定を推奨する: `eaglesakura/flutter_layered_architecture/skills#v0.1.0`。
+その後、次のいずれかで本パッケージを追加する。本番ではタグ固定を推奨する: `eaglesakura/flutter_layered_architecture#v0.1.0`。
 
 ### `apm.yml` に記載してから install する
 
@@ -169,9 +169,9 @@ name: my-app
 version: 0.1.0
 dependencies:
   apm:
-    - eaglesakura/flutter_layered_architecture/skills#v0.1.0
+    - eaglesakura/flutter_layered_architecture#v0.1.0
     # ローカル path（開発時）:
-    # - ./path/to/flutter_layered_architecture/skills
+    # - ./path/to/flutter_layered_architecture
 ```
 
 インストール（または `git clone` 後の復元）:
@@ -185,21 +185,29 @@ apm install
 `apm install` にパッケージを渡す。APM が解決し、`apm.yml` / `apm.lock.yaml` を更新する:
 
 ```bash
-# GitHub ショートハンド（サブディレクトリの仮想パッケージ）
-apm install eaglesakura/flutter_layered_architecture/skills
+# GitHub ショートハンド
+apm install eaglesakura/flutter_layered_architecture
 
 # タグで固定する場合（推奨）
-apm install eaglesakura/flutter_layered_architecture/skills#v0.1.0
+apm install eaglesakura/flutter_layered_architecture#v0.1.0
 
 # ローカル path（開発時）
-apm install ./path/to/flutter_layered_architecture/skills
+apm install ./path/to/flutter_layered_architecture
 ```
 
 ### コミット対象
 
 コミットするのは `apm.yml`・`apm.lock.yaml`・`.gitignore`（および自作の `.apm/`）までとする。`apm_modules/` はコミットしない。チームは `git clone` 後に `apm install` で復元する。
 
-収録 SKILL の一覧は [`skills/README.md`](skills/README.md) を参照する。
+### 収録 SKILL
+
+| 種別 | SKILL |
+| --- | --- |
+| Annotations | `flutter-layered-architecture-annotations` |
+| Architecture layer | `flutter-layered-architecture-resolve-package-layer` |
+| Linter rules | `flutter-layered-architecture-linter-rule-{rule}`（診断コードの `_` を `-` に置換） |
+
+linter rule のカテゴリとルール一覧は [AGENTS.md](AGENTS.md) を参照する。
 
 ## 推奨ライブラリ
 
@@ -215,6 +223,7 @@ apm install ./path/to/flutter_layered_architecture/skills
 flutter_layered_architecture/
 ├── pubspec.yaml              # Dart workspace ルート
 ├── analysis_options.yaml     # 共有静的解析設定
+├── apm.yml                   # APM パッケージ定義
 ├── docs/                     # 構成ファイル / アノテーション / linter-rule リファレンス
 │   ├── layered_architecture_yaml.ja.md
 │   ├── annotations/
@@ -230,5 +239,5 @@ flutter_layered_architecture/
 │   ├── data/repository/todo/ # data_repository_todo (+ _impl)
 │   ├── usecase/todo/         # usecase_todo (+ _impl)
 │   └── screen/feature/todo_list/ # screen_feature_todo_list
-└── skills/                   # 本リポジトリ連動の SKILL
+└── .apm/skills/              # Agent 向け SKILL
 ```

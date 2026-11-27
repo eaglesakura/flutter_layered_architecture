@@ -81,4 +81,4 @@ import 'package:flutter_layered_architecture_annotations/flutter_layered_archite
 
 * アノテーション package: `flutter_layered_architecture_annotations`
 * Lint プラグイン: `flutter_layered_architecture_lint`（`analysis_options.yaml` の top-level `plugins:`）
-* ルール単位 SKILL: `skills/.apm/skills/flutter-layered-architecture-linter-rule-*`
+* ルール単位 SKILL: `.apm/skills/flutter-layered-architecture-linter-rule-*`

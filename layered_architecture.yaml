@@ -7,7 +7,7 @@
 # 依存方向: 双方に level があるとき dep.level <= self.level（同レベル含む）。違反は warning。
 # 重複 / path_prefix 包括も warning（事前チェック）。1 package の複数レイヤー所属は許可しない。
 # 詳細は
-# skills/.../flutter-layered-architecture-linter-rule-architecture-layer-dependency/SKILL.md
+# .apm/skills/flutter-layered-architecture-linter-rule-architecture-layer-dependency/SKILL.md
 layers:
   # レイヤー名を定義
   - app:
