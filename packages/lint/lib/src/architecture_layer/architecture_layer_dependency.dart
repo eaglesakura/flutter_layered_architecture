@@ -55,6 +55,7 @@ final class _Visitor extends SimpleAstVisitor<void> {
   /// 定義 yaml 正規化パス（または missing 用 synthetic キー）→ 定義スコープ診断の二重報告防止.
   static final Set<String> _reportedDefinitionPaths = {};
   static const _missingDefinitionKeyPrefix = '__missing__:';
+  static const _ignoreConfigKeyPrefix = '__ignore_config__:';
 
   final ArchitectureLayerDependency rule;
 
@@ -156,16 +157,60 @@ final class _Visitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    final directDependencies = parseDirectDependencyNames(pubspecText);
-    final dependencyNames = <String>{
-      ...directDependencies.dependencies,
-      ...directDependencies.devDependencies,
-    };
+    final ignoreParse = parseArchitectureLayerDependencyIgnore(
+      definitionYamlText,
+    );
+    var ignoreValid = false;
+    var ignoreEntries = <String>[];
+    if (ignoreParse is ArchitectureLayerIgnoreParseFailure) {
+      _reportIgnoreConfigOnce(
+        node,
+        definitionPath,
+        'Invalid rules.architecture_layer_dependency.ignore: '
+        '${ignoreParse.message}',
+      );
+    } else {
+      ignoreEntries =
+          (ignoreParse as ArchitectureLayerIgnoreParseSuccess).entries;
+      ignoreValid = true;
+    }
 
     final packageRoots = packageRootsFromPackageConfig(
       packageConfigJsonText: packageConfigText,
       packageConfigFileDirectory: p.dirname(packageConfigPath),
     );
+
+    if (ignoreValid) {
+      final missing = unresolvedIgnorePackageNames(
+        ignoreNames: ignoreEntries,
+        packageRoots: packageRoots,
+      );
+      if (missing.isNotEmpty) {
+        _reportIgnoreConfigOnce(
+          node,
+          definitionPath,
+          'Unknown package name(s) in '
+          'rules.architecture_layer_dependency.ignore: '
+          '${missing.join(', ')}',
+        );
+        ignoreValid = false;
+      }
+    }
+
+    final selfPackageName = parsePackageNameFromPubspecYaml(pubspecText);
+    if (shouldSkipDependencyDirectionForPackage(
+      ignoreConfigValid: ignoreValid,
+      ignoreEntries: ignoreEntries,
+      selfPackageName: selfPackageName,
+    )) {
+      return;
+    }
+
+    final directDependencies = parseDirectDependencyNames(pubspecText);
+    final dependencyNames = <String>{
+      ...directDependencies.dependencies,
+      ...directDependencies.devDependencies,
+    };
 
     final selfLayer = selfLayers.single;
 
@@ -231,5 +276,18 @@ final class _Visitor extends SimpleAstVisitor<void> {
       'layered_architecture.yaml not found when searching upward from the '
       'package root.',
     );
+  }
+
+  void _reportIgnoreConfigOnce(
+    CompilationUnit node,
+    String definitionPath,
+    String message,
+  ) {
+    final key = '$_ignoreConfigKeyPrefix$definitionPath';
+    if (_reportedDefinitionPaths.contains(key)) {
+      return;
+    }
+    _reportedDefinitionPaths.add(key);
+    _report(node, message);
   }
 }
