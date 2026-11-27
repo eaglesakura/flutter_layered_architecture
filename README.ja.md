@@ -199,6 +199,7 @@ apm install ./path/to/flutter_layered_architecture/skills
 | --- | --- |
 | Dependency Injection | [Riverpod](https://pub.dev/packages/riverpod) |
 | UI 構築 | [Riverpod](https://pub.dev/packages/flutter_riverpod) / [Hooks](https://pub.dev/packages/flutter_hooks)（[hooks_riverpod](https://pub.dev/packages/hooks_riverpod)） |
+| 状態管理 | [state_stream](https://pub.dev/packages/state_stream) / [state_stream_riverpod](https://pub.dev/packages/state_stream_riverpod) |
 
 ## リポジトリ構成
 

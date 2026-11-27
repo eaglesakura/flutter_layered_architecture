@@ -199,6 +199,7 @@ For the list of shipped SKILLs, see [`skills/README.md`](skills/README.md).
 | --- | --- |
 | Dependency Injection | [Riverpod](https://pub.dev/packages/riverpod) |
 | UI construction | [Riverpod](https://pub.dev/packages/flutter_riverpod) / [Hooks](https://pub.dev/packages/flutter_hooks) ([hooks_riverpod](https://pub.dev/packages/hooks_riverpod)) |
+| State management | [state_stream](https://pub.dev/packages/state_stream) / [state_stream_riverpod](https://pub.dev/packages/state_stream_riverpod) |
 
 ## Repository layout
 
