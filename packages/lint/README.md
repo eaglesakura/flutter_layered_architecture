@@ -1,21 +1,55 @@
 # flutter_layered_architecture_lint
 
-Custom lint rules for Flutter Layered Architecture conventions.
+Analyzer plugin for Flutter Layered Architecture conventions.
 
-Add this package as a dependency, then enable the plugin with top-level
-`plugins:` in `analysis_options.yaml` (workspace example):
+Requires Dart 3.14+ (Flutter 3.50+). Pair with
+[`flutter_layered_architecture_annotations`](https://pub.dev/packages/flutter_layered_architecture_annotations).
+
+Architecture and annotation violations are reported as **WARNING**. Rules are
+**on by default** when the plugin is enabled.
+
+## Getting started
+
+```yaml
+dependencies:
+  flutter_layered_architecture_annotations: ^0.1.0
+
+# Analyzer plugins are resolved from your package graph / pub cache.
+dev_dependencies:
+  flutter_layered_architecture_lint: ^0.1.0
+```
+
+Enable the plugin with a top-level `plugins:` section in the **workspace /
+package root** `analysis_options.yaml` (not under `analyzer:`, and not in a
+nested options file):
+
+```yaml
+plugins:
+  flutter_layered_architecture_lint: ^0.1.0
+```
+
+After changing `plugins:`, restart the Dart Analysis Server in the IDE.
+
+### Enable or disable individual rules
 
 ```yaml
 plugins:
   flutter_layered_architecture_lint:
-    path: packages/lint
+    diagnostics:
+      one_public_type_per_file: false
+      public_type_file_name: false
+      usecase_single_method: true
 ```
 
-Pair with `flutter_layered_architecture_annotations`.
+- `true` / `false` — enable or disable that rule
+- `info` / `warning` / `error` — enable with that severity (when supported)
 
-Architecture violations (`@usecase` / `@delegate` / `@stateful` / `@viewModel`,
-`architecture_layer_dependency`, and `architecture_implementation_dependency`)
-are reported as **WARNING**.
+To suppress a finding in code:
+
+```dart
+// ignore: flutter_layered_architecture_lint/one_public_type_per_file
+// ignore_for_file: flutter_layered_architecture_lint/one_public_type_per_file
+```
 
 ## Rules
 
@@ -132,3 +166,9 @@ Freezed shape, `@internal`, factory parameters, and named factories are enforced
 
 **Breaking change:** reference-side checks no longer inspect Freezed on `MutableStateStream` / `entity` type arguments directly.
 Annotate root state and entity models with `@state` / `@entity` and satisfy `state_entity_*` (Freezed, `@internal`, factories).
+
+## Additional information
+
+- Repository: <https://github.com/eaglesakura/flutter_layered_architecture>
+- Japanese README: [README.ja.md](README.ja.md)
+- Rule references: repository `docs/linter-rules/`

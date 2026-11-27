@@ -1,7 +1,7 @@
 name: flutter_layered_architecture_annotations
-description: Annotations for Flutter Layered Architecture conventions.
+description: Annotations for Flutter Layered Architecture conventions (@usecase, @delegate, @state, @entity, and more).
 version: 0.1.0
-publish_to: "none"
+repository: https://github.com/eaglesakura/flutter_layered_architecture
 resolution: workspace
 
 environment:
