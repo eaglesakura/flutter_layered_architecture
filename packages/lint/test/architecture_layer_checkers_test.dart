@@ -2,39 +2,38 @@ import 'dart:io';
 
 import 'package:flutter_layered_architecture_lint/src/architecture_layer/architecture_layer_checkers.dart';
 import 'package:path/path.dart' as p;
+import 'package:test/test.dart';
 
-/// `package:test` は workspace の flutter_test / analyzer ^8 と解決不能なため、
-/// assert ベースのランナーで unit test 相当を実行する.
-///
-/// 実行: `dart run test/architecture_layer_checkers_test.dart`
 void main() {
   group('normalizePathForCompare / isPathUnderPrefix', () {
     test('normalizes Windows separators', () {
-      expectEquals(
+      expect(
         normalizePathForCompare(r'C:\ws\example\data'),
         'C:/ws/example/data',
       );
     });
 
     test('data is under data prefix but database is not', () {
-      expectTrue(
+      expect(
         isPathUnderPrefix(
           path: '/ws/example/data/repo',
           prefix: '/ws/example/data',
         ),
+        isTrue,
       );
-      expectFalse(
+      expect(
         isPathUnderPrefix(
           path: '/ws/example/database',
           prefix: '/ws/example/data',
         ),
+        isFalse,
       );
     });
   });
 
   group('resolvePathPrefix', () {
     test('joins definition directory and prefix', () {
-      expectEquals(
+      expect(
         resolvePathPrefix(definitionDir: '/ws', pathPrefix: 'example/data'),
         '/ws/example/data',
       );
@@ -52,7 +51,7 @@ void main() {
         ).writeAsStringSync('name: my_pkg\n');
         final dartFile = p.join(packageRoot, 'lib', 'foo.dart');
         File(dartFile).writeAsStringSync('void main() {}');
-        expectEquals(
+        expect(
           findPackageRoot(dartFile),
           normalizePathForCompare(packageRoot),
         );
@@ -73,7 +72,7 @@ void main() {
         Directory(dartTool).createSync(recursive: true);
         final configPath = p.join(dartTool, 'package_config.json');
         File(configPath).writeAsStringSync('{"configVersion":2,"packages":[]}');
-        expectEquals(
+        expect(
           findPackageConfigJson(packagePath),
           normalizePathForCompare(configPath),
         );
@@ -94,7 +93,7 @@ void main() {
         final childYaml = p.join(childDir, 'layered_architecture.yaml');
         File(parentYaml).writeAsStringSync('layers: []\n');
         File(childYaml).writeAsStringSync('layers: []\n');
-        expectEquals(
+        expect(
           findLayeredArchitectureYaml(childDir),
           normalizePathForCompare(childYaml),
         );
@@ -123,8 +122,8 @@ void main() {
         definitionDir: definitionDir,
         layers: duplicateLayers,
       );
-      expectEquals(duplicates.length, 1);
-      expectEquals(duplicates.single.reason, 'duplicate');
+      expect(duplicates.length, 1);
+      expect(duplicates.single.reason, 'duplicate');
 
       final containsLayers = [
         const ArchitectureLayer(
@@ -142,8 +141,8 @@ void main() {
         definitionDir: definitionDir,
         layers: containsLayers,
       );
-      expectEquals(contains.length, 1);
-      expectEquals(contains.single.reason, 'contains');
+      expect(contains.length, 1);
+      expect(contains.single.reason, 'contains');
 
       final distinctLayers = [
         const ArchitectureLayer(
@@ -157,7 +156,7 @@ void main() {
           pathPrefix: 'example/domain',
         ),
       ];
-      expectEquals(
+      expect(
         findPathPrefixOverlaps(
           definitionDir: definitionDir,
           layers: distinctLayers,
@@ -175,12 +174,12 @@ layers:
       level: 4
       path_prefix: example/data
 ''');
-      expectTrue(result is LayerArchitectureDefinition);
+      expect(result is LayerArchitectureDefinition, isTrue);
       final definition = result as LayerArchitectureDefinition;
-      expectEquals(definition.layers.length, 1);
-      expectEquals(definition.layers.single.name, 'data');
-      expectEquals(definition.layers.single.level, 4);
-      expectEquals(definition.layers.single.pathPrefix, 'example/data');
+      expect(definition.layers.length, 1);
+      expect(definition.layers.single.name, 'data');
+      expect(definition.layers.single.level, 4);
+      expect(definition.layers.single.pathPrefix, 'example/data');
     });
 
     test('fails when path_prefix missing', () {
@@ -189,12 +188,12 @@ layers:
   - data:
       level: 4
 ''');
-      expectTrue(result is LayerArchitectureParseFailure);
+      expect(result is LayerArchitectureParseFailure, isTrue);
     });
 
     test('fails on invalid YAML', () {
       final result = parseLayerArchitectureYaml('layers: [');
-      expectTrue(result is LayerArchitectureParseFailure);
+      expect(result is LayerArchitectureParseFailure, isTrue);
     });
 
     test('fails when level is zero', () {
@@ -204,7 +203,7 @@ layers:
       level: 0
       path_prefix: example/data
 ''');
-      expectTrue(result is LayerArchitectureParseFailure);
+      expect(result is LayerArchitectureParseFailure, isTrue);
     });
 
     test('fails when level is negative', () {
@@ -214,7 +213,7 @@ layers:
       level: -1
       path_prefix: example/data
 ''');
-      expectTrue(result is LayerArchitectureParseFailure);
+      expect(result is LayerArchitectureParseFailure, isTrue);
     });
   });
 
@@ -230,18 +229,23 @@ layers:
         level: 4,
         pathPrefix: 'example/usecase',
       );
-      expectTrue(isLevelViolation(selfLayer: domain, dependencyLayer: usecase));
-      expectTrue(
+      expect(
+        isLevelViolation(selfLayer: domain, dependencyLayer: usecase),
+        isTrue,
+      );
+      expect(
         hasAnyLevelViolation(
           selfLayers: [domain],
           dependencyLayers: [usecase],
         ),
+        isTrue,
       );
-      expectFalse(
+      expect(
         hasAnyLevelViolation(
           selfLayers: [usecase],
           dependencyLayers: [domain],
         ),
+        isFalse,
       );
     });
   });
@@ -255,10 +259,10 @@ dependencies:
 dev_dependencies:
   lints: ^6.0.0
 ''');
-      expectEquals(parsed.dependencies.length, 1);
-      expectEquals(parsed.dependencies.single, 'domain_todo');
-      expectEquals(parsed.devDependencies.length, 1);
-      expectEquals(parsed.devDependencies.single, 'lints');
+      expect(parsed.dependencies.length, 1);
+      expect(parsed.dependencies.single, 'domain_todo');
+      expect(parsed.devDependencies.length, 1);
+      expect(parsed.devDependencies.single, 'lints');
     });
   });
 
@@ -287,7 +291,7 @@ dev_dependencies:
           packageConfigJsonText: json,
           packageConfigFileDirectory: dartTool,
         );
-        expectEquals(
+        expect(
           roots['domain_todo'],
           normalizePathForCompare(packageRoot),
         );
@@ -313,8 +317,8 @@ dev_dependencies:
         layers: layers,
         packageRootPath: '/ws/example/usecase/todo/_impl',
       );
-      expectEquals(matched.length, 1);
-      expectEquals(matched.single.name, 'usecase');
+      expect(matched.length, 1);
+      expect(matched.single.name, 'usecase');
     });
 
     test('overlapping path_prefix yields multiple layer matches', () {
@@ -337,15 +341,15 @@ dev_dependencies:
         packageRootPath: '/ws/example/data/repository/todo',
       );
       // 複数マッチは許可しない。呼び出し側で warning し依存検査を止める前提.
-      expectEquals(matched.length, 2);
+      expect(matched.length, 2);
     });
   });
 
   group('parseArchitectureLayerDependencyIgnore', () {
     test('missing rules yields empty success', () {
       final result = parseArchitectureLayerDependencyIgnore('layers: []\n');
-      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
-      expectEquals(
+      expect(result is ArchitectureLayerIgnoreParseSuccess, isTrue);
+      expect(
         (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
         0,
       );
@@ -357,8 +361,8 @@ rules:
   public_type_file_name:
     keywords: {}
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
-      expectEquals(
+      expect(result is ArchitectureLayerIgnoreParseSuccess, isTrue);
+      expect(
         (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
         0,
       );
@@ -369,8 +373,8 @@ rules:
 rules:
   architecture_layer_dependency: {}
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
-      expectEquals(
+      expect(result is ArchitectureLayerIgnoreParseSuccess, isTrue);
+      expect(
         (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
         0,
       );
@@ -382,8 +386,8 @@ rules:
   architecture_layer_dependency:
     ignore: []
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
-      expectEquals(
+      expect(result is ArchitectureLayerIgnoreParseSuccess, isTrue);
+      expect(
         (result as ArchitectureLayerIgnoreParseSuccess).entries.length,
         0,
       );
@@ -397,11 +401,11 @@ rules:
       - a_pkg
       - b_pkg
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
+      expect(result is ArchitectureLayerIgnoreParseSuccess, isTrue);
       final entries = (result as ArchitectureLayerIgnoreParseSuccess).entries;
-      expectEquals(entries.length, 2);
-      expectEquals(entries[0], 'a_pkg');
-      expectEquals(entries[1], 'b_pkg');
+      expect(entries.length, 2);
+      expect(entries[0], 'a_pkg');
+      expect(entries[1], 'b_pkg');
     });
 
     test('preserves leading and trailing spaces in entry', () {
@@ -411,8 +415,8 @@ rules:
     ignore:
       - " pkg "
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseSuccess);
-      expectEquals(
+      expect(result is ArchitectureLayerIgnoreParseSuccess, isTrue);
+      expect(
         (result as ArchitectureLayerIgnoreParseSuccess).entries.single,
         ' pkg ',
       );
@@ -424,7 +428,7 @@ rules:
   architecture_layer_dependency:
     ignore: not_a_list
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+      expect(result is ArchitectureLayerIgnoreParseFailure, isTrue);
     });
 
     test('empty string entry is failure', () {
@@ -434,7 +438,7 @@ rules:
     ignore:
       - ""
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+      expect(result is ArchitectureLayerIgnoreParseFailure, isTrue);
     });
 
     test('non-string entry is failure', () {
@@ -444,13 +448,13 @@ rules:
     ignore:
       - 1
 ''');
-      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+      expect(result is ArchitectureLayerIgnoreParseFailure, isTrue);
     });
 
     test('invalid yaml is failure', () {
       // 既存 parseLayerArchitectureYaml と同じ YamlException 入力.
       final result = parseArchitectureLayerDependencyIgnore('layers: [');
-      expectTrue(result is ArchitectureLayerIgnoreParseFailure);
+      expect(result is ArchitectureLayerIgnoreParseFailure, isTrue);
     });
   });
 
@@ -458,12 +462,12 @@ rules:
     test(
       'reads name without trimming spaces inside value only as yaml gives',
       () {
-        expectEquals(parsePackageNameFromPubspecYaml('name: foo\n'), 'foo');
+        expect(parsePackageNameFromPubspecYaml('name: foo\n'), 'foo');
       },
     );
 
     test('missing name returns null', () {
-      expectEquals(parsePackageNameFromPubspecYaml('description: x\n'), null);
+      expect(parsePackageNameFromPubspecYaml('description: x\n'), null);
     });
   });
 
@@ -473,110 +477,77 @@ rules:
         ignoreNames: ['a', 'missing', 'b', 'gone'],
         packageRoots: {'a': '/x', 'b': '/y'},
       );
-      expectEquals(missing.length, 2);
-      expectEquals(missing[0], 'missing');
-      expectEquals(missing[1], 'gone');
+      expect(missing.length, 2);
+      expect(missing[0], 'missing');
+      expect(missing[1], 'gone');
     });
   });
 
   group('shouldSkipDependencyDirectionForPackage', () {
     test('skips on exact match when valid', () {
-      expectTrue(
+      expect(
         shouldSkipDependencyDirectionForPackage(
           ignoreConfigValid: true,
           ignoreEntries: const ['infra_example_ignore'],
           selfPackageName: 'infra_example_ignore',
         ),
+        isTrue,
       );
     });
 
     test('does not skip on partial match', () {
-      expectFalse(
+      expect(
         shouldSkipDependencyDirectionForPackage(
           ignoreConfigValid: true,
           ignoreEntries: const ['infra'],
           selfPackageName: 'infra_example_ignore',
         ),
+        isFalse,
       );
     });
 
     test('does not skip on case mismatch', () {
-      expectFalse(
+      expect(
         shouldSkipDependencyDirectionForPackage(
           ignoreConfigValid: true,
           ignoreEntries: const ['Infra_Example_Ignore'],
           selfPackageName: 'infra_example_ignore',
         ),
+        isFalse,
       );
     });
 
     test('does not skip when entry has spaces but self does not', () {
-      expectFalse(
+      expect(
         shouldSkipDependencyDirectionForPackage(
           ignoreConfigValid: true,
           ignoreEntries: const [' pkg '],
           selfPackageName: 'pkg',
         ),
+        isFalse,
       );
     });
 
     test('does not skip when invalid config', () {
-      expectFalse(
+      expect(
         shouldSkipDependencyDirectionForPackage(
           ignoreConfigValid: false,
           ignoreEntries: const ['infra_example_ignore'],
           selfPackageName: 'infra_example_ignore',
         ),
+        isFalse,
       );
     });
 
     test('does not skip when self name null', () {
-      expectFalse(
+      expect(
         shouldSkipDependencyDirectionForPackage(
           ignoreConfigValid: true,
           ignoreEntries: const ['infra_example_ignore'],
           selfPackageName: null,
         ),
+        isFalse,
       );
     });
   });
-
-  // ignore: avoid_print
-  print('All architecture_layer_checkers tests passed.');
-}
-
-void expectEquals(Object? actual, Object? expected) {
-  if (actual != expected) {
-    throw Exception('Expected: <$expected>\n  Actual: <$actual>');
-  }
-}
-
-void expectFalse(bool actual) {
-  if (actual) {
-    throw Exception('Expected: <false>\n  Actual: <$actual>');
-  }
-}
-
-void expectTrue(bool actual) {
-  if (!actual) {
-    throw Exception('Expected: <true>\n  Actual: <$actual>');
-  }
-}
-
-void group(String name, void Function() body) {
-  body();
-}
-
-void test(String name, void Function() body) {
-  try {
-    body();
-  } on Exception catch (error, stackTrace) {
-    // ignore: avoid_print
-    print('FAILED: $name');
-    // ignore: avoid_print
-    print(error);
-    // ignore: avoid_print
-    print(stackTrace);
-    throw Exception('Test failed: $name');
-  }
 }

@@ -1,2 +1,14 @@
 [tools]
 flutter = "3.50.0"
+
+[tasks.format]
+description = "Format lib/ and test/ across workspace packages"
+run = "scripts/format.sh"
+
+[tasks.analyze]
+description = "Run dart analyze on workspace root and packages/lint"
+run = "scripts/analyze.sh"
+
+[tasks.test]
+description = "Run all package, example, and lint unit tests"
+run = "scripts/test.sh"

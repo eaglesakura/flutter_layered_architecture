@@ -58,7 +58,8 @@ abstract class ProbeStateEntityDartDefault with _$ProbeStateEntityDartDefault {
 @internal
 @state
 @freezed
-abstract class ProbeStateEntityNamedFactory with _$ProbeStateEntityNamedFactory {
+abstract class ProbeStateEntityNamedFactory
+    with _$ProbeStateEntityNamedFactory {
   const factory ProbeStateEntityNamedFactory({
     required int value,
   }) = _ProbeStateEntityNamedFactory;

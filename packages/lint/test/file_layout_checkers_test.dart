@@ -3,53 +3,50 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/file_layout_checkers.dart';
 import 'package:path/path.dart' as p;
+import 'package:test/test.dart';
 
-/// `package:test` は workspace の flutter_test / analyzer ^8 と解決不能なため、
-/// assert ベースのランナーで unit test 相当を実行する.
-///
-/// 実行: `dart run test/file_layout_checkers_test.dart`
 void main() {
   group('pascalToSnakeCase', () {
     test('converts AddTodoUsecase', () {
-      expectEquals(pascalToSnakeCase('AddTodoUsecase'), 'add_todo_usecase');
+      expect(pascalToSnakeCase('AddTodoUsecase'), 'add_todo_usecase');
     });
     test('converts single segment Todo', () {
-      expectEquals(pascalToSnakeCase('Todo'), 'todo');
+      expect(pascalToSnakeCase('Todo'), 'todo');
     });
     test('converts consecutive capitals HTTPClient', () {
-      expectEquals(pascalToSnakeCase('HTTPClient'), 'http_client');
+      expect(pascalToSnakeCase('HTTPClient'), 'http_client');
     });
   });
 
   group('pascalCaseSegments', () {
     test('splits AddTodoUseCase', () {
       final segments = pascalCaseSegments('AddTodoUseCase');
-      expectEquals(segments.length, 4);
-      expectEquals(segments[0], 'Add');
-      expectEquals(segments[1], 'Todo');
-      expectEquals(segments[2], 'Use');
-      expectEquals(segments[3], 'Case');
+      expect(segments.length, 4);
+      expect(segments[0], 'Add');
+      expect(segments[1], 'Todo');
+      expect(segments[2], 'Use');
+      expect(segments[3], 'Case');
     });
 
     test('keeps Usecase as one segment', () {
       final segments = pascalCaseSegments('AddTodoUsecase');
-      expectEquals(segments.length, 3);
-      expectEquals(segments[0], 'Add');
-      expectEquals(segments[1], 'Todo');
-      expectEquals(segments[2], 'Usecase');
+      expect(segments.length, 3);
+      expect(segments[0], 'Add');
+      expect(segments[1], 'Todo');
+      expect(segments[2], 'Usecase');
     });
 
     test('splits HTTPClient', () {
       final segments = pascalCaseSegments('HTTPClient');
-      expectEquals(segments.length, 2);
-      expectEquals(segments[0], 'HTTP');
-      expectEquals(segments[1], 'Client');
+      expect(segments.length, 2);
+      expect(segments[0], 'HTTP');
+      expect(segments[1], 'Client');
     });
   });
 
   group('expectedFileNameForType', () {
     test('appends .dart to snake_case name', () {
-      expectEquals(
+      expect(
         expectedFileNameForType('AddTodoRequest'),
         'add_todo_request.dart',
       );
@@ -67,14 +64,14 @@ void main() {
     );
 
     test('empty keywords AddTodoUseCase', () {
-      expectEquals(
+      expect(
         expectedFileNameForType('AddTodoUseCase'),
         'add_todo_use_case.dart',
       );
     });
 
     test('UseCase maps to usecase', () {
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'AddTodoUseCase',
           keywords: [useCaseKeyword],
@@ -84,7 +81,7 @@ void main() {
     });
 
     test('ViewModel maps to viewmodel', () {
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'TodoListViewModel',
           keywords: [viewModelKeyword],
@@ -94,7 +91,7 @@ void main() {
     });
 
     test('Usecase spelling does not match UseCase', () {
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'AddTodoUsecase',
           keywords: [useCaseKeyword],
@@ -104,7 +101,7 @@ void main() {
     });
 
     test('non-matching AddTodoRequest', () {
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'AddTodoRequest',
           keywords: [useCaseKeyword],
@@ -114,28 +111,28 @@ void main() {
     });
 
     test('keyword at start', () {
-      expectEquals(
+      expect(
         expectedFileNameForType('UseCase', keywords: [useCaseKeyword]),
         'usecase.dart',
       );
     });
 
     test('keyword at end', () {
-      expectEquals(
+      expect(
         expectedFileNameForType('FooUseCase', keywords: [useCaseKeyword]),
         'foo_usecase.dart',
       );
     });
 
     test('keyword then suffix', () {
-      expectEquals(
+      expect(
         expectedFileNameForType('UseCaseFoo', keywords: [useCaseKeyword]),
         'usecase_foo.dart',
       );
     });
 
     test('same keyword twice', () {
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'UseCaseFooUseCase',
           keywords: [useCaseKeyword],
@@ -145,7 +142,7 @@ void main() {
     });
 
     test('two keywords', () {
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'AddTodoUseCaseViewModel',
           keywords: [useCaseKeyword, viewModelKeyword],
@@ -156,7 +153,7 @@ void main() {
 
     test('declaration order Case first', () {
       const caseKeyword = (keySegments: ['Case'], replacement: 'case');
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'AddTodoUseCase',
           keywords: [caseKeyword, useCaseKeyword],
@@ -170,7 +167,7 @@ void main() {
         keySegments: ['Use', 'Case'],
         replacement: 'use_case',
       );
-      expectEquals(
+      expect(
         expectedFileNameForType(
           'AddTodoUseCase',
           keywords: [underscoreKeyword],
@@ -180,7 +177,7 @@ void main() {
     });
 
     test('HTTPClient without keywords', () {
-      expectEquals(
+      expect(
         expectedFileNameForType('HTTPClient'),
         'http_client.dart',
       );
@@ -197,27 +194,27 @@ rules:
       ViewModel: viewmodel
 ''';
       final keywords = parsePublicTypeFileNameKeywords(yamlText);
-      expectEquals(keywords.length, 2);
-      expectEquals(keywords[0].keySegments.length, 2);
-      expectEquals(keywords[0].keySegments[0], 'Use');
-      expectEquals(keywords[0].keySegments[1], 'Case');
-      expectEquals(keywords[0].replacement, 'usecase');
-      expectEquals(keywords[1].keySegments.length, 2);
-      expectEquals(keywords[1].keySegments[0], 'View');
-      expectEquals(keywords[1].keySegments[1], 'Model');
-      expectEquals(keywords[1].replacement, 'viewmodel');
+      expect(keywords.length, 2);
+      expect(keywords[0].keySegments.length, 2);
+      expect(keywords[0].keySegments[0], 'Use');
+      expect(keywords[0].keySegments[1], 'Case');
+      expect(keywords[0].replacement, 'usecase');
+      expect(keywords[1].keySegments.length, 2);
+      expect(keywords[1].keySegments[0], 'View');
+      expect(keywords[1].keySegments[1], 'Model');
+      expect(keywords[1].replacement, 'viewmodel');
     });
 
     test('missing rules yields empty', () {
-      expectEquals(parsePublicTypeFileNameKeywords('layers: []').length, 0);
+      expect(parsePublicTypeFileNameKeywords('layers: []').length, 0);
     });
 
     test('empty rules map yields empty', () {
-      expectEquals(parsePublicTypeFileNameKeywords('rules: {}').length, 0);
+      expect(parsePublicTypeFileNameKeywords('rules: {}').length, 0);
     });
 
     test('empty rule config yields empty', () {
-      expectEquals(
+      expect(
         parsePublicTypeFileNameKeywords('''
 rules:
   public_type_file_name: {}
@@ -227,7 +224,7 @@ rules:
     });
 
     test('empty keywords map yields empty', () {
-      expectEquals(
+      expect(
         parsePublicTypeFileNameKeywords('''
 rules:
   public_type_file_name:
@@ -238,11 +235,11 @@ rules:
     });
 
     test('invalid yaml yields empty', () {
-      expectEquals(parsePublicTypeFileNameKeywords('rules: [').length, 0);
+      expect(parsePublicTypeFileNameKeywords('rules: [').length, 0);
     });
 
     test('skips empty string value', () {
-      expectEquals(
+      expect(
         parsePublicTypeFileNameKeywords('''
 rules:
   public_type_file_name:
@@ -264,7 +261,7 @@ rules:
             .writeAsStringSync('name: my_pkg\n');
         final dartFile = p.join(packageRoot, 'lib', 'x.dart');
         File(dartFile).writeAsStringSync('void main() {}');
-        expectEquals(resolveFileNameKeywordsForPath(dartFile).length, 0);
+        expect(resolveFileNameKeywordsForPath(dartFile).length, 0);
       } finally {
         tempDir.deleteSync(recursive: true);
       }
@@ -290,15 +287,15 @@ rules:
         final dartFile = p.join(packageRoot, 'lib', 'x.dart');
         File(dartFile).writeAsStringSync('void main() {}');
         final keywords = resolveFileNameKeywordsForPath(dartFile);
-        expectEquals(keywords.length, 2);
-        expectEquals(keywords[0].keySegments.length, 2);
-        expectEquals(keywords[0].keySegments[0], 'Use');
-        expectEquals(keywords[0].keySegments[1], 'Case');
-        expectEquals(keywords[0].replacement, 'usecase');
-        expectEquals(keywords[1].keySegments.length, 2);
-        expectEquals(keywords[1].keySegments[0], 'View');
-        expectEquals(keywords[1].keySegments[1], 'Model');
-        expectEquals(keywords[1].replacement, 'viewmodel');
+        expect(keywords.length, 2);
+        expect(keywords[0].keySegments.length, 2);
+        expect(keywords[0].keySegments[0], 'Use');
+        expect(keywords[0].keySegments[1], 'Case');
+        expect(keywords[0].replacement, 'usecase');
+        expect(keywords[1].keySegments.length, 2);
+        expect(keywords[1].keySegments[0], 'View');
+        expect(keywords[1].keySegments[1], 'Model');
+        expect(keywords[1].replacement, 'viewmodel');
       } finally {
         tempDir.deleteSync(recursive: true);
       }
@@ -307,13 +304,16 @@ rules:
 
   group('isUnderTestDirectory', () {
     test('returns false for lib path', () {
-      expectFalse(isUnderTestDirectory('/pkg/lib/src/add_todo_usecase.dart'));
+      expect(
+        isUnderTestDirectory('/pkg/lib/src/add_todo_usecase.dart'),
+        isFalse,
+      );
     });
     test('returns true for test path', () {
-      expectTrue(isUnderTestDirectory('/pkg/test/usecase_lint_probe.dart'));
+      expect(isUnderTestDirectory('/pkg/test/usecase_lint_probe.dart'), isTrue);
     });
     test('handles Windows separators', () {
-      expectTrue(isUnderTestDirectory(r'C:\pkg\test\probe.dart'));
+      expect(isUnderTestDirectory(r'C:\pkg\test\probe.dart'), isTrue);
     });
   });
 
@@ -332,11 +332,11 @@ abstract interface class AddTodoUsecase {
       ).unit;
 
       final types = publicNamedTypesOf(unit).toList(growable: false);
-      expectEquals(types.length, 2);
-      expectEquals(types[0].name.lexeme, 'AddTodoRequest');
-      expectEquals(types[1].name.lexeme, 'AddTodoUsecase');
+      expect(types.length, 2);
+      expect(types[0].name.lexeme, 'AddTodoRequest');
+      expect(types[1].name.lexeme, 'AddTodoUsecase');
       // Splitting is required: one_public_type_per_file would fire on 2nd+.
-      expectTrue(types.length >= 2);
+      expect(types.length >= 2, isTrue);
     });
 
     test('allows one public type with private helpers', () {
@@ -355,7 +355,7 @@ final class _Another {
 }
 ''',
       ).unit;
-      expectEquals(publicNamedTypesOf(unit).length, 1);
+      expect(publicNamedTypesOf(unit).length, 1);
     });
 
     test('allows zero public types', () {
@@ -368,7 +368,7 @@ final class _OnlyPrivate {
 void topLevel() {}
 ''',
       ).unit;
-      expectEquals(publicNamedTypesOf(unit).length, 0);
+      expect(publicNamedTypesOf(unit).length, 0);
     });
 
     test('ignores typedef', () {
@@ -378,7 +378,7 @@ typedef Callback = void Function();
 typedef IntList = List<int>;
 ''',
       ).unit;
-      expectEquals(publicNamedTypesOf(unit).length, 0);
+      expect(publicNamedTypesOf(unit).length, 0);
     });
 
     test('counts named extension as one public type', () {
@@ -390,8 +390,8 @@ extension StringX on String {
 ''',
       ).unit;
       final types = publicNamedTypesOf(unit).toList(growable: false);
-      expectEquals(types.length, 1);
-      expectEquals(types.single.name.lexeme, 'StringX');
+      expect(types.length, 1);
+      expect(types.single.name.lexeme, 'StringX');
     });
 
     test('ignores unnamed extension', () {
@@ -402,7 +402,7 @@ extension on String {
 }
 ''',
       ).unit;
-      expectEquals(publicNamedTypesOf(unit).length, 0);
+      expect(publicNamedTypesOf(unit).length, 0);
     });
   });
 
@@ -416,12 +416,12 @@ final class AddTodoUsecase {
 ''',
       ).unit;
       final types = publicNamedTypesOf(unit).toList(growable: false);
-      expectEquals(types.length, 1);
-      expectEquals(
+      expect(types.length, 1);
+      expect(
         expectedFileNameForType(types.single.name.lexeme),
         'add_todo_usecase.dart',
       );
-      expectEquals(
+      expect(
         fileBasename('/pkg/lib/src/add_todo_usecase.dart'),
         expectedFileNameForType(types.single.name.lexeme),
       );
@@ -436,10 +436,11 @@ final class AddTodoRequest {
 ''',
       ).unit;
       final types = publicNamedTypesOf(unit).toList(growable: false);
-      expectEquals(types.length, 1);
-      expectTrue(
+      expect(types.length, 1);
+      expect(
         fileBasename('/pkg/lib/src/add_todo_usecase.dart') !=
             expectedFileNameForType(types.single.name.lexeme),
+        isTrue,
       );
     });
   });
@@ -455,7 +456,7 @@ final class Generated {
 }
 ''',
       ).unit;
-      expectTrue(hasPartOfDirective(unit));
+      expect(hasPartOfDirective(unit), isTrue);
     });
 
     test('returns false for normal library files', () {
@@ -466,46 +467,7 @@ final class Foo {
 }
 ''',
       ).unit;
-      expectFalse(hasPartOfDirective(unit));
+      expect(hasPartOfDirective(unit), isFalse);
     });
   });
-
-  // ignore: avoid_print
-  print('All file_layout_checkers tests passed.');
-}
-
-void expectEquals(Object? actual, Object? expected) {
-  if (actual != expected) {
-    throw Exception('Expected: <$expected>\n  Actual: <$actual>');
-  }
-}
-
-void expectFalse(bool actual) {
-  if (actual) {
-    throw Exception('Expected: <false>\n  Actual: <$actual>');
-  }
-}
-
-void expectTrue(bool actual) {
-  if (!actual) {
-    throw Exception('Expected: <true>\n  Actual: <$actual>');
-  }
-}
-
-void group(String name, void Function() body) {
-  body();
-}
-
-void test(String name, void Function() body) {
-  try {
-    body();
-  } on Exception catch (error, stackTrace) {
-    // ignore: avoid_print
-    print('FAILED: $name');
-    // ignore: avoid_print
-    print(error);
-    // ignore: avoid_print
-    print(stackTrace);
-    throw Exception('Test failed: $name');
-  }
 }

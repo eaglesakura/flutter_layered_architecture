@@ -3,14 +3,11 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "[layered] dart format",
+            "label": "[layered] format",
             "command": "mise",
             "args": [
-                "exec",
-                "--",
-                "bash",
-                "-lc",
-                "set -euo pipefail; pkgs=(packages/annotations packages/lint example/app example/foundation/dependency_injection example/domain/todo example/data/repository/todo example/data/repository/todo/_impl example/data/injection example/usecase/todo example/usecase/todo/_impl example/usecase/injection example/screen/feature/todo_list); for d in \"${pkgs[@]}\"; do [ -d \"$d/lib\" ] && dart format \"$d/lib\"; [ -d \"$d/test\" ] && dart format \"$d/test\"; done"
+                "run",
+                "format"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -19,14 +16,11 @@
         },
         {
             "type": "shell",
-            "label": "[layered] dart analyze",
+            "label": "[layered] analyze",
             "command": "mise",
             "args": [
-                "exec",
-                "--",
-                "bash",
-                "-lc",
-                "set -euo pipefail; dart analyze --fatal-infos --fatal-warnings; dart analyze --fatal-infos --fatal-warnings packages/lint"
+                "run",
+                "analyze"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -35,54 +29,20 @@
         },
         {
             "type": "shell",
-            "label": "[layered] dart test",
+            "label": "[layered] test",
             "command": "mise",
             "args": [
-                "exec",
-                "--",
-                "bash",
-                "-lc",
-                "set -euo pipefail; pkgs=(packages/annotations example/domain/todo example/data/repository/todo example/data/repository/todo/_impl example/usecase/todo example/usecase/todo/_impl); for d in \"${pkgs[@]}\"; do if compgen -G \"$d/test/*_test.dart\" > /dev/null; then (cd \"$d\" && dart test ./test/); fi; done"
+                "run",
+                "test"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [],
-            "group": "test"
-        },
-        {
-            "type": "shell",
-            "label": "[layered] flutter test",
-            "command": "mise",
-            "args": [
-                "exec",
-                "--",
-                "bash",
-                "-lc",
-                "set -euo pipefail; pkgs=(example/app example/foundation/dependency_injection example/data/injection example/usecase/injection example/screen/feature/todo_list); for d in \"${pkgs[@]}\"; do if compgen -G \"$d/test/*_test.dart\" > /dev/null; then (cd \"$d\" && flutter test ./test/); fi; done"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [],
-            "group": "test"
-        },
-        {
-            "type": "shell",
-            "label": "[layered] lint unit tests",
-            "command": "mise",
-            "args": [
-                "exec",
-                "--",
-                "bash",
-                "-lc",
-                "set -euo pipefail; cd packages/lint; dart run test/architecture_layer_checkers_test.dart; dart run test/architecture_implementation_checkers_test.dart; dart run test/file_layout_checkers_test.dart; dart run test/public_api_checkers_test.dart; if [ -f test/state_entity_checkers_test.dart ]; then dart run test/state_entity_checkers_test.dart; fi"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [],
-            "group": "test"
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         }
     ]
 }
