@@ -1,5 +1,36 @@
 {
     "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "package",
+            "description": "公開するパッケージを選択してください",
+            "type": "pickString",
+            "options": [
+                {
+                    "value": "annotations"
+                },
+                {
+                    "value": "lint"
+                }
+            ]
+        },
+        {
+            "id": "dryRun",
+            "description": "dry-run の有無を選択してください",
+            "type": "pickString",
+            "default": "--dry-run",
+            "options": [
+                {
+                    "label": "dry-run（検証のみ）",
+                    "value": "--dry-run"
+                },
+                {
+                    "label": "本番公開",
+                    "value": ""
+                }
+            ]
+        }
+    ],
     "tasks": [
         {
             "type": "shell",
@@ -7,7 +38,7 @@
             "command": "mise",
             "args": [
                 "run",
-                "format"
+                "fla:format"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -20,7 +51,7 @@
             "command": "mise",
             "args": [
                 "run",
-                "analyze"
+                "fla:analyze"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -33,7 +64,7 @@
             "command": "mise",
             "args": [
                 "run",
-                "test"
+                "fla:test"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -43,6 +74,15 @@
                 "kind": "test",
                 "isDefault": true
             }
+        },
+        {
+            "label": "[layered] mise run fla:publish",
+            "type": "shell",
+            "command": "mise run fla:publish ${input:package} ${input:dryRun}",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
         }
     ]
 }

@@ -1,14 +1,26 @@
 [tools]
 flutter = "3.50.0"
 
-[tasks.format]
+[tasks."fla:format"]
 description = "Format lib/ and test/ across workspace packages"
 run = "scripts/format.sh"
 
-[tasks.analyze]
+[tasks."fla:analyze"]
 description = "Run dart analyze on workspace root and packages/lint"
 run = "scripts/analyze.sh"
 
-[tasks.test]
+[tasks."fla:test"]
 description = "Run all package, example, and lint unit tests"
 run = "scripts/test.sh"
+
+[tasks."fla:publish"]
+description = "Publish a packages/* package to pub.dev"
+usage = '''
+arg "<package>" help="Package directory under packages/" {
+  choices "annotations" "lint"
+}
+flag "--dry-run" help="Validate package without uploading to pub.dev"
+'''
+run = """
+scripts/publish.sh "${usage_package}" ${usage_dry_run:+--dry-run}
+"""
