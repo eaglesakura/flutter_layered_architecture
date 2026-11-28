@@ -36,7 +36,8 @@ Screen 層は **Model–View–ViewModel** で組む。
 | Usecase / Repository | `design-usecase` / `design-repository` |
 | 画面遷移・Factory / Launcher | `flutter-layered-architecture-screen-navigation` |
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
-| workspace | `flutter-layered-architecture-workspace` |
+| Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
+| workspace | `flutter-layered-architecture-workspace`
 
 ## いつ使うか
 

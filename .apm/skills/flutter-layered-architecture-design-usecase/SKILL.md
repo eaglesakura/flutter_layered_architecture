@@ -33,6 +33,7 @@ description: >-
 | package 所属レイヤー | `flutter-layered-architecture-resolve-package-layer` |
 | Repository パターン | `flutter-layered-architecture-design-repository` |
 | 画面 MVVM | `flutter-layered-architecture-design-screen-mvvm` |
+| Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 | workspace / app レイヤー | `flutter-layered-architecture-workspace` |
 
 ## いつ使うか

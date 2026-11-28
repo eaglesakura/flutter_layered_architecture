@@ -33,6 +33,7 @@ dart / Flutter の **workspace モノレポ**として、どの package があ�
 | Usecase の切り出し・命名 | `flutter-layered-architecture-design-usecase` |
 | Repository の窓口・状態 | `flutter-layered-architecture-design-repository` |
 | Screen MVVM 設計 | `flutter-layered-architecture-design-screen-mvvm` |
+| Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 | pub 依存の版上げ・検証 | `flutter-layered-architecture-library-update` |
 | 機能・ソースの所在調査 | `flutter-layered-architecture-code-search` |
 | Flutter SDK の最新版調査 | `flutter-maintenance-check-latest-version` |

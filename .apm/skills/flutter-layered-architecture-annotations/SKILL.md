@@ -25,6 +25,7 @@ description: >-
 
 * 個別診断コード（例: `usecase_single_method`）の深い修正だけ → 対応する `linter-rule-*`
 * ファイル分割・公開 API・バレル export だけ（annotation 無し） → `one_public_type_per_file` 等の file_layout 系
+* コメント・enum・try-catch・一般 DTO など言語規約だけ → `flutter-layered-architecture-coding-rules`
 * レイヤー所属・`path_prefix` による判定だけ → `flutter-layered-architecture-resolve-package-layer`
 * 依存方向（`level`）の検査・診断だけ → `flutter-layered-architecture-linter-rule-architecture-layer-dependency`
 

@@ -36,6 +36,7 @@ Datasource・DB・外部 API の差異を隠し、Usecase / 上位から同一�
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
 | Stateful / Delegate 診断 | 対応する `flutter-layered-architecture-linter-rule-*` |
 | 画面 MVVM | `flutter-layered-architecture-design-screen-mvvm` |
+| Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 | workspace | `flutter-layered-architecture-workspace` |
 
 ## いつ使うか
