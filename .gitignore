@@ -38,3 +38,12 @@ pubspec_overrides.yaml
 .apm/skills/*-workspace/
 devtools_options.yaml
 
+# APM install artifacts (apm.yml / .apm/ は正本としてコミットする)
+apm_modules/
+apm.lock.yaml
+.apm-local/
+.agents/
+.claude/
+.cursor/
+.github/agents/
+.github/prompts/

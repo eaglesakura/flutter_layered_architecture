@@ -34,7 +34,7 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "[layered] format",
+            "label": "[layered] fla:format",
             "command": "mise",
             "args": [
                 "run",
@@ -47,7 +47,7 @@
         },
         {
             "type": "shell",
-            "label": "[layered] analyze",
+            "label": "[layered] fla:analyze",
             "command": "mise",
             "args": [
                 "run",
@@ -60,7 +60,7 @@
         },
         {
             "type": "shell",
-            "label": "[layered] test",
+            "label": "[layered] fla:test",
             "command": "mise",
             "args": [
                 "run",
@@ -76,9 +76,22 @@
             }
         },
         {
-            "label": "[layered] mise run fla:publish",
+            "label": "[layered] fla:publish",
             "type": "shell",
             "command": "mise run fla:publish ${input:package} ${input:dryRun}",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "[layered] fla:apm:install",
+            "command": "mise",
+            "args": [
+                "run",
+                "fla:apm:install"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
