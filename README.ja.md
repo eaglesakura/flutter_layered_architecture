@@ -92,6 +92,14 @@ plugins:
 | `public_type_file_name` | [public_type_file_name.ja.md](docs/linter-rules/public_type_file_name.ja.md) |
 | `unexported_public_must_be_internal` | [unexported_public_must_be_internal.ja.md](docs/linter-rules/unexported_public_must_be_internal.ja.md) |
 
+### Riverpod Provider
+
+| ルール | ドキュメント |
+| --- | --- |
+| `provider_static_final` | [provider_static_final.ja.md](docs/linter-rules/provider_static_final.ja.md) |
+| `provider_ref_watch` | [provider_ref_watch.ja.md](docs/linter-rules/provider_ref_watch.ja.md) |
+| `provider_dependencies` | [provider_dependencies.ja.md](docs/linter-rules/provider_dependencies.ja.md) |
+
 ### `@usecase`
 
 | ルール | ドキュメント |

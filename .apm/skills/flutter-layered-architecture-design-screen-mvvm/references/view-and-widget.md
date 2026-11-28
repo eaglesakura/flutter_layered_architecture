@@ -29,9 +29,10 @@ final class TodoListScreen extends HookConsumerWidget {
 
 ## Riverpod
 
-* Provider はクラスの `static final`。グローバルトップレベル Provider を増やさない
+* Provider はクラスの `static final`。グローバルトップレベル Provider を置かない（lint: `provider_static_final`）
 * **`@riverpod` コード生成は使わない**（手書き `Provider.autoDispose`）
-* `dependencies` を明示する
+* ViewModel / entity 等の **Provider 定義**では、create 直下の依存は `ref.watch`、かつ `dependencies` に列挙する（lint: `provider_ref_watch` / `provider_dependencies`）。`stateBy` のみの派生 Provider は `dependencies` 強制の対象外
+* Widget の `build` / ハンドラ内の `ref.watch` / `ref.read` は本 lint の対象外（上記「watch / read」節）
 
 ## Widget 種別
 

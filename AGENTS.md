@@ -123,6 +123,7 @@ package の所属レイヤーを `layered_architecture.yaml` から機械的に�
 | --- | --- |
 | architecture | `architecture_layer_dependency`, `architecture_implementation_dependency` |
 | file_layout | `one_public_type_per_file`, `public_type_file_name`, `unexported_public_must_be_internal` |
+| provider | `provider_static_final`, `provider_ref_watch`, `provider_dependencies` |
 | usecase | `usecase_single_method`, `usecase_method_signature`, `usecase_immutable` |
 | delegate | `delegate_execute_method`, `delegate_immutable`, `delegate_internal`, `delegate_no_nested_delegate`, `delegate_no_usecase_instantiation` |
 | stateful | `stateful_immutable`, `stateful_has_mutable_state_stream`, `stateful_closes_mutable_state_stream`, `stateful_mutable_state_stream_state`, `stateful_methods_use_delegate` |

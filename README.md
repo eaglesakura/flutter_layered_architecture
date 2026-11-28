@@ -92,6 +92,14 @@ To suppress a finding in code (not disable the rule globally):
 | `public_type_file_name` | [public_type_file_name.md](docs/linter-rules/public_type_file_name.md) |
 | `unexported_public_must_be_internal` | [unexported_public_must_be_internal.md](docs/linter-rules/unexported_public_must_be_internal.md) |
 
+### Riverpod Provider
+
+| Rule | Docs |
+| --- | --- |
+| `provider_static_final` | [provider_static_final.md](docs/linter-rules/provider_static_final.md) |
+| `provider_ref_watch` | [provider_ref_watch.md](docs/linter-rules/provider_ref_watch.md) |
+| `provider_dependencies` | [provider_dependencies.md](docs/linter-rules/provider_dependencies.md) |
+
 ### `@usecase`
 
 | Rule | Docs |

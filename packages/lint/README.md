@@ -111,6 +111,18 @@ cd packages/lint && dart run test/file_layout_checkers_test.dart
 cd packages/lint && dart run test/public_api_checkers_test.dart
 ```
 
+### Riverpod Provider
+
+| Lint code | Check |
+| --- | --- |
+| `provider_static_final` | Provider-like declarations must be `static final` on a class-like type (not top-level) |
+| `provider_ref_watch` | Prefer `ref.watch` over `ref.read` inside Provider create callbacks |
+| `provider_dependencies` | Each `ref.watch` argument in create must appear in `dependencies` (literal match; extras allowed; no watches → skip) |
+
+Helper unit test:
+
+    cd packages/lint && dart run test/provider_checkers_test.dart
+
 ### `@usecase`
 
 | Lint code | Check |

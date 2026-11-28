@@ -63,11 +63,17 @@ builder.inject(AddTodoUsecase.provider, AddTodoUsecaseImpl.provider);
 
 ### DO
 
-* IF / 実装の両方に `provider` を置く
+* IF / 実装の両方に **class 系の** `static final provider` を置く（トップレベル Provider 禁止。lint: `provider_static_final`）
 * 実装は実体型 + 依存明示
+* 生成コールバック直下の依存取得は **`ref.watch`**（lint: `provider_ref_watch`）
+* `ref.watch` した参照は **`dependencies` に字面どおり列挙**（lint: `provider_dependencies`）
+* `ref.watch` が無い宣言（IF stub、`StateStreamProvider...stateBy` のみ等）では `dependencies` を強制しない
 
 ### DO NOT
 
 * 呼び出し側で `new XxxImpl(...)`
 * IF の stub を本番実装の直接生成にすり替える（injection を飛ばす）
 * 実装 Provider だけを公開して IF stub を省略する（上位が実装型に縛られる）
+* トップレベルに Provider を置く
+* create 直下で `ref.read` により依存を取る
+* `ref.watch(X)` があるのに `dependencies` から `X` を省略する
