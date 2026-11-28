@@ -215,7 +215,7 @@ apm install ./path/to/flutter_layered_architecture
 | Workspace | `flutter-layered-architecture-workspace` |
 | Coding rules | `flutter-layered-architecture-coding-rules` |
 | Dependencies | `flutter-layered-architecture-dependencies` |
-| Design | `flutter-layered-architecture-design-usecase` / `flutter-layered-architecture-design-repository` / `flutter-layered-architecture-design-dependency-injection` / `flutter-layered-architecture-design-screen-mvvm` / `flutter-layered-architecture-design-screen-navigation` / `flutter-layered-architecture-design-test` |
+| Design | `flutter-layered-architecture-design-usecase` / `flutter-layered-architecture-design-repository` / `flutter-layered-architecture-design-dependency-injection` / `flutter-layered-architecture-design-screen-mvvm` / `flutter-layered-architecture-design-screen-navigation` / `flutter-layered-architecture-design-test` / `flutter-layered-architecture-design-golden-test` |
 | Annotations | `flutter-layered-architecture-annotations` |
 | Architecture layer | `flutter-layered-architecture-resolve-package-layer` |
 | Linter rules | `flutter-layered-architecture-linter-rule-{rule}`（診断コードの `_` を `-` に置換） |

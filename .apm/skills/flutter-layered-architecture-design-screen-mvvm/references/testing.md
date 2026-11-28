@@ -19,5 +19,5 @@
 
 ## Golden / Widget
 
-* 見た目は Entity を固定注入できる形にする
-* 操作経路の検証で ViewModel を `build` 中に `watch` しすぎない（本番と同じ watch/read 規律）
+見た目回帰・Entity 固定注入・ScreenImpl 撮影は
+`flutter-layered-architecture-design-golden-test` を正本とする（MVVM 画面では必須）。

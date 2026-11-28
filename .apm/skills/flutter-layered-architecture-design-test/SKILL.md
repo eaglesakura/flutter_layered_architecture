@@ -4,15 +4,15 @@ description: >-
   Flutter Layered Architecture のテスト設計正本。Unit Test ハーネス（testing_core /
   TestContext の ref・refBuilder、testing_injection / injectForTesting、_test package
   置き場・依存）、本番 Impl 実体 DI での検証、Mock 可否（故障注入・境界のみ /
-  mocktail シナリオ含む）、ViewModel・Usecase のテスト組み立て、Golden Test（端末サイズ・
-  フォント・デバイス定義・見た目比較の置き場）を扱う。「_test package」
+  mocktail シナリオ含む）、ViewModel・Usecase のテスト組み立てを扱う。「_test package」
   「testing_core / testing_injection」「injectForTesting」「TestContext」
-  「実体 DI でロジック検証」「Mock / mocktail でシナリオテスト」
-  「Golden / スクリーンショット比較の設計」では必ず使う。testing_injection を新設しない
-  Mock 前提のテストサンプルでも本 SKILL を優先。本番 Provider bind・app inject 順は
-  design-dependency-injection、Usecase Request/IF 切り出し・命名のみ、Screen 遷移 /
-  MVVM entity 設計のみ、lint 修正のみ、package レイヤー解決、期待値アサーションの
-  デバッグだけのときは使わない。
+  「実体 DI でロジック検証」「Mock / mocktail でシナリオテスト」では必ず使う。
+  Golden / スクリーンショット比較の設計・実装は
+  flutter-layered-architecture-design-golden-test を使う（本 SKILL は DI 併用時のみ）。
+  testing_injection を新設しない Mock 前提のテストサンプルでも本 SKILL を優先。
+  本番 Provider bind・app inject 順は design-dependency-injection、Usecase Request/IF
+  切り出し・命名のみ、Screen 遷移 / MVVM entity 設計のみ、lint 修正のみ、package
+  レイヤー解決、期待値アサーションのデバッグだけのときは使わない。
 ---
 # Flutter Layered Architecture / Unit Test 設計
 
@@ -30,7 +30,7 @@ Mock は「Unit Test では再現できない境界」（認証必須の通信�
 | Usecase の切り出し・Request | `flutter-layered-architecture-design-usecase` |
 | Repository の窓口・状態 | `flutter-layered-architecture-design-repository` |
 | Screen MVVM（ViewModel 内の検証観点） | `flutter-layered-architecture-design-screen-mvvm` |
-| Golden の詳細手順・アセット実装 | `flutter-layered-architecture-design-golden-test`（未整備時は本 SKILL で置き場・入口を案内） |
+| Golden の詳細手順・アセット実装 | `flutter-layered-architecture-design-golden-test` |
 | package 所属レイヤー | `flutter-layered-architecture-resolve-package-layer` |
 | Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 
@@ -42,7 +42,7 @@ DI の「どう inject するか」は DI 正本。本 SKILL は **テスト入�
 * `_test` package の置き場・依存・入口を設計する
 * Usecase / Repository 等のロジックを **実体 DI** で Unit Test する
 * 「Mock するか実体か」の判断が必要なとき（mocktail シナリオ、testing_injection を新設しない場合含む）
-* Golden / スクリーンショット比較の置き場・入口設計（詳細は `design-golden-test`）
+* Golden で `injectForTesting` が必要なとき（見た目設計自体は `design-golden-test`）
 * 既存の薄い testing 記述（各 design SKILL の testing.md）より、ハーネス全体を揃えるとき
 
 ## 作業手順
@@ -116,7 +116,7 @@ flowchart LR
 | Usecase 追加後の Unit Test | `design-usecase` | 実体 DI で検証するハーネス |
 | Repository の Mock / Fake / `_testing` | `design-repository` の testing | いつ実体を残し、いつ Mock にするか |
 | ViewModel テストの観点 | `design-screen-mvvm` | `injectForTesting` 後の Container 取得 |
-| Golden | `design-golden-test` | 触らない |
+| Golden | `flutter-layered-architecture-design-golden-test` | DI 併用時のみ入口を案内 |
 
 ## ナレッジベース
 

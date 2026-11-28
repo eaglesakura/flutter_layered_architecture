@@ -35,7 +35,7 @@
 ## APM SKILL
 
 `flutter_layered_architecture_lint` / `flutter_layered_architecture_annotations`、
-dart workspace 把握、コーディング規約、外部依存管理、Usecase / Repository / Screen MVVM / 画面遷移設計向け SKILL 集。
+dart workspace 把握、コーディング規約、外部依存管理、Usecase / Repository / Screen MVVM / 画面遷移 / Unit Test / Golden Test 設計向け SKILL 集。
 リポジトリルートの `apm.yml` が APM パッケージ定義である。
 
 ```text
@@ -68,6 +68,10 @@ dart workspace 把握、コーディング規約、外部依存管理、Usecase 
 │   ├── SKILL.md             # Unit Test ハーネス（testing_core / testing_injection / _test）
 │   ├── assets/              # testing_core / testing_injection / _test 参考実装
 │   └── references/          # ファイルレイアウト / Mock 方針
+├── flutter-layered-architecture-design-golden-test/
+│   ├── SKILL.md             # Golden Test（Alchemist / ScreenImpl / State→Entity）
+│   ├── assets/              # testing_golden / screen_golden_example 参考実装
+│   └── references/          # MVVM パターン / レイアウト / CI・platform
 ├── flutter-layered-architecture-annotations/
 │   ├── SKILL.md
 │   └── references/          # アノテーション別（拡張時もこの形式）
@@ -105,6 +109,7 @@ Linter が保証しない設計と実装パターン。
 * `flutter-layered-architecture-design-screen-mvvm` — Screen MVVM（lint が見ない設計判断）
 * `flutter-layered-architecture-design-screen-navigation` — 画面遷移（`launch`/`push`・Factory / Launcher / Input DI / Proxy）
 * `flutter-layered-architecture-design-test` — Unit Test ハーネス（`testing_core` / `testing_injection` / `_test`）と命名三区分・leaf・ブラックボックス
+* `flutter-layered-architecture-design-golden-test` — Golden Test（Alchemist / ScreenImpl / State→Entity。MVVM では必須）
 
 ### Annotations
 

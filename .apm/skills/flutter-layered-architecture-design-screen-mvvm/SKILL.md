@@ -12,6 +12,7 @@ description: >-
   flutter-layered-architecture-linter-rule-*、
   Usecase / Repository は design-usecase / design-repository、
   画面遷移は flutter-layered-architecture-design-screen-navigation、
+  Golden（見た目・State→Entity）は flutter-layered-architecture-design-golden-test（MVVM では必須）、
   package 地図・所在の入口は flutter-layered-architecture-workspace を使う。
 ---
 # Flutter Layered Architecture / Screen 層 MVVM
@@ -35,6 +36,7 @@ Screen 層は **Model–View–ViewModel** で組む。
 | `delegate_*` | `flutter-layered-architecture-linter-rule-delegate-*` |
 | Usecase / Repository | `design-usecase` / `design-repository` |
 | 画面遷移・Factory / Launcher | `flutter-layered-architecture-design-screen-navigation` |
+| Golden Test（見た目・State→Entity） | `flutter-layered-architecture-design-golden-test`（MVVM では必須） |
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
 | Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 | workspace | `flutter-layered-architecture-workspace`
@@ -85,7 +87,7 @@ Screen 層は **Model–View–ViewModel** で組む。
 
 * **1 画面 = 1 ViewModel**（スコープが独立なら柔軟に）
 * Riverpod は **DI とライフサイクル**に限る。`Provider.autoDispose` を手書きする（**`@riverpod` は使わない**）
-* ルートは `{画面名}Screen`（public）、見た目は `{画面名}ScreenImpl`。子は **Entity のみ watch**、操作は `ref.read`
+* ルートは `{画面名}Screen`（DI・初期化）、見た目は `{画面名}ScreenImpl` で **完全分離**。子は Entity を **`select` / `watchBy` で必要分だけ watch**、操作は `ref.read`。Entity バリアントは型判定して子へ `switch`。ScreenEntity をフィールドにした Widget は作らない
 * 操作は **`onXXXX()`**（lint: `viewmodel_on_method_names`）。本体は `.action.dart` の **使い捨て Delegate**（フィールド保持しない）
 * **非同期初期化は `onInitialize()`**。コンストラクタ / Provider から呼ばず、ルート Screen の `useEffect` 等から呼ぶ
 * `updateWithLock` 内は短い状態遷移のみ。I/O・RPC はロック外
@@ -110,7 +112,7 @@ Screen 層は **Model–View–ViewModel** で組む。
 | [view-and-widget.md](./references/view-and-widget.md) | Screen / ScreenImpl、watch/read、初期化 |
 | [action-and-delegate.md](./references/action-and-delegate.md) | `onXXXX`、使い捨て Delegate、短いロック |
 | [state-entity-event.md](./references/state-entity-event.md) | State / Entity / Event の設計判断 |
-| [testing.md](./references/testing.md) | ViewModel / Delegate テスト |
+| [testing.md](./references/testing.md) | ViewModel / Delegate テスト（Golden は `design-golden-test`） |
 
 ## 最小の形（example）
 
@@ -148,6 +150,10 @@ final class TodoListScreen extends HookConsumerWidget {
 ### DO: 表示は Entity、操作は onXXXX、可変は State ストリーム
 
 * View が State や Repository を直接いじるとテストと責務が崩れる
+
+### DO: Screen（DI）と ScreenImpl（見た目）を完全分離する
+
+* 詳細・select / バリアント切替 / Entity 非フィールド化は [view-and-widget.md](./references/view-and-widget.md)
 
 ### DO NOT: Linter / Annotations が見る構造を本 SKILL に再掲する
 
