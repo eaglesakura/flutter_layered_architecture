@@ -29,9 +29,11 @@ jobs:
           echo "dart path: $(which dart)"
           echo "yq version: $(yq --version)"
 
-      # workspace 依存を解決する
-      - name: dart pub get
-        run: dart pub get
+      # workspace と workspace 外 packages/lint の依存を解決する
+      - name: flutter pub get
+        run: |
+          flutter pub get
+          (cd packages/lint && flutter pub get)
 
       # formatter チェック（差分があれば fail）
       - name: dart format --check
