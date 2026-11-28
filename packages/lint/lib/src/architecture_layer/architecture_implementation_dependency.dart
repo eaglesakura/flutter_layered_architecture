@@ -125,8 +125,7 @@ final class _Visitor extends SimpleAstVisitor<void> {
       );
     } else {
       ignoreEntries =
-          (ignoreParse as ArchitectureImplementationIgnoreParseSuccess)
-              .entries;
+          (ignoreParse as ArchitectureImplementationIgnoreParseSuccess).entries;
       ignoreValid = true;
     }
 
