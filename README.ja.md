@@ -228,6 +228,7 @@ linter rule のカテゴリとルール一覧は [AGENTS.md](AGENTS.md) を参�
 | Dependency Injection | [Riverpod](https://pub.dev/packages/riverpod) |
 | UI 構築 | [Riverpod](https://pub.dev/packages/flutter_riverpod) / [Hooks](https://pub.dev/packages/flutter_hooks)（[hooks_riverpod](https://pub.dev/packages/hooks_riverpod)） |
 | 状態管理 | [state_stream](https://pub.dev/packages/state_stream) / [state_stream_riverpod](https://pub.dev/packages/state_stream_riverpod) |
+| ナビゲーション | [go_router](https://pub.dev/packages/go_router) |
 
 ## リポジトリ構成
 
