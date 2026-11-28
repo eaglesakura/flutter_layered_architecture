@@ -29,19 +29,22 @@
 │   ├── usecase/todo/         # usecase_todo (+ _impl)
 │   ├── usecase/injection/    # usecase_injection
 │   └── screen/feature/todo_list/ # screen_feature_todo_list
-└── .apm/skills/              # Agent 向け SKILL（workspace / annotations / resolve / linter rule）
+└── .apm/skills/              # Agent 向け SKILL（workspace / design-usecase / annotations / resolve / linter rule）
 ```
 
 ## APM SKILL
 
-`flutter_layered_architecture_lint` / `flutter_layered_architecture_annotations` および
-dart workspace 把握向け SKILL 集。
+`flutter_layered_architecture_lint` / `flutter_layered_architecture_annotations`、
+dart workspace 把握、Usecase 設計判断向け SKILL 集。
 リポジトリルートの `apm.yml` が APM パッケージ定義である。
 
 ```text
 .apm/skills/
 ├── flutter-layered-architecture-workspace/
 │   └── SKILL.md             # dart workspace 構造の把握
+├── flutter-layered-architecture-design-usecase/
+│   ├── SKILL.md             # Usecase 設計・実装パターン
+│   └── references/          # Request / package・injection / 依存・Fake
 ├── flutter-layered-architecture-annotations/
 │   ├── SKILL.md
 │   └── references/          # アノテーション別（拡張時もこの形式）
@@ -56,6 +59,12 @@ dart workspace 把握向け SKILL 集。
 ルート `pubspec.yaml` の `workspace:`・アプリ入口・子 package の `resolution: workspace` を読む。
 
 * `flutter-layered-architecture-workspace`
+
+### Design
+
+Usecase の切り出し・命名・Request／package 分割・結線など、Linter が保証しない設計と実装パターン。
+
+* `flutter-layered-architecture-design-usecase`
 
 ### Annotations
 
