@@ -10,7 +10,7 @@ import 'package:flutter_layered_architecture_lint/src/architecture_lint.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
-/// `@implementation` package への依存を同一レイヤー `@injection` に限定する Lint（WARNING）.
+/// `_impl` package への依存を同一レイヤー `_injection` に限定する Lint（WARNING）.
 ///
 /// アーキテクチャ外・定義不在はスキップ（`architecture_layer_dependency` 担当）.
 ///
@@ -30,8 +30,8 @@ final class ArchitectureImplementationDependency extends AnalysisRule {
     : super(
         name: 'architecture_implementation_dependency',
         description:
-            'Warns when a non-injection or cross-layer package depends on '
-            '@implementation packages.',
+            'Warns when a non-_injection or cross-layer package depends on '
+            '_impl packages.',
       );
 
   @override
@@ -48,6 +48,10 @@ final class ArchitectureImplementationDependency extends AnalysisRule {
 
 final class _Visitor extends SimpleAstVisitor<void> {
   static final Set<String> _reportedPackageRoots = {};
+
+  /// 定義 yaml 正規化パス → ignore 設定診断の二重報告防止.
+  static final Set<String> _reportedDefinitionPaths = {};
+  static const _ignoreConfigKeyPrefix = '__ignore_config__:';
 
   final ArchitectureImplementationDependency rule;
   final RuleContext context;
@@ -94,18 +98,6 @@ final class _Visitor extends SimpleAstVisitor<void> {
     }
     final selfLayer = selfLayers.single;
 
-    final selfRole = detectPackageRole(
-      packageRootPath: packageRoot,
-      readTextFile: readTextFile,
-    );
-    if (selfRole == PackageRole.both) {
-      const message =
-          'Package declares both @injection and @implementation on barrel '
-          'libraries; keep exactly one role.';
-      rule.reportAtNode(node, arguments: [message]);
-      return;
-    }
-
     final packageConfigPath = findPackageConfigJson(packageRoot);
     if (packageConfigPath == null) {
       return;
@@ -118,15 +110,63 @@ final class _Visitor extends SimpleAstVisitor<void> {
     if (pubspecText == null) {
       return;
     }
+
+    final ignoreParse = parseArchitectureImplementationDependencyIgnore(
+      definitionYamlText,
+    );
+    var ignoreValid = false;
+    var ignoreEntries = <String>[];
+    if (ignoreParse is ArchitectureImplementationIgnoreParseFailure) {
+      _reportIgnoreConfigOnce(
+        node,
+        definitionPath,
+        'Invalid rules.architecture_implementation_dependency.ignore: '
+        '${ignoreParse.message}',
+      );
+    } else {
+      ignoreEntries =
+          (ignoreParse as ArchitectureImplementationIgnoreParseSuccess)
+              .entries;
+      ignoreValid = true;
+    }
+
+    final packageRoots = packageRootsFromPackageConfig(
+      packageConfigJsonText: packageConfigText,
+      packageConfigFileDirectory: p.dirname(packageConfigPath),
+    );
+
+    if (ignoreValid) {
+      final missing = unresolvedIgnorePackageNames(
+        ignoreNames: ignoreEntries,
+        packageRoots: packageRoots,
+      );
+      if (missing.isNotEmpty) {
+        _reportIgnoreConfigOnce(
+          node,
+          definitionPath,
+          'Unknown package name(s) in '
+          'rules.architecture_implementation_dependency.ignore: '
+          '${missing.join(', ')}',
+        );
+        ignoreValid = false;
+      }
+    }
+
+    final selfPackageName = parsePackageNameFromPubspecYaml(pubspecText);
+    if (shouldSkipDependencyDirectionForPackage(
+      ignoreConfigValid: ignoreValid,
+      ignoreEntries: ignoreEntries,
+      selfPackageName: selfPackageName,
+    )) {
+      return;
+    }
+
+    final selfRole = packageRoleFromPackageName(selfPackageName);
     final direct = parseDirectDependencyNames(pubspecText);
     final dependencyNames = <String>{
       ...direct.dependencies,
       ...direct.devDependencies,
     };
-    final packageRoots = packageRootsFromPackageConfig(
-      packageConfigJsonText: packageConfigText,
-      packageConfigFileDirectory: p.dirname(packageConfigPath),
-    );
 
     for (final dependencyName in dependencyNames) {
       final dependencyRoot = packageRoots[dependencyName];
@@ -142,10 +182,7 @@ final class _Visitor extends SimpleAstVisitor<void> {
         continue;
       }
       final dependencyLayer = dependencyLayers.single;
-      final dependencyRole = detectPackageRole(
-        packageRootPath: dependencyRoot,
-        readTextFile: readTextFile,
-      );
+      final dependencyRole = packageRoleFromPackageName(dependencyName);
       if (!isImplementationDependencyAllowed(
         selfRole: selfRole,
         selfLayerName: selfLayer.name,
@@ -153,12 +190,25 @@ final class _Visitor extends SimpleAstVisitor<void> {
         dependencyLayerName: dependencyLayer.name,
       )) {
         final message =
-            "Dependency '$dependencyName' is @implementation (or both) and "
-            'may only be depended on by same-layer @injection packages '
+            "Dependency '$dependencyName' is an _impl package and "
+            'may only be depended on by same-layer _injection packages '
             '(self role=${selfRole.name}, layer=${selfLayer.name} → '
             'dep layer=${dependencyLayer.name}).';
         rule.reportAtNode(node, arguments: [message]);
       }
     }
+  }
+
+  void _reportIgnoreConfigOnce(
+    CompilationUnit node,
+    String definitionPath,
+    String message,
+  ) {
+    final key = '$_ignoreConfigKeyPrefix$definitionPath';
+    if (_reportedDefinitionPaths.contains(key)) {
+      return;
+    }
+    _reportedDefinitionPaths.add(key);
+    rule.reportAtNode(node, arguments: [message]);
   }
 }
