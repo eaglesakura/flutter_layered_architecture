@@ -1,0 +1,43 @@
+{
+  "skill_name": "flutter-layered-architecture-design-dependency-injection",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Flutter Layered Architecture の example（@flutter_layered_architecture/example/）に、既存の Todo Usecase 群と同じ流儀で ClearCompletedTodosUsecase を追加する設計を提案してください。既存の AddTodoUsecase / AddTodoUsecaseImpl / usecase_injection / ExampleDependencyInjection / main.dart を参照し、(1) IF の provider、(2) Impl の provider（型パラメータ含む）、(3) 実装バレルの annotation、(4) usecase_injection への bind、(5) app 側で触る必要があるか、を Dart コード断片付きで提案してください。リポジトリの実ファイルは変更せず、提案を Markdown + Dart として outputs に保存してください。",
+      "expected_output": "IF stub provider、実体型 Impl provider、@implementation / @injection、usecase_injection の inject、app は既存集約経由で足りる旨の提案",
+      "files": [],
+      "expectations": [
+        "IF の provider が UnimplementedError（未結線失敗）になっている",
+        "実装側 provider の型パラメータが実体型（ClearCompletedTodosUsecaseImpl 等）である",
+        "実装バレルに @implementation を付けると述べている",
+        "usecase_injection（または同等の layer injection）で inject(IF.provider, Impl.provider) する",
+        "app は既存の UsecaseInjectionBindings / ExampleDependencyInjection 経由で足り、main に個別 inject を増やさない（bindings 追加のみ）と述べている"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "example の data レイヤーに、Todo とは別の TagRepository（タグ一覧の list のみ）を追加する DI 設計を提案してください。参照先: example/data/repository/todo/（IF・InMemory impl）、data_injection、foundation DependencyBuilder。提案に含めるもの: IF の UnimplementedError provider、InMemoryTagRepository の Provider（実体型）、_impl バレルの @implementation、data_injection の bind 追加、呼び出し側は TagRepository.provider のみを使うこと。実ファイルは変更せず、提案を outputs に保存してください。",
+      "expected_output": "data_repository_tag 相当の IF/impl provider と data_injection bind、実体型 Provider、app は DataInjectionBindings 経由",
+      "files": [],
+      "expectations": [
+        "TagRepository.provider が UnimplementedError stub である",
+        "InMemoryTagRepository.provider が Provider<InMemoryTagRepository>（実体型）である",
+        "_impl バレルに @implementation を付ける",
+        "data_injection で inject(TagRepository.provider, InMemoryTagRepository.provider) する",
+        "呼び出し側は TagRepository.provider のみを使い実装型を直接 new / watch しないと述べている"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "example の既存 Todo DI（TodoRepository ↔ InMemoryTodoRepository、AddTodoUsecase ↔ AddTodoUsecaseImpl、DataInjectionBindings / UsecaseInjectionBindings、main の DependencyBuilder）をレビューし、「新しい Usecase を1つ足すとき」のチェックリスト形式の設計メモを書いてください。特に (a) 実装 Provider の型は IF 型か実体型か、(b) 結線はどの package に書くか、(c) なぜ app が最終 inject 呼び出しをするのか、(d) ProviderContainerBuilder / DependencyBuilder の位置づけ、を明記してください。実ファイルは変更せず、設計メモを outputs/design-memo.md に保存してください。",
+      "expected_output": "実体型推奨、{layer}_injection、Flutter 制約で app が最終呼び出し、Builder は推奨だが必須でない",
+      "files": [],
+      "expectations": [
+        "実装 Provider は実体型（Provider<XxxImpl>）を推奨すると明記している",
+        "結線は usecase_injection など {レイヤー}_injection package に書くと明記している",
+        "最終 inject / build 呼び出しが app である理由（Flutter の入口・Container 保持）に触れている",
+        "ProviderContainerBuilder または DependencyBuilder は推奨だが必須ではない（同等の override 手段可）と述べている"
+      ]
+    }
+  ]
+}

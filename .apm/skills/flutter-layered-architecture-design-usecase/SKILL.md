@@ -11,6 +11,7 @@ description: >-
   依存方向は flutter-layered-architecture-linter-rule-architecture-layer-dependency、
   package 所属は flutter-layered-architecture-resolve-package-layer、
   Repository 実装パターンは flutter-layered-architecture-design-repository、
+  Provider / injection / Container 結線は flutter-layered-architecture-design-dependency-injection、
   画面 MVVM は flutter-layered-architecture-design-screen-mvvm を使う。
 ---
 # Flutter Layered Architecture / Usecase 設計
@@ -32,6 +33,7 @@ description: >-
 | レイヤー依存方向 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
 | package 所属レイヤー | `flutter-layered-architecture-resolve-package-layer` |
 | Repository パターン | `flutter-layered-architecture-design-repository` |
+| Provider / injection / Container | `flutter-layered-architecture-design-dependency-injection` |
 | 画面 MVVM | `flutter-layered-architecture-design-screen-mvvm` |
 | Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 | workspace / app レイヤー | `flutter-layered-architecture-workspace` |
@@ -111,8 +113,7 @@ flowchart TB
 ## 実装パターン（要約）
 
 * **入出力**: 引数は `*Request` に寄せる（複数入力パターンは sealed）。戻りはドメイン型でも `*Result` でも可（example は `Future<Todo>` 等）
-* **package**: IF（`usecase_foo`）と実装（入れ子 `_impl` → `usecase_foo_impl`）を分ける。結線は `@injection`（`usecase_injection`）
-* **Provider**: IF 側は `UnimplementedError`、実装側で実体と `dependencies` を書く
+* **package**: IF（`usecase_foo`）と実装（入れ子 `_impl` → `usecase_foo_impl`）を分ける。結線は `design-dependency-injection`（`usecase_injection`）
 * **依存**: 他 Usecase / Repository への依存は可。循環は不可
 * **internal**: 画面・Repository `_impl` 内の共通処理は `@internal` Usecase でよい（公開 IF 分離は必須でない）
 
@@ -121,14 +122,16 @@ flowchart TB
 | 参照 | 使うとき |
 | --- | --- |
 | [request-and-return.md](./references/request-and-return.md) | Request / sealed / 戻り値 |
-| [package-provider-injection.md](./references/package-provider-injection.md) | IF/_impl、Provider、injection |
+| [package-provider-injection.md](./references/package-provider-injection.md) | IF/_impl の置き場地図（DI 詳細は DI 正本へ） |
 | [dependencies-internal-fake.md](./references/dependencies-internal-fake.md) | 依存・循環回避・internal・Fake |
+| `flutter-layered-architecture-design-dependency-injection` | Provider・injection・Container |
 
 ## 最小の形
 
 ```dart
 @usecase
 abstract interface class AddTodoUsecase {
+  // provider / inject の形は design-dependency-injection が正本
   static final provider = Provider<AddTodoUsecase>(
     (ref) => throw UnimplementedError('AddTodoUsecase is not bound'),
   );
@@ -137,9 +140,6 @@ abstract interface class AddTodoUsecase {
 
   Future<Todo> execute(AddTodoRequest request);
 }
-
-// 実装バレル: @implementation / 結線バレル: @injection
-// builder.inject(AddTodoUsecase.provider, AddTodoUsecaseImpl.provider);
 ```
 
 ## ナレッジベース

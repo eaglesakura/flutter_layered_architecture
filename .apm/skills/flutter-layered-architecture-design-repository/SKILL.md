@@ -9,6 +9,7 @@ description: >-
   Usecase 側は flutter-layered-architecture-design-usecase、
   `@stateful` / `@implementation` / `@injection` は
   flutter-layered-architecture-annotations、
+  Provider / injection / Container 結線は flutter-layered-architecture-design-dependency-injection、
   依存方向は flutter-layered-architecture-linter-rule-architecture-layer-dependency、
   実装依存は flutter-layered-architecture-linter-rule-architecture-implementation-dependency、
   package 所属は flutter-layered-architecture-resolve-package-layer、
@@ -31,6 +32,7 @@ Datasource・DB・外部 API の差異を隠し、Usecase / 上位から同一�
 | --- | --- |
 | Usecase の切り出し・結線 | `flutter-layered-architecture-design-usecase` |
 | Annotation 付与の詳細・連動 lint | `flutter-layered-architecture-annotations`（推奨一覧は本 SKILL「推奨 Annotation」） |
+| Provider / injection / Container | `flutter-layered-architecture-design-dependency-injection` |
 | レイヤー依存方向 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
 | 実装 package への依存制限 | `flutter-layered-architecture-linter-rule-architecture-implementation-dependency` |
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
@@ -103,9 +105,10 @@ Usecase の 1 操作原則を Repository に押し付けない。
 
 | 参照 | 使うとき |
 | --- | --- |
-| [package-provider-injection.md](./references/package-provider-injection.md) | IF/_impl、Provider、DataInjection |
+| [package-provider-injection.md](./references/package-provider-injection.md) | IF/_impl の置き場地図（DI 詳細は DI 正本へ） |
 | [state-and-io.md](./references/state-and-io.md) | 状態・監視・入出力の形 |
 | [testing.md](./references/testing.md) | Mock / Fake / `_testing` |
+| `flutter-layered-architecture-design-dependency-injection` | Provider・injection・Container |
 
 ## 最小の形（example）
 
@@ -143,8 +146,8 @@ abstract class InMemoryTodoRepositoryState with _$InMemoryTodoRepositoryState {
 ```
 
 ```dart
-// バレル: @implementation / 結線: @injection
-builder.inject(TodoRepository.provider, InMemoryTodoRepository.provider);
+// provider / inject の形は design-dependency-injection が正本
+// builder.inject(TodoRepository.provider, InMemoryTodoRepository.provider);
 ```
 
 ## Repository ↔ Usecase

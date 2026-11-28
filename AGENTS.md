@@ -51,10 +51,13 @@ dart workspace 把握、コーディング規約、外部依存管理、Usecase 
 │   └── references/          # 版方針 / 追加・更新
 ├── flutter-layered-architecture-design-usecase/
 │   ├── SKILL.md             # Usecase 設計・実装パターン
-│   └── references/          # Request / package・injection / 依存・Fake
+│   └── references/          # Request / package 地図 / 依存・Fake
 ├── flutter-layered-architecture-design-repository/
 │   ├── SKILL.md             # Repository 設計・実装パターン
-│   └── references/          # package・injection / 状態・入出力 / テスト
+│   └── references/          # package 地図 / 状態・入出力 / テスト
+├── flutter-layered-architecture-design-dependency-injection/
+│   ├── SKILL.md             # Provider / injection / Container 結線
+│   └── references/          # provider・injection package・container・testing
 ├── flutter-layered-architecture-design-screen-mvvm/
 │   ├── SKILL.md             # Screen 層 MVVM 設計判断
 │   └── references/          # View / Action / State・Entity・Event / テスト
@@ -92,8 +95,9 @@ dart workspace 把握、コーディング規約、外部依存管理、Usecase 
 
 Linter が保証しない設計と実装パターン。
 
-* `flutter-layered-architecture-design-usecase` — Usecase の切り出し・Request／結線
-* `flutter-layered-architecture-design-repository` — Repository の窓口・状態・DataInjection
+* `flutter-layered-architecture-design-usecase` — Usecase の切り出し・Request
+* `flutter-layered-architecture-design-repository` — Repository の窓口・状態
+* `flutter-layered-architecture-design-dependency-injection` — Provider / `{layer}_injection` / Container
 * `flutter-layered-architecture-design-screen-mvvm` — Screen MVVM（lint が見ない設計判断）
 * `flutter-layered-architecture-design-screen-navigation` — 画面遷移（Factory / Launcher / Proxy）
 
