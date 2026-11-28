@@ -8,7 +8,7 @@ description: >-
   「画面遷移を足す」「Launcher の IF」「遷移引数・戻り値」「go_router をどこに置くか」
   「画面 package 同士の循環を避けたい」では必ず使う。
   Screen 内 MVVM は flutter-layered-architecture-design-screen-mvvm、
-  Dart 規約は coding-rules、所在調査は code-search、
+  Dart 規約は coding-rules、package 地図は workspace、
   package 所属は resolve-package-layer を使う。
 ---
 # Flutter Layered Architecture / 画面遷移設計
@@ -27,8 +27,7 @@ Screen 層の画面間を **疎結合**にする。
 | Dart コーディング規約・一般 freezed DTO | `flutter-layered-architecture-coding-rules` |
 | `@delegate`（Redirect 等の切り出し） | `flutter-layered-architecture-annotations` |
 | package 所属レイヤー | `flutter-layered-architecture-resolve-package-layer` |
-| workspace | `flutter-layered-architecture-workspace` |
-| 機能コードの所在調査 | `flutter-layered-architecture-code-search` |
+| workspace / 機能の所在の入口 | `flutter-layered-architecture-workspace` |
 
 ## いつ使うか
 

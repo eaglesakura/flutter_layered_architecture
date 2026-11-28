@@ -205,6 +205,7 @@ apm install ./path/to/flutter_layered_architecture
 | --- | --- |
 | Workspace | `flutter-layered-architecture-workspace` |
 | Coding rules | `flutter-layered-architecture-coding-rules` |
+| Dependencies | `flutter-layered-architecture-dependencies` |
 | Design | `flutter-layered-architecture-design-usecase` / `flutter-layered-architecture-design-repository` / `flutter-layered-architecture-design-screen-mvvm` / `flutter-layered-architecture-design-screen-navigation` |
 | Annotations | `flutter-layered-architecture-annotations` |
 | Architecture layer | `flutter-layered-architecture-resolve-package-layer` |

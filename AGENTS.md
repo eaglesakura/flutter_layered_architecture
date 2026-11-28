@@ -35,7 +35,7 @@
 ## APM SKILL
 
 `flutter_layered_architecture_lint` / `flutter_layered_architecture_annotations`、
-dart workspace 把握、コーディング規約、Usecase / Repository / Screen MVVM / 画面遷移設計向け SKILL 集。
+dart workspace 把握、コーディング規約、外部依存管理、Usecase / Repository / Screen MVVM / 画面遷移設計向け SKILL 集。
 リポジトリルートの `apm.yml` が APM パッケージ定義である。
 
 ```text
@@ -46,6 +46,9 @@ dart workspace 把握、コーディング規約、Usecase / Repository / Screen
 │   ├── SKILL.md             # Dart / Flutter コーディング規約
 │   ├── assets/              # データオブジェクト等の snippets
 │   └── references/          # コメント / DTO / Delegate 判断 / enum / 例外 等
+├── flutter-layered-architecture-dependencies/
+│   ├── SKILL.md             # 外部 pub 依存管理（ルート版 / 子 any）
+│   └── references/          # 版方針 / 追加・更新
 ├── flutter-layered-architecture-design-usecase/
 │   ├── SKILL.md             # Usecase 設計・実装パターン
 │   └── references/          # Request / package・injection / 依存・Fake
@@ -78,6 +81,12 @@ dart workspace 把握、コーディング規約、Usecase / Repository / Screen
 言語・ファイル・コメント・定番パターン。Annotation / lint が保証する構造は案内のみ。
 
 * `flutter-layered-architecture-coding-rules`
+
+### Dependencies
+
+外部 pub の追加・版上げ・揃え。ルートに実効版、worktree は `any`。
+
+* `flutter-layered-architecture-dependencies`
 
 ### Design
 

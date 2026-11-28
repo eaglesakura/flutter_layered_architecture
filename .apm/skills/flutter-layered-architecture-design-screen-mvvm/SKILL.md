@@ -12,7 +12,7 @@ description: >-
   flutter-layered-architecture-linter-rule-*、
   Usecase / Repository は design-usecase / design-repository、
   画面遷移は flutter-layered-architecture-design-screen-navigation、
-  所在調査は code-search を使う。
+  package 地図・所在の入口は flutter-layered-architecture-workspace を使う。
 ---
 # Flutter Layered Architecture / Screen 層 MVVM
 

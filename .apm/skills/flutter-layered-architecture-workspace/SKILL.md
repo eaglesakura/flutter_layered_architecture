@@ -9,12 +9,12 @@ description: >-
   flutter-layered-architecture-resolve-package-layer、アノテーション付与は
   flutter-layered-architecture-annotations、個別 lint 修正は
   flutter-layered-architecture-linter-rule-*、pub 依存の更新手順は
-  flutter-layered-architecture-library-update、Usecase / Repository / Screen 設計は
+  flutter-layered-architecture-dependencies、Usecase / Repository / Screen 設計は
   flutter-layered-architecture-design-usecase /
   flutter-layered-architecture-design-repository /
   flutter-layered-architecture-design-screen-mvvm /
-  flutter-layered-architecture-design-screen-navigation、機能コードの所在調査は
-  flutter-layered-architecture-code-search を使う。
+  flutter-layered-architecture-design-screen-navigation を使う。
+  「〇〇機能のコードどこ？」も、まず本 SKILL の workspace 地図から候補を絞る。
 ---
 # Flutter Layered Architecture / Workspace 構造
 
@@ -36,16 +36,18 @@ dart / Flutter の **workspace モノレポ**として、どの package があ�
 | Screen MVVM 設計 | `flutter-layered-architecture-design-screen-mvvm` |
 | 画面遷移設計 | `flutter-layered-architecture-design-screen-navigation` |
 | Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
-| pub 依存の版上げ・検証 | `flutter-layered-architecture-library-update` |
-| 機能・ソースの所在調査 | `flutter-layered-architecture-code-search` |
+| 外部 pub 依存の追加・版上げ・any 揃え | `flutter-layered-architecture-dependencies` |
 | Flutter SDK の最新版調査 | `flutter-maintenance-check-latest-version` |
 | `layered_architecture.yaml` スキーマ | `@flutter_layered_architecture/docs/layered_architecture_yaml.ja.md` |
+| Markdown 見出し TOC だけの docs 探索 | `markdown-search` |
+| 文書内パス表記の実体解決 | `workspace-resolve-file-path` |
 
 ## いつ使うか
 
 * ルート `pubspec.yaml` の `workspace:` から package 一覧・配置を読むとき
 * 子 package の `resolution: workspace` / `publish_to` の役割を説明するとき
 * app レイヤー配下のビルド入口（単一／複数アプリ）を確認するとき
+* 「この機能の package / 画面 / usecase はどこ？」と所在を調べるとき（地図として本 SKILL から入る）
 
 ## 作業手順
 
@@ -54,7 +56,8 @@ dart / Flutter の **workspace モノレポ**として、どの package があ�
 3. 必要なら `environment`（sdk / flutter）を確認する
 4. ビルド対象が app レイヤー配下のどのアプリかを確認する（複数アプリがありうる）
 5. 所属レイヤーが必要なら `flutter-layered-architecture-resolve-package-layer` へ引き継ぐ
-6. 依存の **更新作業**に入るなら `flutter-layered-architecture-library-update` へ引き継ぐ
+6. 依存の **更新作業**に入るなら `flutter-layered-architecture-dependencies` へ引き継ぐ
+7. 機能の所在調査なら、`workspace:` で候補 package を絞ったうえで検索し、**確認できたパスだけ**を報告する（想像のディレクトリをツリーに足さない）。1 クラス 1 ファイル前提ならファイル名から責務を推測してよい
 
 ## 原則（要約）
 
@@ -77,8 +80,8 @@ workspace:
 ### 子 package は `resolution: workspace` で揃える
 
 * 子は多く `publish_to: "none"` と `resolution: workspace`
-* 依存には通常の版制約（例: `^0.1.0`）を書き、workspace 解決に任せる
-* ルートに `dependency_overrides` が無い構成が正本例である（利用側で overrides を使う場合の更新手順は `library-update`）
+* **workspace 内ローカル package** は `^x.y.z` 等で書き、workspace 解決に任せる
+* **外部 pub** は子では `any`、実効版はルートに集約する（正本は `flutter-layered-architecture-dependencies`）
 
 ```yaml
 # 子 package の pubspec.yaml（例）
@@ -90,7 +93,8 @@ environment:
   sdk: ">=3.14.0 <4.0.0"
 
 dependencies:
-  domain_todo: ^0.1.0
+  domain_todo: ^0.1.0       # ローカル
+  flutter_riverpod: any     # 外部 → any（版はルート）
 ```
 
 ### アプリは app レイヤーでビルドする（慣習）
@@ -120,8 +124,8 @@ flutter build ...
 
 ### DO: 構造の説明と依存更新・レイヤー判定を混ぜない
 
-* 「どの package があるか／app レイヤーのどれをビルドするか」は本 SKILL
-* 「どう版を上げるか」は `library-update`
+* 「どの package があるか／機能の所在の入口／app レイヤーのどれをビルドするか」は本 SKILL
+* 「外部依存の追加・版上げ・any 揃え」は `dependencies`
 * 「どのレイヤーか」は `resolve-package-layer`
 
 ### DO: レイヤー名が分かる package 名にする
