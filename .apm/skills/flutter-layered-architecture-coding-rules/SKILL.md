@@ -63,7 +63,7 @@ Annotation / Linter が保証する構造は本 SKILL に再掲しない。該�
 | --- | --- |
 | [クラス作成テンプレート](./assets/architecture_data_object.code-snippets) | データオブジェクト等のひな形 |
 | [data_object](./references/data_object.md) | DTO / 値オブジェクト / 一般 freezed（State/Entity 以外） |
-| [delegate-pattern](./references/delegate-pattern.md) | Delegate の **切り出し判断・配置・命名・寿命**（構造は annotations） |
+| [delegate-pattern](./references/delegate-pattern.md) | Delegate の **切り出し判断・配置・命名・寿命・単体テスト**（構造は annotations） |
 | [code_comment](./references/code_comment.md) | ドキュメントコメント・Example |
 | [code_internal](./references/code_internal.md) | `@visibleForTesting` / `@protected` 等（未 export `@internal` は lint） |
 | [dart_file_layout](./references/dart_file_layout.md) | library 名・配置の慣習（件数・ファイル名一致は lint） |
