@@ -1,0 +1,6 @@
+# monorepo / CI: annotations が pub.dev 未公開のため path で解決する。
+# pub publish は本ファイルを成果物に含めない。annotations 公開後も
+# リポジトリ内開発では path 解決のままでよい。
+dependency_overrides:
+  flutter_layered_architecture_annotations:
+    path: ../annotations

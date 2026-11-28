@@ -30,6 +30,8 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 build/
 pubspec_overrides.yaml
+# monorepo: lint → annotations の path 解決（未 publish 期間の CI / ローカル用）
+!packages/lint/pubspec_overrides.yaml
 
 # FVM Version Cache
 .fvm/

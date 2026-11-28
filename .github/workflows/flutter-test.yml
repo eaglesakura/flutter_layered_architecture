@@ -30,10 +30,11 @@ jobs:
           echo "yq version: $(yq --version)"
 
       # workspace と workspace 外 packages/lint の依存を解決する
-      - name: flutter pub get
+      # lint は pubspec_overrides.yaml で未公開 annotations を path 解決する
+      - name: pub get
         run: |
           flutter pub get
-          (cd packages/lint && flutter pub get)
+          (cd packages/lint && dart pub get)
 
       # formatter チェック（差分があれば fail）
       - name: dart format --check
