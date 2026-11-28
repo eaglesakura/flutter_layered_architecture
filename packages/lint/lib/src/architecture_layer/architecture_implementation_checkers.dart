@@ -1,119 +1,46 @@
 // ignore_for_file: flutter_layered_architecture_lint/one_public_type_per_file, flutter_layered_architecture_lint/public_type_file_name
 
-import 'dart:io';
-
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart' as p;
+import 'package:yaml/yaml.dart';
 
-/// package のアーキテクチャ役割（バレル annotation 由来）.
+/// package のアーキテクチャ役割（pubspec `name` のサフィックス由来）.
 @internal
 enum PackageRole {
-  /// annotation なし.
+  /// サフィックスなし.
   none,
 
-  /// `@injection` のみ.
+  /// `_injection` で終わる package.
   injection,
 
-  /// `@implementation` のみ.
+  /// `_impl` で終わる package.
   implementation,
-
-  /// 両方（warning 対象）.
-  both,
 }
 
-/// 単一バレルソースから役割フラグを読む.
+/// pubspec `name` から役割を返す. null/空 → none.
+///
+/// `_injection` を先に判定（`foo_impl_injection` → injection）.
 ///
 /// Example:
 /// ```dart
-/// annotationsFromBarrelSource('@injection\nlibrary;\n');
-/// // (hasInjection: true, hasImplementation: false)
+/// packageRoleFromPackageName('data_injection'); // PackageRole.injection
 /// ```
 @internal
-({bool hasInjection, bool hasImplementation}) annotationsFromBarrelSource(
-  String dartSource,
-) {
-  final parsed = parseString(content: dartSource, throwIfDiagnostics: false);
-  final libraries = parsed.unit.directives.whereType<LibraryDirective>();
-  if (libraries.isEmpty) {
-    return (hasInjection: false, hasImplementation: false);
-  }
-  var hasInjection = false;
-  var hasImplementation = false;
-  for (final library in libraries) {
-    for (final annotation in library.metadata) {
-      final name = _annotationSimpleName(annotation);
-      if (name == 'injection' || name == 'Injection') {
-        hasInjection = true;
-      } else if (name == 'implementation' || name == 'Implementation') {
-        hasImplementation = true;
-      }
-    }
-  }
-  return (hasInjection: hasInjection, hasImplementation: hasImplementation);
-}
-
-String? _annotationSimpleName(Annotation annotation) {
-  final nameNode = annotation.name;
-  if (nameNode is SimpleIdentifier) {
-    return nameNode.name;
-  }
-  if (nameNode is PrefixedIdentifier) {
-    return nameNode.identifier.name;
-  }
-  return nameNode.toString();
-}
-
-/// バレル（`lib/` 直下かつ `library` あり）から [PackageRole] を判定する.
-///
-/// 名前ベース判定（URI は見ない）。`lib/src/` は見ない。
-///
-/// Example:
-/// ```dart
-/// detectPackageRole(packageRootPath: '/ws/example/data/injection', readTextFile: readTextFile);
-/// ```
-@internal
-PackageRole detectPackageRole({
-  required String packageRootPath,
-  required String? Function(String path) readTextFile,
-}) {
-  final libDir = Directory(p.join(packageRootPath, 'lib'));
-  if (!libDir.existsSync()) {
+PackageRole packageRoleFromPackageName(String? packageName) {
+  if (packageName == null || packageName.isEmpty) {
     return PackageRole.none;
   }
-  var hasInjection = false;
-  var hasImplementation = false;
-  for (final entity in libDir.listSync(followLinks: false)) {
-    if (entity is! File) {
-      continue;
-    }
-    if (p.extension(entity.path) != '.dart') {
-      continue;
-    }
-    final text = readTextFile(entity.path);
-    if (text == null) {
-      continue;
-    }
-    final flags = annotationsFromBarrelSource(text);
-    hasInjection = hasInjection || flags.hasInjection;
-    hasImplementation = hasImplementation || flags.hasImplementation;
-  }
-  if (hasInjection && hasImplementation) {
-    return PackageRole.both;
-  }
-  if (hasInjection) {
+  if (packageName.endsWith('_injection')) {
     return PackageRole.injection;
   }
-  if (hasImplementation) {
+  if (packageName.endsWith('_impl')) {
     return PackageRole.implementation;
   }
   return PackageRole.none;
 }
 
-/// `@implementation`（および `both`）依存が許可されるか.
+/// `_impl` package への依存が許可されるか.
 ///
-/// * 依存先が `implementation` / `both` 以外 → 常に true（本ルール対象外）
+/// * 依存先が `implementation` 以外 → 常に true（本ルール対象外）
 /// * それ以外で self が `injection` 以外 → false
 /// * 同一レイヤー名なら true、異なれば false
 ///
@@ -134,8 +61,7 @@ bool isImplementationDependencyAllowed({
   required String dependencyLayerName,
 }) {
   final dependencyIsImplementation =
-      dependencyRole == PackageRole.implementation ||
-      dependencyRole == PackageRole.both;
+      dependencyRole == PackageRole.implementation;
   if (!dependencyIsImplementation) {
     return true;
   }
@@ -143,4 +69,101 @@ bool isImplementationDependencyAllowed({
     return false;
   }
   return selfLayerName == dependencyLayerName;
+}
+
+@internal
+sealed class ArchitectureImplementationIgnoreParseResult {}
+
+/// ignore パース成功. [entries] は記載順（trim しない。重複はそのまま）.
+@internal
+final class ArchitectureImplementationIgnoreParseSuccess
+    extends ArchitectureImplementationIgnoreParseResult {
+  final List<String> entries;
+
+  ArchitectureImplementationIgnoreParseSuccess(this.entries);
+}
+
+/// ignore 形式不正.
+@internal
+final class ArchitectureImplementationIgnoreParseFailure
+    extends ArchitectureImplementationIgnoreParseResult {
+  final String message;
+
+  ArchitectureImplementationIgnoreParseFailure(this.message);
+}
+
+/// yaml 全文から `rules.architecture_implementation_dependency.ignore` を読む.
+///
+/// * 辿り方は layer ignore に倣うが、不正時は空成功にせず Failure.
+/// * 要素不正はスキップせず全体 Failure（以降の要素は見ない）.
+/// * 文字列は trim しない.
+///
+/// Example:
+/// ```dart
+/// parseArchitectureImplementationDependencyIgnore('rules:\n  architecture_implementation_dependency:\n    ignore:\n      - a\n');
+/// ```
+@internal
+ArchitectureImplementationIgnoreParseResult
+parseArchitectureImplementationDependencyIgnore(String yamlText) {
+  final Object? document;
+  try {
+    document = loadYaml(yamlText);
+  } on YamlException catch (error) {
+    return ArchitectureImplementationIgnoreParseFailure(
+      'Invalid YAML: ${error.message}',
+    );
+  }
+  if (document is! YamlMap) {
+    return ArchitectureImplementationIgnoreParseFailure(
+      'Top-level YAML must be a map',
+    );
+  }
+
+  final rules = document['rules'];
+  if (rules == null) {
+    return ArchitectureImplementationIgnoreParseSuccess(const []);
+  }
+  if (rules is! YamlMap) {
+    return ArchitectureImplementationIgnoreParseFailure('rules must be a map');
+  }
+
+  final ruleConfig = rules['architecture_implementation_dependency'];
+  if (ruleConfig == null) {
+    return ArchitectureImplementationIgnoreParseSuccess(const []);
+  }
+  if (ruleConfig is! YamlMap) {
+    return ArchitectureImplementationIgnoreParseFailure(
+      'rules.architecture_implementation_dependency must be a map',
+    );
+  }
+
+  if (!ruleConfig.keys.contains('ignore')) {
+    return ArchitectureImplementationIgnoreParseSuccess(const []);
+  }
+
+  final ignoreNode = ruleConfig['ignore'];
+  if (ignoreNode == null) {
+    return ArchitectureImplementationIgnoreParseSuccess(const []);
+  }
+  if (ignoreNode is! YamlList) {
+    return ArchitectureImplementationIgnoreParseFailure(
+      'rules.architecture_implementation_dependency.ignore must be a list',
+    );
+  }
+
+  final entries = <String>[];
+  for (final item in ignoreNode) {
+    if (item is! String) {
+      return ArchitectureImplementationIgnoreParseFailure(
+        'ignore entries must be non-empty strings',
+      );
+    }
+    if (item.isEmpty) {
+      return ArchitectureImplementationIgnoreParseFailure(
+        'ignore entries must be non-empty strings',
+      );
+    }
+    entries.add(item);
+  }
+  return ArchitectureImplementationIgnoreParseSuccess(entries);
 }

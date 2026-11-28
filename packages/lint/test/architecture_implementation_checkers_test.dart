@@ -1,82 +1,47 @@
-import 'dart:io';
-
 import 'package:flutter_layered_architecture_lint/src/architecture_layer/architecture_implementation_checkers.dart';
-import 'package:path/path.dart' as p;
+import 'package:flutter_layered_architecture_lint/src/architecture_layer/architecture_layer_checkers.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('annotationsFromBarrelSource', () {
-    test('@injection library → hasInjection', () {
-      final flags = annotationsFromBarrelSource('@injection\nlibrary;\n');
-      expect(flags.hasInjection, isTrue);
-      expect(flags.hasImplementation, isFalse);
+  group('packageRoleFromPackageName', () {
+    test('null → none', () {
+      expect(packageRoleFromPackageName(null), PackageRole.none);
     });
 
-    test('@implementation library → hasImplementation', () {
-      final flags = annotationsFromBarrelSource('@implementation\nlibrary;\n');
-      expect(flags.hasInjection, isFalse);
-      expect(flags.hasImplementation, isTrue);
+    test('empty → none', () {
+      expect(packageRoleFromPackageName(''), PackageRole.none);
     });
 
-    test('both annotations → both flags', () {
-      final flags = annotationsFromBarrelSource(
-        '@injection\n@implementation\nlibrary;\n',
+    test('data_injection → injection', () {
+      expect(
+        packageRoleFromPackageName('data_injection'),
+        PackageRole.injection,
       );
-      expect(flags.hasInjection, isTrue);
-      expect(flags.hasImplementation, isTrue);
     });
 
-    test('export only without library → none', () {
-      final flags = annotationsFromBarrelSource("export 'a.dart';\n");
-      expect(flags.hasInjection, isFalse);
-      expect(flags.hasImplementation, isFalse);
-    });
-  });
-
-  group('detectPackageRole', () {
-    test('lib/src annotation only → none (barrel not scanned)', () {
-      final tempDir = Directory.systemTemp.createTempSync(
-        'arch_impl_role_src_',
+    test('data_repository_todo_impl → implementation', () {
+      expect(
+        packageRoleFromPackageName('data_repository_todo_impl'),
+        PackageRole.implementation,
       );
-      try {
-        final packageRoot = p.join(tempDir.path, 'my_pkg');
-        final libSrc = p.join(packageRoot, 'lib', 'src');
-        Directory(libSrc).createSync(recursive: true);
-        File(p.join(libSrc, 'x.dart')).writeAsStringSync(
-          '@injection\nlibrary;\n',
-        );
-        expect(
-          detectPackageRole(
-            packageRootPath: packageRoot,
-            readTextFile: (path) => File(path).readAsStringSync(),
-          ),
-          PackageRole.none,
-        );
-      } finally {
-        tempDir.deleteSync(recursive: true);
-      }
     });
 
-    test('lib barrel with @injection → injection', () {
-      final tempDir = Directory.systemTemp.createTempSync(
-        'arch_impl_role_inj_',
+    test('foo_impl_injection → injection (_injection first)', () {
+      expect(
+        packageRoleFromPackageName('foo_impl_injection'),
+        PackageRole.injection,
       );
-      try {
-        final packageRoot = p.join(tempDir.path, 'inj_pkg');
-        final libDir = p.join(packageRoot, 'lib');
-        Directory(libDir).createSync(recursive: true);
-        File(p.join(libDir, 'inj_pkg.dart'))
-            .writeAsStringSync('@injection\nlibrary;\n');
-        expect(
-          detectPackageRole(
-            packageRootPath: packageRoot,
-            readTextFile: (path) => File(path).readAsStringSync(),
-          ),
-          PackageRole.injection,
-        );
-      } finally {
-        tempDir.deleteSync(recursive: true);
-      }
+    });
+
+    test('foo_injection_impl → implementation', () {
+      expect(
+        packageRoleFromPackageName('foo_injection_impl'),
+        PackageRole.implementation,
+      );
+    });
+
+    test('foo_impl_extra → none (no suffix match)', () {
+      expect(packageRoleFromPackageName('foo_impl_extra'), PackageRole.none);
     });
   });
 
@@ -128,26 +93,114 @@ void main() {
         isTrue,
       );
     });
+  });
 
-    test('injection + same layer + both → allowed', () {
+  group('parseArchitectureImplementationDependencyIgnore', () {
+    test('missing rules yields empty', () {
+      final result = parseArchitectureImplementationDependencyIgnore(
+        'layers: []',
+      );
+      expect(result is ArchitectureImplementationIgnoreParseSuccess, isTrue);
       expect(
-        isImplementationDependencyAllowed(
-          selfRole: PackageRole.injection,
-          selfLayerName: 'data',
-          dependencyRole: PackageRole.both,
-          dependencyLayerName: 'data',
+        (result as ArchitectureImplementationIgnoreParseSuccess).entries,
+        isEmpty,
+      );
+    });
+
+    test(
+      'architecture_implementation_dependency without ignore yields empty',
+      () {
+        final result = parseArchitectureImplementationDependencyIgnore('''
+rules:
+  architecture_implementation_dependency: {}
+''');
+        expect(result is ArchitectureImplementationIgnoreParseSuccess, isTrue);
+        expect(
+          (result as ArchitectureImplementationIgnoreParseSuccess)
+              .entries
+              .length,
+          0,
+        );
+      },
+    );
+
+    test('empty ignore list yields empty success', () {
+      final result = parseArchitectureImplementationDependencyIgnore('''
+rules:
+  architecture_implementation_dependency:
+    ignore: []
+''');
+      expect(result is ArchitectureImplementationIgnoreParseSuccess, isTrue);
+      expect(
+        (result as ArchitectureImplementationIgnoreParseSuccess).entries.length,
+        0,
+      );
+    });
+
+    test('multiple string entries preserved in order', () {
+      final result = parseArchitectureImplementationDependencyIgnore('''
+rules:
+  architecture_implementation_dependency:
+    ignore:
+      - a_pkg
+      - b_pkg
+''');
+      expect(result is ArchitectureImplementationIgnoreParseSuccess, isTrue);
+      final entries =
+          (result as ArchitectureImplementationIgnoreParseSuccess).entries;
+      expect(entries.length, 2);
+      expect(entries[0], 'a_pkg');
+      expect(entries[1], 'b_pkg');
+    });
+
+    test('non-list ignore is failure', () {
+      final result = parseArchitectureImplementationDependencyIgnore('''
+rules:
+  architecture_implementation_dependency:
+    ignore: not_a_list
+''');
+      expect(result is ArchitectureImplementationIgnoreParseFailure, isTrue);
+    });
+
+    test('empty string entry is failure', () {
+      final result = parseArchitectureImplementationDependencyIgnore('''
+rules:
+  architecture_implementation_dependency:
+    ignore:
+      - ""
+''');
+      expect(result is ArchitectureImplementationIgnoreParseFailure, isTrue);
+    });
+
+    test('non-string entry is failure', () {
+      final result = parseArchitectureImplementationDependencyIgnore('''
+rules:
+  architecture_implementation_dependency:
+    ignore:
+      - 1
+''');
+      expect(result is ArchitectureImplementationIgnoreParseFailure, isTrue);
+    });
+  });
+
+  group('shouldSkipDependencyDirectionForPackage (shared with layer)', () {
+    test('skips on exact match when valid', () {
+      expect(
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: true,
+          ignoreEntries: const ['infra_example_ignore'],
+          selfPackageName: 'infra_example_ignore',
         ),
         isTrue,
       );
     });
 
-    test('none + both → denied', () {
+    test('does not skip when invalid config', () {
       expect(
-        isImplementationDependencyAllowed(
-          selfRole: PackageRole.none,
-          selfLayerName: 'data',
-          dependencyRole: PackageRole.both,
-          dependencyLayerName: 'data',
+        shouldSkipDependencyDirectionForPackage(
+          ignoreConfigValid: false,
+          ignoreEntries: const ['infra_example_ignore'],
+          selfPackageName: 'infra_example_ignore',
         ),
         isFalse,
       );
