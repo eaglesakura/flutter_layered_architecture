@@ -20,7 +20,7 @@
 * 各 package の公開面は `lib/{パッケージ名}.dart`
 * `library;`（または名前付き `library`）を置き、公開 API だけ `export`
 * `lib/src/` は実装。バレルではない（`AGENTS.md` のバレル定義と一致）
-* `@injection` / `@implementation` はバレルの `library` に付与（annotations）
+* DI / 実装 package の役割は pubspec `name` の `_injection` / `_impl` サフィックスで表す（バレル annotation は使わない）
 
 ```dart
 // lib/usecase_todo.dart

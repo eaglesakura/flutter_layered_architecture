@@ -11,7 +11,7 @@
 Related linter rules:
 
 * [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.md) — layer membership and dependency direction (`level`)
-* [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.md) — restricts deps on `@implementation` (membership still comes from this YAML’s `path_prefix`)
+* [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.md) — restricts deps on `_impl` packages (role from pubspec `name` suffix; membership still comes from this YAML’s `path_prefix`)
 * [`architecture_unit_test_package_dependency`](linter-rules/architecture_unit_test_package_dependency.md) — forbids deps on unit-test packages (`*_test`; leaf constraint)
 * [`public_type_file_name`](linter-rules/public_type_file_name.md) — `rules.public_type_file_name.keywords`
 
@@ -47,6 +47,9 @@ layers:
 
 rules:
   architecture_layer_dependency:
+    ignore:
+      - infra_example_ignore
+  architecture_implementation_dependency:
     ignore:
       - infra_example_ignore
   public_type_file_name:
@@ -125,6 +128,26 @@ rules:
 * Malformed entries, or any name not resolvable in `package_config.json`, yield a WARNING (config error) and disable ignore skipping
 
 See [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.md) for details.
+
+### rules.architecture_implementation_dependency.ignore
+
+Skip **`_impl` dependency checks** for listed package names.
+
+```yaml
+rules:
+  architecture_implementation_dependency:
+    ignore:
+      - infra_example_ignore
+```
+
+* Entries are pubspec package names. Matching is **exact** only (no glob/regex; no trimming)
+* Only the **depending** package (self) skips `_impl` dependency checks when its name matches
+* Definition-scope diagnostics still report when ignored
+* Depending on an ignored package does **not** skip checks for a non-ignored depender
+* Missing / `[]` / absent parent keys mean “no ignore”
+* Malformed entries, or any name not resolvable in `package_config.json`, yield a WARNING (config error) and disable ignore skipping
+
+See [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.md) for details.
 
 ### rules.public_type_file_name.keywords
 

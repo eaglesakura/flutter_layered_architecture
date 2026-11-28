@@ -7,8 +7,8 @@ description: >-
   Usecase との相互 IF 依存・循環回避、テスト差し替えを扱う。
   「Repository を追加」「watch / Stream」「データ窓口の IF 設計」でも必ず使う。
   Usecase 側は flutter-layered-architecture-design-usecase、
-  `@stateful` / `@implementation` / `@injection` は
-  flutter-layered-architecture-annotations、
+  型への `@stateful` 等は flutter-layered-architecture-annotations、
+  `_impl` / `_injection` 命名は flutter-layered-architecture-design-dependency-injection、
   Provider / injection / Container 結線は flutter-layered-architecture-design-dependency-injection、
   依存方向は flutter-layered-architecture-linter-rule-architecture-layer-dependency、
   実装依存は flutter-layered-architecture-linter-rule-architecture-implementation-dependency、
@@ -21,7 +21,7 @@ description: >-
 Repository は data レイヤーの **データ入出力の窓口**である。
 Datasource・DB・外部 API の差異を隠し、Usecase / 上位から同一の IF で扱う。
 
-構造の機械的保証（レイヤー依存・`@implementation` 依存・`@stateful` 制約・Delegate 規約）は Linter / Annotations が担う。
+構造の機械的保証（レイヤー依存・`_impl` 依存・`@stateful` 制約・Delegate 規約）は Linter / Annotations が担う。
 本 SKILL は境界の切り方と、lint が見ない実装パターンに限定する。
 
 正本の例: `@flutter_layered_architecture/example/data/repository/todo/`。
@@ -68,11 +68,11 @@ Datasource・DB・外部 API の差異を隠し、Usecase / 上位から同一�
 | 状態モデル（`MutableStateStream<T>` の `T`） | `@state` + `@internal` + `@freezed` | ルート `T` に必須。`@entity` と同一型に併記しない |
 | 実装内の処理切り出し | `@delegate` + `@internal` | 業務メソッドは `execute` へ委譲（`stateful_methods_use_delegate`） |
 | package internal Usecase | `@usecase`（+ 必要なら `@internal`） | 実装内の共通操作。詳細は `design-usecase` |
-| 実装バレル（`*_impl`） | `@implementation` | `library;` 付きバレルのみ |
-| 結線バレル（`data_injection`） | `@injection` | `library;` 付きバレルのみ。`@implementation` と同一バレルに併記しない |
+| 実装 package（`*_impl`） | （なし） | pubspec `name` が `_impl` で終わる。バレルは `library;` + export |
+| 結線 package（`data_injection`） | （なし） | pubspec `name` が `_injection` で終わる |
 
-* 状態を持たない薄い実装でも、バレルの `@implementation` / 結線の `@injection` は付ける
-* 詳細は annotations の `stateful.md` / `state.md` / `delegate.md` / `implementation.md` / `injection.md`
+* 状態を持たない薄い実装でも、package 名の `_impl` / `_injection` サフィックスは守る
+* 型 annotation の詳細は annotations の `stateful.md` / `state.md` / `delegate.md`。package 命名は `design-dependency-injection`
 
 ## Usecase との違い
 
@@ -88,8 +88,8 @@ Usecase の 1 操作原則を Repository に押し付けない。
 
 * 型: `{機能グループ}Repository`（例: `TodoRepository`）
 * package: `data_repository_${機能}` / 入れ子 `_impl`（`data_repository_${機能}_impl`）
-* 結線: `data_injection`（`@injection`）
-* 実装バレル: `@implementation`
+* 結線: `data_injection`（`_injection` サフィックス）
+* 実装: `data_repository_*_impl`（`_impl` サフィックス）
 * 所属の正本は `resolve-package-layer`（名前推測だけで決めない）
 
 ## 実装パターン（要約）

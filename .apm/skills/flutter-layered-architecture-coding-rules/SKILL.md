@@ -24,7 +24,8 @@ Annotation / Linter が保証する構造は本 SKILL に再掲しない。該�
 
 | 関心 | 正本 |
 | --- | --- |
-| `@usecase` / `@delegate` / `@state` / `@entity` / `@stateful` / `@viewModel` / `@injection` / `@implementation` の付与 | `flutter-layered-architecture-annotations` |
+| `@usecase` / `@delegate` / `@state` / `@entity` / `@stateful` / `@viewModel` の付与 | `flutter-layered-architecture-annotations` |
+| `_injection` / `_impl` package 命名・結線 | `flutter-layered-architecture-design-dependency-injection` |
 | Delegate の構造（`execute`・不変・`@internal`・入れ子禁止等） | annotations（`delegate.md`）+ `linter-rule-delegate-*` |
 | 1 ファイル 1 public 型・ファイル名一致・未 export は `@internal` | `linter-rule-one-public-type-per-file` / `public-type-file-name` / `unexported-public-must-be-internal` |
 | Screen State / Entity の Freezed 構築規約 | annotations（`state.md` / `entity.md`）+ `linter-rule-state-entity-*` |

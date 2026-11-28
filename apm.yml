@@ -7,7 +7,8 @@ description: |
   workspace 構造、Dart 言語・ファイル・コメント規約、ルート版集約と子 any、
   Usecase / Repository / DI（Provider・injection・Container）/ Screen / Navigation /
   testing_core・testing_injection・_test の設計判断、
-  @usecase / @delegate / @state / @entity / @stateful / @viewModel / @injection / @implementation、
+  @usecase / @delegate / @state / @entity / @stateful / @viewModel、
+  pubspec `name` の `_injection` / `_impl` サフィックス、
   およびファイルレイアウト規約をカバーする。
 type: skill
 includes: auto

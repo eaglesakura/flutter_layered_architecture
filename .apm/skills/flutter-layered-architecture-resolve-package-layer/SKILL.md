@@ -24,7 +24,7 @@ description: >-
 | 関心 | 正本 |
 | --- | --- |
 | 依存方向（`level`）・ignore・診断 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
-| `@implementation` への依存制限 | `flutter-layered-architecture-linter-rule-architecture-implementation-dependency` |
+| `_impl` package への依存制限 | `flutter-layered-architecture-linter-rule-architecture-implementation-dependency` |
 | YAML スキーマ・`rules` / `keywords` | `@flutter_layered_architecture/docs/layered_architecture_yaml.ja.md` |
 
 ## 作業手順

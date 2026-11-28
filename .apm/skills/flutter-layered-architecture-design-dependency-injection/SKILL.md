@@ -2,15 +2,16 @@
 name: flutter-layered-architecture-design-dependency-injection
 description: >-
   Flutter Layered Architecture の Dependency Injection（Riverpod Provider 結線）正本 SKILL。
-  インターフェース／実装の `static final provider`、実体型 Provider、`@implementation` バレル、
-  `{レイヤー名}_injection`（`@injection`）での bind、app からの最終 inject 呼び出し、
+  インターフェース／実装の `static final provider`、実体型 Provider、
+  `_impl` / `_injection` サフィックス package、
+  `{レイヤー名}_injection` での bind、app からの最終 inject 呼び出し、
   ProviderContainer / DependencyBuilder / ProviderContainerBuilder 構築を扱う。
   「DI を足す」「Provider を結線」「inject / override」「UnimplementedError の stub」
   「実装を差し替えたい」「layer injection」「DependencyBuilder」でも必ず使う。
   Unit Test ハーネス（testing_core / testing_injection / _test）は
   flutter-layered-architecture-design-test、
   Usecase / Repository / Screen の切り出し自体は各 design-*、
-  `@injection` / `@implementation` 付与詳細は flutter-layered-architecture-annotations、
+  package 命名の詳細は本 SKILL の references、型 annotation は flutter-layered-architecture-annotations、
   実装 package 依存制限は flutter-layered-architecture-linter-rule-architecture-implementation-dependency、
   package 所属は flutter-layered-architecture-resolve-package-layer を使う。
 ---
@@ -31,7 +32,7 @@ Usecase / Repository / Navigation など「何を切るか」は各 design SKILL
 | Repository の窓口・状態 | `flutter-layered-architecture-design-repository` |
 | Screen MVVM | `flutter-layered-architecture-design-screen-mvvm` |
 | 画面遷移 Factory / Launcher | `flutter-layered-architecture-design-screen-navigation` |
-| `@injection` / `@implementation` 付与形・併記禁止 | `flutter-layered-architecture-annotations` |
+| 型への `@usecase` 等の付与 | `flutter-layered-architecture-annotations` |
 | 実装 package への依存制限 | `flutter-layered-architecture-linter-rule-architecture-implementation-dependency` |
 | レイヤー依存方向 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
@@ -50,8 +51,8 @@ Usecase / Repository / Navigation など「何を切るか」は各 design SKILL
 
 1. IF に stub `provider`（未結線は `UnimplementedError`）を置く
 2. 実装に **実体型** `Provider<XxxImpl>` を置き、`ref.watch` と `dependencies` で依存を明示する
-3. 実装バレル（`library;`）に `@implementation` を付ける
-4. 同レイヤーの `{レイヤー名}_injection`（`@injection`）で IF → 実装を bind する
+3. 実装 package の pubspec `name` を `_impl` で終わるようにする（バレルは `library;` + export）
+4. 同レイヤーの `{レイヤー名}_injection`（`_injection` サフィックス）で IF → 実装を bind する
 5. **app** がレイヤー injection を呼び、Container を `build` して `UncontrolledProviderScope` 等へ渡す
 6. 細部は必要時だけ `references/` を読む
 
@@ -59,8 +60,8 @@ Usecase / Repository / Navigation など「何を切るか」は各 design SKILL
 
 ```text
 IF package          … Xxx.provider → UnimplementedError（呼び出し側は常に IF.provider）
-_impl package       … XxxImpl.provider → 実体（Provider<XxxImpl>）。バレル @implementation
-{layer}_injection   … builder.inject(Xxx.provider, XxxImpl.provider)。バレル @injection
+_impl package       … XxxImpl.provider → 実体（Provider<XxxImpl>）。name が _impl で終わる
+{layer}_injection   … builder.inject(Xxx.provider, XxxImpl.provider)。name が _injection で終わる
 app                 … 各 layer injection を呼び、builder.build() → ProviderScope
 ```
 
@@ -104,7 +105,7 @@ static final provider = Provider<AddTodoUsecaseImpl>(
 ## `{レイヤー名}_injection` と app
 
 * package 名の目安: `data_injection` / `usecase_injection` / `infra_*_injection` など（所属は `resolve-package-layer`）
-* バレルは `@injection` + `library;`。`@implementation` と同一バレルに併記しない
+* injection package の pubspec `name` は `_injection` で終わる。バレルは `library;` + export
 * bind の核:
 
 ```dart
@@ -156,13 +157,9 @@ Usecase / Repository スキル側の package・Provider 案内は、本 SKILL �
 
 * Flutter の入口制約を守りつつ、実装依存を injection に閉じる
 
-### DO NOT: app や IF package から `@implementation` を直接 dependencies に足す
+### DO NOT: app や IF package から `_impl` package を直接 dependencies に足す
 
-* `architecture_implementation_dependency` の対象。同レイヤー `@injection` 経由にする
-
-### DO NOT: `@injection` と `@implementation` を同一バレルに併記する
-
-* both は warning になり依存検査が止まる
+* `architecture_implementation_dependency` の対象。同レイヤー `_injection` 経由にする
 
 ### DO NOT: 呼び出し側で実装を `new` する
 

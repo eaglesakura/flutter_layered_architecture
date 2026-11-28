@@ -54,7 +54,7 @@ dependencies:
 
 1. ルートに実効版があるか（無ければ追加）
 2. 利用する package の pubspec に `any` で載っているか
-3. レイヤー境界・`@implementation` 依存制限に抵触しないか（architecture linter）
+3. レイヤー境界・`_impl` 依存制限に抵触しないか（architecture linter）
 4. `flutter pub get` が通るか
 
 ## 移行（子の `^` を `any` に寄せる）

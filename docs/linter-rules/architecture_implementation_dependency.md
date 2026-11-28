@@ -1,54 +1,50 @@
 # architecture_implementation_dependency
 
-Warns when a non-`@injection` or cross-layer package depends on `@implementation` barrels.
+Warns when a non-`_injection` or cross-layer package depends on a package whose pubspec `name` ends with `_impl`.
 
 For the `layered_architecture.yaml` schema used for layer membership, see [layered_architecture_yaml.md](../layered_architecture_yaml.md).
 
 ## Details
 
-DO allow only same-layer `@injection` packages to depend on `@implementation` packages. Role is read from barrel files under `lib/` that declare `library;` (name-based `@injection` / `@implementation`; URI is not checked). `lib/src/` is ignored.
+DO allow only same-layer `_injection` packages to depend on `_impl` packages. Role comes **only** from the pubspec `name` suffix (`name.endsWith('_injection')` / `name.endsWith('_impl')`). Barrel files and library annotations are not read.
 
-If both annotations appear on barrels in the same package, the rule reports a warning and stops the dependency check for that package. Packages outside every `path_prefix`, or with a missing/invalid layer definition, are skipped (`architecture_layer_dependency` covers definition issues). Inspection covers `dependencies` and `dev_dependencies` direct names only.
+* `_injection` is checked before `_impl` (e.g. `foo_impl_injection` → DI role)
+* Substrings alone do not assign a role (only `endsWith`)
+* Packages outside every `path_prefix`, or with a missing/invalid layer definition, are skipped (`architecture_layer_dependency` covers definition issues)
+* Inspection covers `dependencies` and `dev_dependencies` direct names only
 
 Severity is WARNING.
 
-Related annotations: `@injection`, `@implementation` (on barrel `library`).
+### rules.architecture_implementation_dependency.ignore
+
+Skip **`_impl` dependency checks** for listed package names during migration or special cases. Semantics match `rules.architecture_layer_dependency.ignore` in [`architecture_layer_dependency`](architecture_layer_dependency.md); only the inspected edge differs (implementation exposure instead of `level`).
+
+```yaml
+rules:
+  architecture_implementation_dependency:
+    ignore:
+      - infra_example_ignore
+```
+
+* Entries are pubspec package names. Matching is **exact** only (no glob/regex; no trimming)
+* Only the **depending** package (self) skips `_impl` dependency checks when its name matches. Definition-scope diagnostics still report when ignored
+* Depending on an ignored package does **not** skip checks for a non-ignored depender
+* Missing / `[]` / absent parent keys mean “no ignore”
+* Malformed entries, or any name not resolvable in `package_config.json`, yield a WARNING (config error) and disable ignore skipping
 
 BAD:
 
 ```yaml
-# example_app (not same-layer @injection) depends on data_repository_todo_impl
+# example_app (not same-layer _injection) depends on data_repository_todo_impl
 dependencies:
   data_repository_todo_impl:
     path: ../data/repository/todo/_impl
 ```
 
-```dart
-@injection
-@implementation
-library;
-```
-
 GOOD:
 
-```dart
-// data_injection barrel
-@injection
-library;
-
-export 'src/data_injection_bindings.dart';
-```
-
-```dart
-// data_repository_todo_impl barrel (same data layer)
-@implementation
-library;
-
-export 'src/in_memory_todo_repository.dart';
-```
-
 ```yaml
-# data_injection/pubspec.yaml — same-layer @injection → @implementation
+# data_injection/pubspec.yaml (name: data_injection) — same data layer _injection → _impl
 dependencies:
   data_repository_todo_impl:
     path: ../repository/todo/_impl

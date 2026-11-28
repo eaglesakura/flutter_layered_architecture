@@ -12,7 +12,7 @@
         "Public method has parameters and a non-void return type",
         "Has a const constructor and final/const fields only",
         "Imports flutter_layered_architecture_annotations",
-        "Does not put @injection or @implementation on the type"
+        "Does not use deprecated @injection or @implementation library annotations"
       ]
     },
     {
@@ -28,20 +28,20 @@
         "Delegate type has @delegate and @internal",
         "Delegate exposes a single execute instance method",
         "ViewModel/extension action methods use on-prefixed names (except close/_close)",
-        "Does not place @injection/@implementation on class types"
+        "Does not use deprecated @injection/@implementation on class or library"
       ]
     },
     {
       "id": 3,
-      "prompt": "data_repository_todo_impl 相当のバレルファイルに、実装 package として正しい annotation を付けてください。誰から依存してよいかも notes.md に書いてください。outputs/ にバレル Dart と notes.md を保存してください。",
-      "expected_output": "@implementation library; のバレルと、同一レイヤー @injection のみ依存可である旨の notes.md",
+      "prompt": "data_repository_todo_impl 相当のバレルファイルを作成してください。pubspec `name` が `_impl` で終わる実装 package として、library; と export のみを置いてください。誰から依存してよいかも notes.md に書いてください。outputs/ にバレル Dart と notes.md を保存してください。",
+      "expected_output": "library; のバレル（annotation なし）と、同一レイヤー `_injection` のみ依存可である旨の notes.md",
       "files": [],
       "assertions": [
-        "Barrel uses @implementation on library",
-        "Annotation targets library (library; present), not a class",
-        "Does not also annotate the same barrel with @injection",
-        "notes.md states only same-layer @injection packages may depend on it",
-        "Imports or references flutter_layered_architecture_annotations appropriately"
+        "Barrel uses library; without @implementation",
+        "Does not annotate library with @injection",
+        "notes.md states pubspec name ends with _impl",
+        "notes.md states only same-layer _injection packages may depend on it",
+        "Does not import flutter_layered_architecture_annotations solely for role declaration"
       ]
     }
   ]

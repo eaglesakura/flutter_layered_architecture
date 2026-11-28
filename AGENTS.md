@@ -153,7 +153,7 @@ package の所属レイヤーを `layered_architecture.yaml` から機械的に�
 
 * `lib/src/` 配下はバレルではない
 * `library` ディレクティブが無い `lib/` 直下ファイルはバレルとして扱わない（無視してよい）
-* package 役割（`@injection` / `@implementation` 等）の宣言は、バレルファイルの `library` に付与する
+* package 役割（DI 用 `_injection`、実装用 `_impl`）は **pubspec の `name` サフィックス**で表す。バレルに library annotation で宣言しない
 
 ## アーキテクチャレイヤーの特定方法
 

@@ -58,7 +58,7 @@ To suppress a finding in code:
 | Lint code | Check |
 | --- | --- |
 | `architecture_layer_dependency` | Warns when a package under `layered_architecture.yaml` depends on a higher layer (pubspec direct deps only) |
-| `architecture_implementation_dependency` | Warns when a non-`@injection` or cross-layer package depends on `@implementation` barrels (pubspec direct deps only) |
+| `architecture_implementation_dependency` | Warns when a non-`_injection` or cross-layer package depends on `_impl` packages (pubspec `name` suffix; direct deps only) |
 | `architecture_unit_test_package_dependency` | Warns when an in-layer package depends on a unit-test package (`*_test`) via dependencies/dev_dependencies (leaf) |
 
 Uses the nearest `layered_architecture.yaml` found upward from the package root.
@@ -67,9 +67,10 @@ Missing or invalid definitions, overlapping `path_prefix` values, and
 outside every `path_prefix` (e.g. this lint package) are skipped. Unused layer
 entries with no packages are allowed. Import-only deps are covered by
 `depend_on_referenced_packages`, not this rule.
-Optional `rules.architecture_layer_dependency.ignore` lists package names
-(exact match) that skip dependency-direction checks only; unresolved or
-malformed ignore entries warn and disable skipping.
+Optional `rules.architecture_layer_dependency.ignore` and
+`rules.architecture_implementation_dependency.ignore` list package names
+(exact match) that skip dependency-direction or `_impl` dependency checks only;
+unresolved or malformed ignore entries warn and disable skipping.
 
 Helper unit test:
 

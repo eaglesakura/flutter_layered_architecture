@@ -2,10 +2,12 @@
 name: flutter-layered-architecture-annotations
 description: >-
   Flutter Layered Architecture のアノテーション付与ガイド。
-  `@usecase` / `@delegate` / `@state` / `@entity` / `@stateful` / `@viewModel` /
-  `@injection` / `@implementation` のどれを・どこに・何と併記して付けるかを決めるときに必ず使う。
-  Usecase・Delegate・ViewModel・Repository 実装の新規作成、バレル library の役割宣言、
-  「annotation を付ける」「lint が効くようにする」「injection / implementation」でもロードする。
+  `@usecase` / `@delegate` / `@state` / `@entity` / `@stateful` / `@viewModel`
+  のどれを・どこに・何と併記して付けるかを決めるときに必ず使う。
+  Usecase・Delegate・ViewModel・Repository 実装の新規作成、
+  「annotation を付ける」「lint が効くようにする」でもロードする。
+  DI / 実装 package の命名（`_injection` / `_impl`）は
+  `flutter-layered-architecture-design-dependency-injection` を正とする。
   個別診断コードの深い修正手順だけなら対応する
   `flutter-layered-architecture-linter-rule-*` を使う。file_layout だけの話では使わない。
 ---
@@ -17,14 +19,15 @@ description: >-
 
 ## いつ使うか
 
-* 型やバレル `library` にどのアノテーションを付けるか決めるとき
-* Usecase / Delegate / Stateful / ViewModel / Injection / Implementation を新規作成・改修するとき
+* 型にどのアノテーションを付けるか決めるとき
+* Usecase / Delegate / Stateful / ViewModel を新規作成・改修するとき
 * lint を効かせるために annotation を足す／付け替えるとき
 
 ## いつ使わないか
 
+* DI / 実装 package の命名・結線 → `flutter-layered-architecture-design-dependency-injection`
 * 個別診断コード（例: `usecase_single_method`）の深い修正だけ → 対応する `linter-rule-*`
-* ファイル分割・公開 API・バレル export だけ（annotation 無し） → `one_public_type_per_file` 等の file_layout 系
+* ファイル分割・公開 API・バレル export だけ（型 annotation 無し） → `one_public_type_per_file` 等の file_layout 系
 * コメント・enum・try-catch・一般 DTO など言語規約だけ → `flutter-layered-architecture-coding-rules`
 * レイヤー所属・`path_prefix` による判定だけ → `flutter-layered-architecture-resolve-package-layer`
 * 依存方向（`level`）の検査・診断だけ → `flutter-layered-architecture-linter-rule-architecture-layer-dependency`
@@ -47,8 +50,13 @@ description: >-
 | `@entity` | 型 | 表示モデル（`entity` の `T`） | [references/entity.md](./references/entity.md) |
 | `@stateful` | 型 | `MutableStateStream` を持つ状態保持型 | [references/stateful.md](./references/stateful.md) |
 | `@viewModel` | 型 | 画面 ViewModel（`@stateful` 制約を継承） | [references/view-model.md](./references/view-model.md) |
-| `@injection` | バレル `library` | DI 結線専用 package | [references/injection.md](./references/injection.md) |
-| `@implementation` | バレル `library` | 具象実装を公開する package | [references/implementation.md](./references/implementation.md) |
+
+## package 役割（annotation ではない）
+
+| 役割 | pubspec `name` | 案内 |
+| --- | --- | --- |
+| DI 結線 | `*_injection` で終わる | [references/injection.md](./references/injection.md)（廃止 annotation の代替） |
+| 具象実装 | `*_impl` で終わる | [references/implementation.md](./references/implementation.md)（廃止 annotation の代替） |
 
 ## 共通ルール
 

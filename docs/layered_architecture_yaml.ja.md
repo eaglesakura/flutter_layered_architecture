@@ -11,7 +11,7 @@
 関連する linter ルール:
 
 * [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.ja.md) — レイヤー所属と依存方向（`level`）
-* [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.ja.md) — `@implementation` への依存制限（所属は本 YAML の `path_prefix` を前提）
+* [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.ja.md) — `_impl` package への依存制限（役割は pubspec `name` サフィックス。所属は本 YAML の `path_prefix` を前提）
 * [`architecture_unit_test_package_dependency`](linter-rules/architecture_unit_test_package_dependency.ja.md) — Unit Test 用 package（`*_test`）への依存禁止（leaf）
 * [`public_type_file_name`](linter-rules/public_type_file_name.ja.md) — `rules.public_type_file_name.keywords`
 
@@ -47,6 +47,9 @@ layers:
 
 rules:
   architecture_layer_dependency:
+    ignore:
+      - infra_example_ignore
+  architecture_implementation_dependency:
     ignore:
       - infra_example_ignore
   public_type_file_name:
@@ -125,6 +128,26 @@ rules:
 * 形式不正、または `package_config.json` で解決できない名前が 1 件でもあれば WARNING（記述エラー）とし、ignore スキップは適用しない
 
 詳細は [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.ja.md) を参照する。
+
+### rules.architecture_implementation_dependency.ignore
+
+特定 package 名だけ **`_impl` 依存検査**をスキップする。
+
+```yaml
+rules:
+  architecture_implementation_dependency:
+    ignore:
+      - infra_example_ignore
+```
+
+* 要素は pubspec の package 名。**完全一致**のみ（部分一致・正規表現なし。trim しない）
+* 一致した **依存元** の `_impl` 依存検査のみスキップする
+* 定義スコープ診断は ignore していても報告する
+* 依存先が ignore に載っていても、依存元が ignore に無ければ通常どおり検査する
+* 未記載・空リスト・親キー欠落は「設定なし」と同等
+* 形式不正、または `package_config.json` で解決できない名前が 1 件でもあれば WARNING（記述エラー）とし、ignore スキップは適用しない
+
+詳細は [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.ja.md) を参照する。
 
 ### rules.public_type_file_name.keywords
 

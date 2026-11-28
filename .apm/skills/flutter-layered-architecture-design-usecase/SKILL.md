@@ -63,8 +63,8 @@ description: >-
 | Usecase IF（公開） | `@usecase` | `abstract interface class` に付与。1 操作 = 1 型 |
 | Usecase 実装型 | `@usecase`（任意） | IF 側に付けていれば実装側は必須でない。付けるなら同じ規約 |
 | package internal Usecase | `@usecase` + 必要なら `@internal` | 画面・Repository `_impl` 内の共通処理。公開 IF 分離は必須でない |
-| 実装バレル（`*_impl`） | `@implementation` | `library;` 付きバレルのみ。具象を公開する役割宣言 |
-| 結線バレル（`usecase_injection` 等） | `@injection` | `library;` 付きバレルのみ。`@implementation` と同一バレルに併記しない |
+| 実装 package（`*_impl`） | pubspec `name` が `_impl` で終わる | バレルは `library;` + export |
+| 結線 package（`usecase_injection` 等） | pubspec `name` が `_injection` で終わる | バレルは `library;` + export |
 
 * Request / Result 型そのものに FLA annotation は不要
 * 詳細な付与形は annotations の `usecase.md` / `implementation.md` / `injection.md`

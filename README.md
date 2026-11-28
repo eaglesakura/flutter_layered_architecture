@@ -72,8 +72,8 @@ To suppress a finding in code (not disable the rule globally):
 | `@entity` | [entity.md](docs/annotations/entity.md) |
 | `@stateful` | [stateful.md](docs/annotations/stateful.md) |
 | `@viewModel` | [viewmodel.md](docs/annotations/viewmodel.md) |
-| `@injection` | [injection.md](docs/annotations/injection.md) |
-| `@implementation` | [implementation.md](docs/annotations/implementation.md) |
+
+DI and implementation package roles use pubspec `name` suffixes `_injection` and `_impl` (see removed `@injection` / `@implementation` notices in [injection.md](docs/annotations/injection.md) / [implementation.md](docs/annotations/implementation.md)).
 
 ## Linter rules
 

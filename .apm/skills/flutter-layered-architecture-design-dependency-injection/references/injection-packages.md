@@ -2,7 +2,7 @@
 
 ## なぜ分けるか
 
-* `@implementation` package への pub 依存は、同一レイヤーの `@injection` に限定される（`architecture_implementation_dependency`）
+* `_impl` package への pub 依存は、同一レイヤーの `_injection` package に限定される（`architecture_implementation_dependency`）
 * レイヤーごとの結線一覧を `{レイヤー名}_injection` に置くと、app は「呼ぶ順番」だけに集中できる
 * Flutter では `main`（やテスト入口）が `ProviderContainer` を保持するため、**最終呼び出しは app** になる
 
@@ -11,17 +11,14 @@
 配置の目安（example）:
 
 ```text
-…/data/injection/          # data_injection  … @injection
-…/usecase/injection/       # usecase_injection … @injection
+…/data/injection/          # data_injection（pubspec name が _injection で終わる）
+…/usecase/injection/       # usecase_injection
 ```
 
 バレル:
 
 ```dart
-@injection
 library;
-
-import 'package:flutter_layered_architecture_annotations/flutter_layered_architecture_annotations.dart';
 
 export 'src/data_injection_bindings.dart';
 ```
@@ -83,21 +80,23 @@ void main() {
 Grand Tube / やさしい漢字は app 内 `inject.dart` で同順にまとめている。
 規模が大きくなったらレイヤー `{layer}_injection` へ切り出し、app はそれを呼ぶ形へ寄せると保守しやすい。
 
-## Annotation
+## package 命名（役割）
 
-* 実装バレル: `@implementation`（型には付けない）
-* 結線バレル: `@injection`
-* 同一バレルに両方付けない
-* 付与形の正本: `flutter-layered-architecture-annotations` の `implementation.md` / `injection.md`
+| 役割 | pubspec `name` | 例 |
+| --- | --- | --- |
+| 実装 | `_impl` で終わる | `usecase_todo_impl` |
+| 結線 | `_injection` で終わる | `data_injection` |
+
+バレルは `library;` + export のみ。library annotation で役割を宣言しない。
 
 ## DO / DO NOT
 
 ### DO
 
 * レイヤー結線は `{layer}_injection`、最終 `build` は app
-* `@implementation` への依存は `@injection` に閉じる
+* `_impl` への依存は `_injection` に閉じる
 
 ### DO NOT
 
-* IF 公開 package や app 本体に `@injection` を付けて実装依存を正当化する（役割が違う）
+* IF 公開 package や app 本体を `_injection` 名にして実装依存を正当化する（役割が違う）
 * 画面や Usecase 実装から他レイヤーの `_impl` を直接 dependencies に足す

@@ -2,7 +2,7 @@
 
 Repository の **窓口・状態・入出力** は親 SKILL（`flutter-layered-architecture-design-repository`）が正本。
 
-**Provider の書き方・`@implementation` / `{レイヤー}_injection`・app からの最終呼び出し・Container 構築** は次に集約している。重複して書かない。
+**Provider の書き方・`_impl` / `_injection` package・app からの最終呼び出し・Container 構築** は次に集約している。重複して書かない。
 
 * 正本: `flutter-layered-architecture-design-dependency-injection`
   * IF / 実装の `provider`（実装は実体型推奨）
@@ -13,9 +13,9 @@ Repository の **窓口・状態・入出力** は親 SKILL（`flutter-layered-a
 
 ```text
 …/data/repository/todo/              # data_repository_todo（IF + stub provider）
-└── _impl/                           # data_repository_todo_impl（実体 provider、バレル @implementation）
+└── _impl/                           # data_repository_todo_impl（実体 provider、name が _impl で終わる）
 
-…/data/injection/                    # data_injection（@injection で bind）
+…/data/injection/                    # data_injection（_injection サフィックスで bind）
 ```
 
 * IF: `data_repository_${機能}`、実装: 入れ子 `_impl`
