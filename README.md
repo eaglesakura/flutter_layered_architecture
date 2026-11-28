@@ -83,6 +83,7 @@ To suppress a finding in code (not disable the rule globally):
 | --- | --- |
 | `architecture_layer_dependency` | [architecture_layer_dependency.md](docs/linter-rules/architecture_layer_dependency.md) |
 | `architecture_implementation_dependency` | [architecture_implementation_dependency.md](docs/linter-rules/architecture_implementation_dependency.md) |
+| `architecture_unit_test_package_dependency` | [architecture_unit_test_package_dependency.md](docs/linter-rules/architecture_unit_test_package_dependency.md) |
 
 ### File layout
 
@@ -229,6 +230,8 @@ For linter-rule categories and the full rule list, see [AGENTS.md](AGENTS.md).
 | UI construction | [Riverpod](https://pub.dev/packages/flutter_riverpod) / [Hooks](https://pub.dev/packages/flutter_hooks) ([hooks_riverpod](https://pub.dev/packages/hooks_riverpod)) |
 | State management | [state_stream](https://pub.dev/packages/state_stream) / [state_stream_riverpod](https://pub.dev/packages/state_stream_riverpod) |
 | Navigation | [go_router](https://pub.dev/packages/go_router) |
+| Golden Test | [alchemist](https://pub.dev/packages/alchemist) |
+| Mock | [mocktail](https://pub.dev/packages/mocktail) |
 
 ## Repository layout
 

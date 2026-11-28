@@ -62,5 +62,5 @@ final class CrashReportSendUsecaseFake implements CrashReportSendUsecase {
 ## DO NOT
 
 * Usecase 同士の循環参照
-* 本番 package から `_testing` / Fake 専用経路へ依存する
+* 本番 package から `_testing` / `_test` / Fake 専用経路へ依存する（正本: `flutter-layered-architecture-design-test`）
 * Delegate 内で Usecase を直接 `new` する

@@ -83,6 +83,7 @@ plugins:
 | --- | --- |
 | `architecture_layer_dependency` | [architecture_layer_dependency.ja.md](docs/linter-rules/architecture_layer_dependency.ja.md) |
 | `architecture_implementation_dependency` | [architecture_implementation_dependency.ja.md](docs/linter-rules/architecture_implementation_dependency.ja.md) |
+| `architecture_unit_test_package_dependency` | [architecture_unit_test_package_dependency.ja.md](docs/linter-rules/architecture_unit_test_package_dependency.ja.md) |
 
 ### File layout
 
@@ -229,6 +230,8 @@ linter rule のカテゴリとルール一覧は [AGENTS.md](AGENTS.md) を参�
 | UI 構築 | [Riverpod](https://pub.dev/packages/flutter_riverpod) / [Hooks](https://pub.dev/packages/flutter_hooks)（[hooks_riverpod](https://pub.dev/packages/hooks_riverpod)） |
 | 状態管理 | [state_stream](https://pub.dev/packages/state_stream) / [state_stream_riverpod](https://pub.dev/packages/state_stream_riverpod) |
 | ナビゲーション | [go_router](https://pub.dev/packages/go_router) |
+| Golden Test | [alchemist](https://pub.dev/packages/alchemist) |
+| Mock | [mocktail](https://pub.dev/packages/mocktail) |
 
 ## リポジトリ構成
 

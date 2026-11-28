@@ -48,7 +48,7 @@ DI の「どう inject するか」は DI 正本。本 SKILL は **テスト入�
 ## 作業手順
 
 1. **成果物の粒度を決める** — 設計メモのみ / 参考実装の提示 / package・テストまで実装
-2. **ファイルレイアウトを決める** — `testing_core`・`testing_injection`・対象の `_test`（[file-layout.md](./references/file-layout.md)）
+2. **ファイルレイアウトを決める** — `testing_core`・`testing_injection`・対象の `_test`（[file-layout.md](./references/file-layout.md)）。命名三区分・leaf・ブラックボックスは [naming-and-black-box.md](./references/naming-and-black-box.md)
 3. **`testing_core` を用意する** — `TestContext` から `refBuilder` / `ref` を取る拡張（[testing-core.md](./references/testing-core.md)、[assets](./assets/testing_core/)）
 4. **`testing_injection` を用意する** — Infra → Data → Usecase を `_test` 向けに一括 `inject`（[testing-injection.md](./references/testing-injection.md)、[assets](./assets/testing_injection/)）
 5. **`_test` から実体を読む** — `await testContext.injectForTesting()` のあと `ref.testReady(IF.provider)` 等

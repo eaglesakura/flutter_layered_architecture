@@ -12,6 +12,7 @@ Related linter rules:
 
 * [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.md) — layer membership and dependency direction (`level`)
 * [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.md) — restricts deps on `@implementation` (membership still comes from this YAML’s `path_prefix`)
+* [`architecture_unit_test_package_dependency`](linter-rules/architecture_unit_test_package_dependency.md) — forbids deps on unit-test packages (`*_test`; leaf constraint)
 * [`public_type_file_name`](linter-rules/public_type_file_name.md) — `rules.public_type_file_name.keywords`
 
 ## File discovery
@@ -199,4 +200,5 @@ layers:
 * Package layer resolution (Agent SKILL): `flutter-layered-architecture-resolve-package-layer`
 * Rule details (dependency direction): [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.md)
 * Rule details (implementation deps): [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.md)
+* Rule details (unit-test package deps): [`architecture_unit_test_package_dependency`](linter-rules/architecture_unit_test_package_dependency.md)
 * Rule details (file names): [`public_type_file_name`](linter-rules/public_type_file_name.md)

@@ -12,6 +12,7 @@
 
 * [`architecture_layer_dependency`](linter-rules/architecture_layer_dependency.ja.md) — レイヤー所属と依存方向（`level`）
 * [`architecture_implementation_dependency`](linter-rules/architecture_implementation_dependency.ja.md) — `@implementation` への依存制限（所属は本 YAML の `path_prefix` を前提）
+* [`architecture_unit_test_package_dependency`](linter-rules/architecture_unit_test_package_dependency.ja.md) — Unit Test 用 package（`*_test`）への依存禁止（leaf）
 * [`public_type_file_name`](linter-rules/public_type_file_name.ja.md) — `rules.public_type_file_name.keywords`
 
 ## ファイル探索

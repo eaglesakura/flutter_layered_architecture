@@ -4,9 +4,9 @@
 
 1. **Mock**（mocktail 等）+ Provider override / コンストラクタ注入 — 画面・VM・Usecase シナリオの既定
 2. **package internal Fake** — Repository `_impl` の Unit Test でインフラ境界だけ差し替える
-3. **`_testing` の Testing\*** — 振る舞いが厚く Mock だと読めない場合のみ（認証フロー等）
+3. **`_testing` の Testing\*** — 特定レイヤー／責務内のテストサポート。振る舞いが厚く Mock だと読めない場合のみ（認証フロー等）。Unit Test 専用の `_test`（leaf）とは別
 
-「emit 用ヘルパー」やカウンタだけの Testing\* は作らない。Mock で足りるなら `_testing` package 自体を作らない。
+「emit 用ヘルパー」やカウンタだけの Testing\* は作らない。Mock で足りるなら `_testing` package 自体を作らない。正本: `flutter-layered-architecture-design-test`。
 
 ## Fake と本番の分離
 
@@ -29,5 +29,5 @@ setUp(() async {
 
 ## DO NOT
 
-* 本番 package から `_testing` へ依存する
+* 本番 package から `_testing` / `_test` へ依存する（`_test` は lint: `architecture_unit_test_package_dependency`）
 * 画面テストのために常に厚い Testing\* を必須にする

@@ -104,7 +104,7 @@ Linter が保証しない設計と実装パターン。
 * `flutter-layered-architecture-design-dependency-injection` — Provider / `{layer}_injection` / Container
 * `flutter-layered-architecture-design-screen-mvvm` — Screen MVVM（lint が見ない設計判断）
 * `flutter-layered-architecture-design-screen-navigation` — 画面遷移（`launch`/`push`・Factory / Launcher / Input DI / Proxy）
-* `flutter-layered-architecture-design-test` — Unit Test ハーネス（`testing_core` / `testing_injection` / `_test`）
+* `flutter-layered-architecture-design-test` — Unit Test ハーネス（`testing_core` / `testing_injection` / `_test`）と命名三区分・leaf・ブラックボックス
 
 ### Annotations
 
@@ -126,7 +126,7 @@ package の所属レイヤーを `layered_architecture.yaml` から機械的に�
 
 | カテゴリ | rules |
 | --- | --- |
-| architecture | `architecture_layer_dependency`, `architecture_implementation_dependency` |
+| architecture | `architecture_layer_dependency`, `architecture_implementation_dependency`, `architecture_unit_test_package_dependency` |
 | file_layout | `one_public_type_per_file`, `public_type_file_name`, `unexported_public_must_be_internal` |
 | provider | `provider_static_final`, `provider_ref_watch`, `provider_dependencies` |
 | usecase | `usecase_single_method`, `usecase_method_signature`, `usecase_immutable` |

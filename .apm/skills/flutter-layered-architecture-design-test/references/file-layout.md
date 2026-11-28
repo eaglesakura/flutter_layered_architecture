@@ -46,17 +46,19 @@ testing_core     ←──  testing_injection  ←──  _test
 本番 IF / _impl  ←──  testing_injection   （結線のため。app には依存しない）
 ```
 
-* 本番 → testing / `_test` は禁止
+* 本番 → `testing_*` / `*_testing` / `*_test` は禁止（`dependencies` / `dev_dependencies`）
+* `_test` は依存グラフの **leaf**（他 package から依存されない）。Lint: `architecture_unit_test_package_dependency`
 * `testing_injection` → app の本番 `inject()` は禁止（同等バインドをテスト側で持つ）
 
-## `_testing` との違い
+## 命名三区分（pubspec `name`）
 
-| package | 役割 |
-| --- | --- |
-| `testing_core` | 全 Unit Test 共通の TestContext 拡張 |
-| `testing_injection` | アプリ横断のテスト用 DI 一括結線 |
-| `{feature}_testing` | 厚い Testing\* 実装（認証フロー等、Mock では読めないときだけ） |
-| `{feature}/_test` | その feature のテストコード置き場 |
+| パターン | 判定 | 役割 |
+| --- | --- | --- |
+| `testing_core` / `testing_injection` 等 | `startsWith('testing_')` | 横断・共有のテストサポート |
+| `{feature}_testing` | `endsWith('_testing')` | 特定レイヤー／責務内の厚い Testing\*（Mock では読めないときだけ） |
+| `{feature}_test` / `{feature}/_test` | `endsWith('_test')` | Unit Test **専用**（leaf）。テストコード置き場 |
+
+詳細（ブラックボックス・固有処理・Lint 境界）は [naming-and-black-box.md](./naming-and-black-box.md)。
 
 ## Screen 等で `test/` を package 直下に置く場合
 

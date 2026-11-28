@@ -19,5 +19,5 @@ Usecase の **切り出し・命名・Request** は親 SKILL（`flutter-layered-
 ```
 
 * IF: `usecase_${機能}`、実装: 入れ子 `_impl`
-* 本番コードは `_test` / `_testing` に依存しない
+* 本番コードは `_test` / `_testing` に依存しない（命名・leaf の正本: `flutter-layered-architecture-design-test`）
 * 結線手順・コード形は DI 正本 SKILL を読む

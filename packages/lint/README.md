@@ -59,6 +59,7 @@ To suppress a finding in code:
 | --- | --- |
 | `architecture_layer_dependency` | Warns when a package under `layered_architecture.yaml` depends on a higher layer (pubspec direct deps only) |
 | `architecture_implementation_dependency` | Warns when a non-`@injection` or cross-layer package depends on `@implementation` barrels (pubspec direct deps only) |
+| `architecture_unit_test_package_dependency` | Warns when an in-layer package depends on a unit-test package (`*_test`) via dependencies/dev_dependencies (leaf) |
 
 Uses the nearest `layered_architecture.yaml` found upward from the package root.
 Missing or invalid definitions, overlapping `path_prefix` values, and
