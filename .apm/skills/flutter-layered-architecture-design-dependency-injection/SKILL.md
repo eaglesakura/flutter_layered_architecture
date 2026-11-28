@@ -7,6 +7,8 @@ description: >-
   ProviderContainer / DependencyBuilder / ProviderContainerBuilder 構築を扱う。
   「DI を足す」「Provider を結線」「inject / override」「UnimplementedError の stub」
   「実装を差し替えたい」「layer injection」「DependencyBuilder」でも必ず使う。
+  Unit Test ハーネス（testing_core / testing_injection / _test）は
+  flutter-layered-architecture-design-test、
   Usecase / Repository / Screen の切り出し自体は各 design-*、
   `@injection` / `@implementation` 付与詳細は flutter-layered-architecture-annotations、
   実装 package 依存制限は flutter-layered-architecture-linter-rule-architecture-implementation-dependency、
@@ -33,6 +35,7 @@ Usecase / Repository / Navigation など「何を切るか」は各 design SKILL
 | 実装 package への依存制限 | `flutter-layered-architecture-linter-rule-architecture-implementation-dependency` |
 | レイヤー依存方向 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
+| Unit Test ハーネス（testing_core / injectForTesting） | `flutter-layered-architecture-design-test` |
 | Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 
 ## いつ使うか

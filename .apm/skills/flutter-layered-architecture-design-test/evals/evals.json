@@ -1,0 +1,43 @@
+{
+  "skill_name": "flutter-layered-architecture-design-test",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Flutter Layered Architecture のアプリに Unit Test 用ハーネスを新規追加したい。testing_core と testing_injection、および usecase_todo 向けの _test package のファイルレイアウトと設計をまとめてほしい。参考実装の抜粋も示して。実装までは不要。",
+      "expected_output": "ファイルレイアウト（testing_core / testing_injection / _test）、injectForTesting の層順と app 非依存、実体優先の方針、assets 相当の参考コード抜粋を含む設計メモ",
+      "files": [],
+      "expectations": [
+        "testing_core が TestContext 経由で ref / refBuilder（または同等の Container / Builder）を提供すると述べている",
+        "testing_injection の injectForTesting（または同等）で Infra→Data→Usecase 等の層順結線を示している",
+        "testing_core / testing_injection / usecase_todo 向け _test のファイルレイアウト（ディレクトリ構成）を示している",
+        "testing_injection は app に依存しない（本番 inject と非正規化で二重管理してよい）と述べている",
+        "ロジックは実体 DI を優先し Mock は例外、と述べている",
+        "参考実装として Dart コード抜粋（TestContext 拡張または injectForTesting）を含めている"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "AddTodoUsecase の Unit Test を書きたい。依存はできるだけ Mock せず、DI で実体を解決する前提で、_test package の pubspec 依存とテストの setUp の形だけ設計してほしい。通信エラー再現が必要な場合だけ Mock する、と明記して。",
+      "expected_output": "_test が testing_core / testing_injection に依存する設計、injectForTesting → ref.testReady(AddTodoUsecase.provider) の流れ、Mock は例外条件のみ、という設計（必要なら短いコード例）",
+      "files": [],
+      "expectations": [
+        "_test（またはテスト側）が testing_core と testing_injection に依存すると述べている",
+        "setUp（または同等）で injectForTesting のあと AddTodoUsecase.provider から実体を取得する流れを示している",
+        "通信エラー等の故障注入・再現できない外部のときだけ Mock すると明記している",
+        "AddTodoUsecase 自体を既定で Mock する設計になっていない"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "既存アプリに testing_injection が無い。app の本番 inject() を _test から呼ぶ案と、testing_injection を新設する案のどちらを取るべきか、設計として推奨を理由付きで書いてほしい。ファイルレイアウト案も添えて。",
+      "expected_output": "testing_injection 新設を推奨（app 依存・実装参照の拡散を避ける）、非正規化二重管理の説明、推奨レイアウト",
+      "files": [],
+      "expectations": [
+        "testing_injection 新設を推奨している（app の本番 inject を _test から呼ぶことを既定にしていない）",
+        "推奨理由に app 依存や実装モジュール参照の拡散回避（または同等）が含まれている",
+        "本番 inject とテスト結線の非正規化・二重管理に触れている",
+        "testing_injection（および必要なら testing_core / _test）のファイルレイアウト案を示している"
+      ]
+    }
+  ]
+}

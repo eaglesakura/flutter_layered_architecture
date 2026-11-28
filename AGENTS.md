@@ -64,6 +64,10 @@ dart workspace 把握、コーディング規約、外部依存管理、Usecase 
 ├── flutter-layered-architecture-design-screen-navigation/
 │   ├── SKILL.md             # 画面遷移・Factory / Launcher 設計
 │   └── references/          # IF 役割 / Request・Result / Proxy・impl
+├── flutter-layered-architecture-design-test/
+│   ├── SKILL.md             # Unit Test ハーネス（testing_core / testing_injection / _test）
+│   ├── assets/              # testing_core / testing_injection / _test 参考実装
+│   └── references/          # ファイルレイアウト / Mock 方針
 ├── flutter-layered-architecture-annotations/
 │   ├── SKILL.md
 │   └── references/          # アノテーション別（拡張時もこの形式）
@@ -100,6 +104,7 @@ Linter が保証しない設計と実装パターン。
 * `flutter-layered-architecture-design-dependency-injection` — Provider / `{layer}_injection` / Container
 * `flutter-layered-architecture-design-screen-mvvm` — Screen MVVM（lint が見ない設計判断）
 * `flutter-layered-architecture-design-screen-navigation` — 画面遷移（`launch`/`push`・Factory / Launcher / Input DI / Proxy）
+* `flutter-layered-architecture-design-test` — Unit Test ハーネス（`testing_core` / `testing_injection` / `_test`）
 
 ### Annotations
 

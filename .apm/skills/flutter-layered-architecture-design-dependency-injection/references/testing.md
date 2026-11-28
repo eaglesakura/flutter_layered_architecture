@@ -1,10 +1,14 @@
 # テストでの差し替え
 
+Unit Test ハーネス（`testing_core` / `testing_injection` / `_test` の置き場・実体優先）の正本は
+`flutter-layered-architecture-design-test`。本ファイルは **Provider 差し替えの形** に限定する。
+
 ## 原則
 
 * 本番コードは `_test` / `_testing` package に依存しない
 * テストは本番と同じ IF `provider` を、Fake / Mock / テスト用 Impl で override する
 * アプリ全体のテスト用集約（例: `testing_injection`）を app 外に置いてよい
+* ロジックは実体 DI を優先し、Mock は再現できない外部や故障注入に限る（詳細は `design-test`）
 
 ## 方法
 
