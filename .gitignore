@@ -34,8 +34,9 @@ pubspec_overrides.yaml
 # FVM Version Cache
 .fvm/
 
-# Skill-creator eval workspaces (local review artifacts)
-.apm/skills/*-workspace/
+# Skill-creator eval workspaces (iteration artifacts under *-workspace)
+# SKILL 本体 `flutter-layered-architecture-workspace/` はコミット対象とする
+.apm/skills/*-workspace/iteration-*/
 devtools_options.yaml
 
 # APM install artifacts (apm.yml / .apm/ は正本としてコミットする)

@@ -1,10 +1,10 @@
 name: flutter-layered-architecture
 version: 0.1.0
 description: |
-  Flutter Layered Architecture の annotations 付与ガイドと analyzer プラグイン規約
-  （linter rule）SKILL 集。
-  @usecase / @delegate / @state / @entity / @stateful / @viewModel /
-  @injection / @implementation およびファイルレイアウト規約をカバーする。
+  Flutter Layered Architecture の dart workspace 把握、annotations 付与ガイド、
+  analyzer プラグイン規約（linter rule）SKILL 集。
+  workspace 構造、@usecase / @delegate / @state / @entity / @stateful / @viewModel /
+  @injection / @implementation、およびファイルレイアウト規約をカバーする。
 type: skill
 includes: auto
 targets:

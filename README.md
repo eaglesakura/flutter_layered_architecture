@@ -144,7 +144,7 @@ To suppress a finding in code (not disable the rule globally):
 
 ## Installing APM SKILLs
 
-This repository root is an [APM (Agent Package Manager)](https://microsoft.github.io/apm/) package (`apm.yml` / `.apm/skills/`). Use it to bring agent-facing annotation and linter-rule guides into a consuming project.
+This repository root is an [APM (Agent Package Manager)](https://microsoft.github.io/apm/) package (`apm.yml` / `.apm/skills/`). Use it to bring agent-facing workspace, annotation, and linter-rule guides into a consuming project.
 
 APM CLI is required. If it is not installed yet, see [Installation](https://microsoft.github.io/apm/getting-started/installation/).
 
@@ -203,6 +203,7 @@ Commit `apm.yml`, `apm.lock.yaml`, and `.gitignore` (plus any authored `.apm/`).
 
 | Kind | SKILL |
 | --- | --- |
+| Workspace | `flutter-layered-architecture-workspace` |
 | Annotations | `flutter-layered-architecture-annotations` |
 | Architecture layer | `flutter-layered-architecture-resolve-package-layer` |
 | Linter rules | `flutter-layered-architecture-linter-rule-{rule}` (rule code with `_` replaced by `-`) |

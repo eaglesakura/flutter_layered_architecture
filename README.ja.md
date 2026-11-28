@@ -144,7 +144,7 @@ plugins:
 
 ## APM SKILL の導入
 
-本リポジトリルートは [APM (Agent Package Manager)](https://microsoft.github.io/apm/) パッケージである（`apm.yml` / `.apm/skills/`）。Agent 向けの annotations / linter rule ガイドを、利用側プロジェクトへ入れる。
+本リポジトリルートは [APM (Agent Package Manager)](https://microsoft.github.io/apm/) パッケージである（`apm.yml` / `.apm/skills/`）。Agent 向けの workspace 把握・annotations / linter rule ガイドを、利用側プロジェクトへ入れる。
 
 前提として APM CLI が必要である。未導入なら [Installation](https://microsoft.github.io/apm/getting-started/installation/) を参照する。
 
@@ -203,6 +203,7 @@ apm install ./path/to/flutter_layered_architecture
 
 | 種別 | SKILL |
 | --- | --- |
+| Workspace | `flutter-layered-architecture-workspace` |
 | Annotations | `flutter-layered-architecture-annotations` |
 | Architecture layer | `flutter-layered-architecture-resolve-package-layer` |
 | Linter rules | `flutter-layered-architecture-linter-rule-{rule}`（診断コードの `_` を `-` に置換） |

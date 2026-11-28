@@ -29,16 +29,19 @@
 │   ├── usecase/todo/         # usecase_todo (+ _impl)
 │   ├── usecase/injection/    # usecase_injection
 │   └── screen/feature/todo_list/ # screen_feature_todo_list
-└── .apm/skills/              # Agent 向け SKILL（annotations / resolve / linter rule）
+└── .apm/skills/              # Agent 向け SKILL（workspace / annotations / resolve / linter rule）
 ```
 
 ## APM SKILL
 
-`flutter_layered_architecture_lint` / `flutter_layered_architecture_annotations` 向け SKILL 集。
+`flutter_layered_architecture_lint` / `flutter_layered_architecture_annotations` および
+dart workspace 把握向け SKILL 集。
 リポジトリルートの `apm.yml` が APM パッケージ定義である。
 
 ```text
 .apm/skills/
+├── flutter-layered-architecture-workspace/
+│   └── SKILL.md             # dart workspace 構造の把握
 ├── flutter-layered-architecture-annotations/
 │   ├── SKILL.md
 │   └── references/          # アノテーション別（拡張時もこの形式）
@@ -47,6 +50,12 @@
 └── flutter-layered-architecture-linter-rule-{rule}/
     └── SKILL.md
 ```
+
+### Workspace
+
+ルート `pubspec.yaml` の `workspace:`・アプリ入口・子 package の `resolution: workspace` を読む。
+
+* `flutter-layered-architecture-workspace`
 
 ### Annotations
 

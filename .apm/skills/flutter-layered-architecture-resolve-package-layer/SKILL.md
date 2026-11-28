@@ -109,6 +109,7 @@ package_config の root が path_prefix example/usecase 配下 → usecase
 
 ## 関連
 
+* workspace の package 一覧: `flutter-layered-architecture-workspace`
 * 定義ファイル: `@flutter_layered_architecture/layered_architecture.yaml`
 * YAML スキーマ: `@flutter_layered_architecture/docs/layered_architecture_yaml.ja.md`
 * 依存方向 lint: `flutter-layered-architecture-linter-rule-architecture-layer-dependency`
