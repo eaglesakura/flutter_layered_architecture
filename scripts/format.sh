@@ -2,6 +2,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# Usage: scripts/format.sh [--check]
+#   --check  fail if formatting would change files (--set-exit-if-changed)
+format_args=()
+if [[ "${1:-}" == "--check" ]]; then
+  format_args+=(--set-exit-if-changed)
+fi
+
 # Dart workspace members + packages/* outside workspace (e.g. lint)
 mapfile -t pkgs < <(
   {
@@ -12,6 +19,6 @@ mapfile -t pkgs < <(
 )
 
 for d in "${pkgs[@]}"; do
-  [ -d "$d/lib" ] && dart format "$d/lib"
-  [ -d "$d/test" ] && dart format "$d/test"
+  [ -d "$d/lib" ] && dart format "${format_args[@]}" "$d/lib"
+  [ -d "$d/test" ] && dart format "${format_args[@]}" "$d/test"
 done

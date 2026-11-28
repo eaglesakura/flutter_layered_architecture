@@ -1,9 +1,14 @@
 [tools]
 flutter = "3.50.0"
+yq = "4.54.3"
 
 [tasks."fla:format"]
 description = "Format lib/ and test/ across workspace packages"
 run = "scripts/format.sh"
+
+[tasks."fla:format:check"]
+description = "Fail if lib/ or test/ formatting would change (CI)"
+run = "scripts/format.sh --check"
 
 [tasks."fla:analyze"]
 description = "Run dart analyze on workspace root and packages/lint"

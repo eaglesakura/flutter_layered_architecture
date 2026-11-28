@@ -1,0 +1,46 @@
+name: Flutter Test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/id/*/*
+
+jobs:
+  test:
+    runs-on: ubuntu-26.04
+
+    steps:
+      # 最初にリポジトリをチェックアウトする
+      - name: checkout repository
+        uses: actions/checkout@v7
+
+      # mise で .mise.toml のツール（Flutter / yq）を入れる
+      - name: install tools (mise)
+        uses: jdx/mise-action@v5
+
+      # 導入された Flutter 版をログに残す（ローカルと CI の突合用）
+      - name: show flutter version
+        run: |
+          echo "flutter version: $(flutter --version)"
+          echo "flutter path: $(which flutter)"
+          echo "dart version: $(dart --version)"
+          echo "dart path: $(which dart)"
+          echo "yq version: $(yq --version)"
+
+      # workspace 依存を解決する
+      - name: dart pub get
+        run: dart pub get
+
+      # formatter チェック（差分があれば fail）
+      - name: dart format --check
+        run: mise run fla:format:check
+
+      # analyze（info / warning / error があれば fail）
+      - name: dart analyze
+        run: mise run fla:analyze
+
+      # test（fail があれば fail）
+      - name: test
+        run: mise run fla:test
