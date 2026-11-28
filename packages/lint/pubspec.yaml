@@ -7,9 +7,9 @@ environment:
   sdk: ">=3.14.0 <4.0.0"
 
 dependencies:
-  # Must be compatible with the analysis_server pin (^0.3.21 → 0.3.26 / analyzer 14.7.0).
-  analysis_server_plugin: 0.3.26
-  analyzer: 14.7.0
+  # Must be compatible with the analysis_server pin (^0.3.26 / analyzer ^14.7.0).
+  analysis_server_plugin: ^0.3.26
+  analyzer: ^14.7.0
   flutter_layered_architecture_annotations: ^0.1.0
   meta: ^1.16.0
   package_config: ^3.0.0
