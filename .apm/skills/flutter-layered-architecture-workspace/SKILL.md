@@ -9,8 +9,9 @@ description: >-
   flutter-layered-architecture-resolve-package-layer、アノテーション付与は
   flutter-layered-architecture-annotations、個別 lint 修正は
   flutter-layered-architecture-linter-rule-*、pub 依存の更新手順は
-  flutter-layered-architecture-library-update、  Usecase 設計判断は
-  flutter-layered-architecture-design-usecase、機能コードの所在調査は
+  flutter-layered-architecture-library-update、  Usecase / Repository 設計は
+  flutter-layered-architecture-design-usecase /
+  flutter-layered-architecture-design-repository、機能コードの所在調査は
   flutter-layered-architecture-code-search を使う。
 ---
 # Flutter Layered Architecture / Workspace 構造
@@ -29,6 +30,7 @@ dart / Flutter の **workspace モノレポ**として、どの package があ�
 | アノテーション付与 | `flutter-layered-architecture-annotations` |
 | 個別診断コードの修正 | `flutter-layered-architecture-linter-rule-*` |
 | Usecase の切り出し・命名 | `flutter-layered-architecture-design-usecase` |
+| Repository の窓口・状態 | `flutter-layered-architecture-design-repository` |
 | pub 依存の版上げ・検証 | `flutter-layered-architecture-library-update` |
 | 機能・ソースの所在調査 | `flutter-layered-architecture-code-search` |
 | Flutter SDK の最新版調査 | `flutter-maintenance-check-latest-version` |

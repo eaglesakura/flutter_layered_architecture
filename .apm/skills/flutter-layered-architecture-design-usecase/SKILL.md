@@ -10,7 +10,7 @@ description: >-
   1 メソッド / シグネチャ / 不変性は flutter-layered-architecture-linter-rule-usecase-*、
   依存方向は flutter-layered-architecture-linter-rule-architecture-layer-dependency、
   package 所属は flutter-layered-architecture-resolve-package-layer、
-  Repository 実装パターンは flutter-layered-architecture-design-patterns、
+  Repository 実装パターンは flutter-layered-architecture-design-repository、
   画面 MVVM は flutter-layered-architecture-screen-mvvm を使う。
 ---
 # Flutter Layered Architecture / Usecase 設計
@@ -32,7 +32,7 @@ description: >-
 | フィールド final / const コンストラクタ | `flutter-layered-architecture-linter-rule-usecase-immutable` |
 | レイヤー依存方向 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
 | package 所属レイヤー | `flutter-layered-architecture-resolve-package-layer` |
-| Repository パターン | `flutter-layered-architecture-design-patterns` |
+| Repository パターン | `flutter-layered-architecture-design-repository` |
 | 画面 MVVM | `flutter-layered-architecture-screen-mvvm` |
 | workspace / app レイヤー | `flutter-layered-architecture-workspace` |
 

@@ -204,7 +204,7 @@ Commit `apm.yml`, `apm.lock.yaml`, and `.gitignore` (plus any authored `.apm/`).
 | Kind | SKILL |
 | --- | --- |
 | Workspace | `flutter-layered-architecture-workspace` |
-| Design | `flutter-layered-architecture-design-usecase` |
+| Design | `flutter-layered-architecture-design-usecase` / `flutter-layered-architecture-design-repository` |
 | Annotations | `flutter-layered-architecture-annotations` |
 | Architecture layer | `flutter-layered-architecture-resolve-package-layer` |
 | Linter rules | `flutter-layered-architecture-linter-rule-{rule}` (rule code with `_` replaced by `-`) |
