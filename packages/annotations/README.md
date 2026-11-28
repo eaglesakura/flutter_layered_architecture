@@ -16,8 +16,8 @@ so `dart analyze` / the IDE can validate structure and layer boundaries.
 | `@entity` | Marks an entity / view model payload (typically Freezed + `@internal`) |
 | `@stateful` | Marks a type that owns `MutableStateStream` |
 | `@viewModel` | Marks a ViewModel (`@stateful` + `entity` getter) |
-| `@injection` | Marks a DI / wiring package barrel `library` |
-| `@implementation` | Marks an implementation package barrel `library` |
+
+DI packages (`name` ends with `_injection`) and implementation packages (`_impl`) are identified by **pubspec name suffixes**, not annotations in this package. See [`architecture_implementation_dependency`](../../docs/linter-rules/architecture_implementation_dependency.md).
 
 ## Getting started
 

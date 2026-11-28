@@ -8,8 +8,6 @@ environment:
   sdk: ">=3.14.0 <4.0.0"
 
 dependencies:
-  flutter_layered_architecture_annotations:
-    path: ../../../../packages/annotations
   data_repository_todo: ^0.1.0
   domain_todo: ^0.1.0
   flutter_riverpod: ^3.0.3

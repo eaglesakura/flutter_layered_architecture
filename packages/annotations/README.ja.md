@@ -15,8 +15,8 @@ Flutter Layered Architecture の規約向けアノテーションを提供する
 | `@entity` | entity / ViewModel 向けペイロードを示す（通常は Freezed + `@internal`） |
 | `@stateful` | `MutableStateStream` を持つ型を示す |
 | `@viewModel` | ViewModel を示す（`@stateful` + `entity` getter） |
-| `@injection` | DI / 結線用 package のバレル `library` を示す |
-| `@implementation` | 実装 package のバレル `library` を示す |
+
+DI 用 package（`name` が `_injection` で終わる）と実装 package（`_impl`）の役割は **pubspec 名のサフィックス**で表し、本 package の annotation は使わない。依存制約は [`architecture_implementation_dependency`](../../docs/linter-rules/architecture_implementation_dependency.ja.md) を参照。
 
 ## Getting started
 

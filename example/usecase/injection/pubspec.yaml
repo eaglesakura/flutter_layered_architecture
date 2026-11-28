@@ -11,8 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_layered_architecture_annotations:
-    path: ../../../packages/annotations
   foundation_dependency_injection: ^0.1.0
   usecase_todo: ^0.1.0
   usecase_todo_impl: ^0.1.0
