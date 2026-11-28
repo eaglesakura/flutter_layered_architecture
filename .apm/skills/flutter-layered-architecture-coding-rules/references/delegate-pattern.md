@@ -77,7 +77,7 @@ Delegate は ViewModel / Stateful 結合だけに頼らず、**単体で `execut
 // 提案テンプレート（Delegate 単体）
 class _MockListTodosUsecase extends Mock implements ListTodosUsecase {}
 
-test('loading 中に通信失敗したら isLoading が false に戻る', () async {
+test('idle のとき通信失敗したら loading が解け ready 相当へ戻る', () async {
   final state = MutableStateStream(
     const TodoListScreenState(isLoading: false, todos: []),
   );
@@ -86,14 +86,13 @@ test('loading 中に通信失敗したら isLoading が false に戻る', () asy
   final usecase = _MockListTodosUsecase();
   when(() => usecase.execute(any())).thenThrow(Exception('network error'));
 
-  final delegate = OnInitializeDelegate(
+  await OnInitializeDelegate(
     state: state,
     listTodosUsecase: usecase,
-  );
+  ).execute();
 
-  // 実装側で失敗を握りつぶす / 再 throw する方針に合わせて expect を選ぶ
-  await expectLater(delegate.execute(), throwsA(isA<Exception>()));
-  // または: await delegate.execute(); expect(state.state.isLoading, isFalse);
+  expect(state.state.isLoading, isFalse);
+  // 必要なら event / エラー表示用フィールドも assert する
 });
 ```
 
