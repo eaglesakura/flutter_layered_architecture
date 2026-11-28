@@ -35,7 +35,7 @@
 ## APM SKILL
 
 `flutter_layered_architecture_lint` / `flutter_layered_architecture_annotations`、
-dart workspace 把握、Usecase / Repository 設計向け SKILL 集。
+dart workspace 把握、Usecase / Repository / Screen MVVM 設計向け SKILL 集。
 リポジトリルートの `apm.yml` が APM パッケージ定義である。
 
 ```text
@@ -48,6 +48,9 @@ dart workspace 把握、Usecase / Repository 設計向け SKILL 集。
 ├── flutter-layered-architecture-design-repository/
 │   ├── SKILL.md             # Repository 設計・実装パターン
 │   └── references/          # package・injection / 状態・入出力 / テスト
+├── flutter-layered-architecture-design-screen-mvvm/
+│   ├── SKILL.md             # Screen 層 MVVM 設計判断
+│   └── references/          # View / Action / State・Entity・Event / テスト
 ├── flutter-layered-architecture-annotations/
 │   ├── SKILL.md
 │   └── references/          # アノテーション別（拡張時もこの形式）
@@ -69,6 +72,7 @@ Linter が保証しない設計と実装パターン。
 
 * `flutter-layered-architecture-design-usecase` — Usecase の切り出し・Request／結線
 * `flutter-layered-architecture-design-repository` — Repository の窓口・状態・DataInjection
+* `flutter-layered-architecture-design-screen-mvvm` — Screen MVVM（lint が見ない設計判断）
 
 ### Annotations
 

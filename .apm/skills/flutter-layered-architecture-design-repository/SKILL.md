@@ -13,7 +13,7 @@ description: >-
   実装依存は flutter-layered-architecture-linter-rule-architecture-implementation-dependency、
   package 所属は flutter-layered-architecture-resolve-package-layer、
   Stateful / Delegate の構造は対応する linter-rule-*、
-  画面 MVVM は flutter-layered-architecture-screen-mvvm を使う。
+  画面 MVVM は flutter-layered-architecture-design-screen-mvvm を使う。
 ---
 # Flutter Layered Architecture / Repository 設計
 
@@ -30,12 +30,12 @@ Datasource・DB・外部 API の差異を隠し、Usecase / 上位から同一�
 | 関心 | 正本 |
 | --- | --- |
 | Usecase の切り出し・結線 | `flutter-layered-architecture-design-usecase` |
-| `@stateful` / `@implementation` / `@injection` | `flutter-layered-architecture-annotations` |
+| Annotation 付与の詳細・連動 lint | `flutter-layered-architecture-annotations`（推奨一覧は本 SKILL「推奨 Annotation」） |
 | レイヤー依存方向 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
 | 実装 package への依存制限 | `flutter-layered-architecture-linter-rule-architecture-implementation-dependency` |
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
 | Stateful / Delegate 診断 | 対応する `flutter-layered-architecture-linter-rule-*` |
-| 画面 MVVM | `flutter-layered-architecture-screen-mvvm` |
+| 画面 MVVM | `flutter-layered-architecture-design-screen-mvvm` |
 | workspace | `flutter-layered-architecture-workspace` |
 
 ## いつ使うか
@@ -50,8 +50,26 @@ Datasource・DB・外部 API の差異を隠し、Usecase / 上位から同一�
 1. **機能グループ**で窓口を切る（認証・設定・Todo など、呼び出し側が 1 IF で扱いたい単位）
 2. Read / Write / 監視のどれを公開するか決める（Read-Only・Write-Only も可）
 3. `{機能グループ}Repository` と package（`data_repository_*` / `_impl`）を決める
-4. 状態を持つなら `@stateful` と annotations / stateful lint に従う
+4. 状態を持つなら下表の `@stateful` / `@state` / `@delegate` を付ける
 5. IF・実装・injection を整え、必要なら `references/` を読む
+
+## 推奨 Annotation
+
+付与位置・併記・連動 lint の正本は `flutter-layered-architecture-annotations`（各 `references/`）。
+ここでは Repository 設計時に **付けるもの** を示す。
+
+| 対象 | Annotation | 備考 |
+| --- | --- | --- |
+| Repository IF | （なし） | 公開窓口そのものに FLA 型 annotation は付けない |
+| 状態を持つ実装型 | `@stateful` | `MutableStateStream` を持つ in-memory 等。画面 VM には使わず `@viewModel` 側へ |
+| 状態モデル（`MutableStateStream<T>` の `T`） | `@state` + `@internal` + `@freezed` | ルート `T` に必須。`@entity` と同一型に併記しない |
+| 実装内の処理切り出し | `@delegate` + `@internal` | 業務メソッドは `execute` へ委譲（`stateful_methods_use_delegate`） |
+| package internal Usecase | `@usecase`（+ 必要なら `@internal`） | 実装内の共通操作。詳細は `design-usecase` |
+| 実装バレル（`*_impl`） | `@implementation` | `library;` 付きバレルのみ |
+| 結線バレル（`data_injection`） | `@injection` | `library;` 付きバレルのみ。`@implementation` と同一バレルに併記しない |
+
+* 状態を持たない薄い実装でも、バレルの `@implementation` / 結線の `@injection` は付ける
+* 詳細は annotations の `stateful.md` / `state.md` / `delegate.md` / `implementation.md` / `injection.md`
 
 ## Usecase との違い
 
@@ -91,6 +109,7 @@ Usecase の 1 操作原則を Repository に押し付けない。
 ## 最小の形（example）
 
 ```dart
+// IF — FLA 型 annotation なし
 abstract interface class TodoRepository {
   static final provider = Provider<TodoRepository>(
     (ref) => throw UnimplementedError('TodoRepository is not bound'),
@@ -104,6 +123,26 @@ abstract interface class TodoRepository {
 ```
 
 ```dart
+// 状態を持つ実装
+@stateful
+final class InMemoryTodoRepository implements TodoRepository {
+  const InMemoryTodoRepository({required this.state});
+  final MutableStateStream<InMemoryTodoRepositoryState> state;
+  // メソッド本体は @delegate へ委譲
+}
+
+@internal
+@state
+@freezed
+abstract class InMemoryTodoRepositoryState with _$InMemoryTodoRepositoryState {
+  const factory InMemoryTodoRepositoryState({
+    required List<Todo> items,
+  }) = _InMemoryTodoRepositoryState;
+}
+```
+
+```dart
+// バレル: @implementation / 結線: @injection
 builder.inject(TodoRepository.provider, InMemoryTodoRepository.provider);
 ```
 

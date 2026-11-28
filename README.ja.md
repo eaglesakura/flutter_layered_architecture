@@ -204,7 +204,7 @@ apm install ./path/to/flutter_layered_architecture
 | 種別 | SKILL |
 | --- | --- |
 | Workspace | `flutter-layered-architecture-workspace` |
-| Design | `flutter-layered-architecture-design-usecase` / `flutter-layered-architecture-design-repository` |
+| Design | `flutter-layered-architecture-design-usecase` / `flutter-layered-architecture-design-repository` / `flutter-layered-architecture-design-screen-mvvm` |
 | Annotations | `flutter-layered-architecture-annotations` |
 | Architecture layer | `flutter-layered-architecture-resolve-package-layer` |
 | Linter rules | `flutter-layered-architecture-linter-rule-{rule}`（診断コードの `_` を `-` に置換） |

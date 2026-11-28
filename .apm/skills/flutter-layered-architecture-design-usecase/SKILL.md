@@ -11,7 +11,7 @@ description: >-
   依存方向は flutter-layered-architecture-linter-rule-architecture-layer-dependency、
   package 所属は flutter-layered-architecture-resolve-package-layer、
   Repository 実装パターンは flutter-layered-architecture-design-repository、
-  画面 MVVM は flutter-layered-architecture-screen-mvvm を使う。
+  画面 MVVM は flutter-layered-architecture-design-screen-mvvm を使う。
 ---
 # Flutter Layered Architecture / Usecase 設計
 
@@ -25,15 +25,14 @@ description: >-
 
 | 関心 | 正本 |
 | --- | --- |
-| `@usecase` 付与 | `flutter-layered-architecture-annotations`（`references/usecase.md`） |
-| `@injection` / `@implementation` | 同 annotations の各 references |
+| Annotation 付与の詳細・連動 lint | `flutter-layered-architecture-annotations`（推奨一覧は本 SKILL「推奨 Annotation」） |
 | public メソッド 1 つ | `flutter-layered-architecture-linter-rule-usecase-single-method` |
 | 引数あり・非 void | `flutter-layered-architecture-linter-rule-usecase-method-signature` |
 | フィールド final / const コンストラクタ | `flutter-layered-architecture-linter-rule-usecase-immutable` |
 | レイヤー依存方向 | `flutter-layered-architecture-linter-rule-architecture-layer-dependency` |
 | package 所属レイヤー | `flutter-layered-architecture-resolve-package-layer` |
 | Repository パターン | `flutter-layered-architecture-design-repository` |
-| 画面 MVVM | `flutter-layered-architecture-screen-mvvm` |
+| 画面 MVVM | `flutter-layered-architecture-design-screen-mvvm` |
 | workspace / app レイヤー | `flutter-layered-architecture-workspace` |
 
 ## いつ使うか
@@ -49,7 +48,23 @@ description: >-
 2. **共通**か **画面固有**か、**冪等**か **非冪等**かを決める
 3. 1 操作 = 1 Usecase に切る（構造は lint）
 4. `{動詞}{カテゴリ}Usecase` と package 配置を決める
-5. `@usecase` を付け、Request／戻り値・IF／`_impl`・injection を整える（詳細は `references/`）
+5. 下表の Annotation を付け、Request／戻り値・IF／`_impl`・injection を整える（詳細は `references/`）
+
+## 推奨 Annotation
+
+付与位置・併記・連動 lint の正本は `flutter-layered-architecture-annotations`（各 `references/`）。
+ここでは Usecase 設計時に **付けるもの** を示す。
+
+| 対象 | Annotation | 備考 |
+| --- | --- | --- |
+| Usecase IF（公開） | `@usecase` | `abstract interface class` に付与。1 操作 = 1 型 |
+| Usecase 実装型 | `@usecase`（任意） | IF 側に付けていれば実装側は必須でない。付けるなら同じ規約 |
+| package internal Usecase | `@usecase` + 必要なら `@internal` | 画面・Repository `_impl` 内の共通処理。公開 IF 分離は必須でない |
+| 実装バレル（`*_impl`） | `@implementation` | `library;` 付きバレルのみ。具象を公開する役割宣言 |
+| 結線バレル（`usecase_injection` 等） | `@injection` | `library;` 付きバレルのみ。`@implementation` と同一バレルに併記しない |
+
+* Request / Result 型そのものに FLA annotation は不要
+* 詳細な付与形は annotations の `usecase.md` / `implementation.md` / `injection.md`
 
 ## 考え方: アプリの処理は Usecase
 
@@ -121,6 +136,9 @@ abstract interface class AddTodoUsecase {
 
   Future<Todo> execute(AddTodoRequest request);
 }
+
+// 実装バレル: @implementation / 結線バレル: @injection
+// builder.inject(AddTodoUsecase.provider, AddTodoUsecaseImpl.provider);
 ```
 
 ## ナレッジベース
