@@ -11,6 +11,9 @@ import 'package:flutter_layered_architecture_lint/src/delegate/delegate_no_useca
 import 'package:flutter_layered_architecture_lint/src/file_layout/one_public_type_per_file.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/public_type_file_name.dart';
 import 'package:flutter_layered_architecture_lint/src/file_layout/unexported_public_must_be_internal.dart';
+import 'package:flutter_layered_architecture_lint/src/provider/provider_dependencies.dart';
+import 'package:flutter_layered_architecture_lint/src/provider/provider_ref_watch.dart';
+import 'package:flutter_layered_architecture_lint/src/provider/provider_static_final.dart';
 import 'package:flutter_layered_architecture_lint/src/state_entity/state_entity_exclusive.dart';
 import 'package:flutter_layered_architecture_lint/src/state_entity/state_entity_freezed.dart';
 import 'package:flutter_layered_architecture_lint/src/state_entity/state_entity_internal.dart';
@@ -66,6 +69,9 @@ final class FlutterLayeredArchitecturePlugin extends Plugin {
     registry.registerWarningRule(ViewModelEntityAnnotated());
     registry.registerWarningRule(ViewModelEntityDiffersFromState());
     registry.registerWarningRule(ViewModelOnMethodNames());
+    registry.registerWarningRule(ProviderStaticFinal());
+    registry.registerWarningRule(ProviderRefWatch());
+    registry.registerWarningRule(ProviderDependencies());
     registry.registerWarningRule(ArchitectureLayerDependency());
     registry.registerWarningRule(ArchitectureImplementationDependency());
   }
