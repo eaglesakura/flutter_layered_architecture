@@ -73,7 +73,7 @@ plugins:
 | `@stateful` | [stateful.ja.md](docs/annotations/stateful.ja.md) |
 | `@viewModel` | [viewmodel.ja.md](docs/annotations/viewmodel.ja.md) |
 
-DI / 実装 package の役割は pubspec `name` の `_injection` / `_impl` サフィックスで表す（廃止した `@injection` / `@implementation` の案内は [injection.ja.md](docs/annotations/injection.ja.md) / [implementation.ja.md](docs/annotations/implementation.ja.md)）。
+DI / 実装 package の役割は pubspec `name` の `_injection` / `_impl` サフィックスで表す（依存制約は [`architecture_implementation_dependency`](docs/linter-rules/architecture_implementation_dependency.ja.md)）。
 
 ## Linter ルール
 

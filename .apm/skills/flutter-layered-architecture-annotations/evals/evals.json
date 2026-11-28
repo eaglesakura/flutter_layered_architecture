@@ -11,8 +11,7 @@
         "Declares at most one public instance method",
         "Public method has parameters and a non-void return type",
         "Has a const constructor and final/const fields only",
-        "Imports flutter_layered_architecture_annotations",
-        "Does not use deprecated @injection or @implementation library annotations"
+        "Imports flutter_layered_architecture_annotations"
       ]
     },
     {
@@ -27,18 +26,16 @@
         "Entity model type differs from MutableStateStream state model type",
         "Delegate type has @delegate and @internal",
         "Delegate exposes a single execute instance method",
-        "ViewModel/extension action methods use on-prefixed names (except close/_close)",
-        "Does not use deprecated @injection/@implementation on class or library"
+        "ViewModel/extension action methods use on-prefixed names (except close/_close)"
       ]
     },
     {
       "id": 3,
       "prompt": "data_repository_todo_impl 相当のバレルファイルを作成してください。pubspec `name` が `_impl` で終わる実装 package として、library; と export のみを置いてください。誰から依存してよいかも notes.md に書いてください。outputs/ にバレル Dart と notes.md を保存してください。",
-      "expected_output": "library; のバレル（annotation なし）と、同一レイヤー `_injection` のみ依存可である旨の notes.md",
+      "expected_output": "library; のバレル（package 役割用 annotation なし）と、同一レイヤー `_injection` のみ依存可である旨の notes.md",
       "files": [],
       "assertions": [
-        "Barrel uses library; without @implementation",
-        "Does not annotate library with @injection",
+        "Barrel uses library; with exports only (no package-role annotations)",
         "notes.md states pubspec name ends with _impl",
         "notes.md states only same-layer _injection packages may depend on it",
         "Does not import flutter_layered_architecture_annotations solely for role declaration"

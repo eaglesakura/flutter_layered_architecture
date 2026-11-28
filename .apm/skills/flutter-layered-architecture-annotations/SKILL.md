@@ -55,8 +55,8 @@ description: >-
 
 | 役割 | pubspec `name` | 案内 |
 | --- | --- | --- |
-| DI 結線 | `*_injection` で終わる | [references/injection.md](./references/injection.md)（廃止 annotation の代替） |
-| 具象実装 | `*_impl` で終わる | [references/implementation.md](./references/implementation.md)（廃止 annotation の代替） |
+| DI 結線 | `*_injection` で終わる | `flutter-layered-architecture-design-dependency-injection` |
+| 具象実装 | `*_impl` で終わる | `flutter-layered-architecture-design-dependency-injection` / `architecture_implementation_dependency` |
 
 ## 共通ルール
 

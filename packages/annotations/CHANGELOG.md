@@ -7,4 +7,3 @@
   - `@state` / `@entity` — marks state and entity models
   - `@stateful` — marks stateful types that own `MutableStateStream`
   - `@viewModel` — marks ViewModel types
-  - `@injection` / `@implementation` — marks barrel `library` roles for DI wiring

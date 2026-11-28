@@ -73,7 +73,7 @@ To suppress a finding in code (not disable the rule globally):
 | `@stateful` | [stateful.md](docs/annotations/stateful.md) |
 | `@viewModel` | [viewmodel.md](docs/annotations/viewmodel.md) |
 
-DI and implementation package roles use pubspec `name` suffixes `_injection` and `_impl` (see removed `@injection` / `@implementation` notices in [injection.md](docs/annotations/injection.md) / [implementation.md](docs/annotations/implementation.md)).
+DI and implementation package roles use pubspec `name` suffixes `_injection` and `_impl` (see [`architecture_implementation_dependency`](docs/linter-rules/architecture_implementation_dependency.md)).
 
 ## Linter rules
 
