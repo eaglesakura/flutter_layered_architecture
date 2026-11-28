@@ -40,6 +40,6 @@ final class TodoListScreen extends HookConsumerWidget {
 
 ## DO NOT
 
-* 画面 package から `go_router` / `Navigator` を直叩きする → `screen-navigation`
+* 画面 package から `go_router` / `Navigator` を直叩きする → `design-screen-navigation`
 * ビジネスロジックを Widget に書く
 * 表示状態を `build` 内で `ref.read` する（再描画されない）

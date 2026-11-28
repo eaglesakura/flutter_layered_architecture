@@ -77,6 +77,7 @@ Annotation / Linter が保証する構造は本 SKILL に再掲しない。該�
 ## 他 SKILL との境界
 
 * 画面 MVVM: `flutter-layered-architecture-design-screen-mvvm`
+* 画面遷移: `flutter-layered-architecture-design-screen-navigation`
 * Usecase / Repository: `design-usecase` / `design-repository`
 * Annotation 付与: `flutter-layered-architecture-annotations`
 * アプリ起動・DTD: `flutter-app-debug`

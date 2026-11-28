@@ -11,7 +11,7 @@ description: >-
   viewmodel_* / stateful_* / state_entity_* / delegate_* は対応する
   flutter-layered-architecture-linter-rule-*、
   Usecase / Repository は design-usecase / design-repository、
-  画面遷移は flutter-layered-architecture-screen-navigation、
+  画面遷移は flutter-layered-architecture-design-screen-navigation、
   所在調査は code-search を使う。
 ---
 # Flutter Layered Architecture / Screen 層 MVVM
@@ -34,7 +34,7 @@ Screen 層は **Model–View–ViewModel** で組む。
 | `state_entity_*` | `flutter-layered-architecture-linter-rule-state-entity-*` |
 | `delegate_*` | `flutter-layered-architecture-linter-rule-delegate-*` |
 | Usecase / Repository | `design-usecase` / `design-repository` |
-| 画面遷移・Factory / Launcher | `flutter-layered-architecture-screen-navigation` |
+| 画面遷移・Factory / Launcher | `flutter-layered-architecture-design-screen-navigation` |
 | package 所属 | `flutter-layered-architecture-resolve-package-layer` |
 | Dart コーディング規約 | `flutter-layered-architecture-coding-rules` |
 | workspace | `flutter-layered-architecture-workspace`
@@ -51,7 +51,7 @@ Screen 層は **Model–View–ViewModel** で組む。
 2. State（可変）・Entity（表示）・Event（ワンショット）の役割を分ける
 3. 下表の Annotation を付け、lint を満たす骨格を置く（annotations / linter-rule）
 4. Screen / ScreenImpl・`onXXXX`・必要なら画面固有 Usecase を整える（`references/`）
-5. 遷移が必要なら `screen-navigation` へ
+5. 遷移が必要なら `design-screen-navigation` へ
 
 ## 推奨 Annotation
 
@@ -90,7 +90,7 @@ Screen 層は **Model–View–ViewModel** で組む。
 * **非同期初期化は `onInitialize()`**。コンストラクタ / Provider から呼ばず、ルート Screen の `useEffect` 等から呼ぶ
 * `updateWithLock` 内は短い状態遷移のみ。I/O・RPC はロック外
 * 画面 dispose で解放するリソース（キャンセル用コンテキスト等）は **State に載せる**（VM フィールドに置かない）
-* 画面遷移は `screen-navigation`。`go_router` / `Navigator` を画面 package から直叩きしない
+* 画面遷移は `design-screen-navigation`。`go_router` / `Navigator` を画面 package から直叩きしない
 * Widget は Stateless 系（`HookConsumerWidget` 等）。`StatefulWidget` は作らない
 
 ## 主なライブラリ
@@ -159,4 +159,4 @@ final class TodoListScreen extends HookConsumerWidget {
 
 ### DO NOT: 画面 package からルーターを直叩きする
 
-* 遷移は `screen-navigation`
+* 遷移は `design-screen-navigation`
