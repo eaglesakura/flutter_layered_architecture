@@ -1,0 +1,44 @@
+{
+  "skill_name": "flutter-layered-architecture-design-screen-navigation",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Flutter Layered Architecture のアプリで、ホーム画面に Practice / Grade / Review の3タブがある。設定画面から「Practice タブを表示したホーム」へ戻りたい。画面遷移の IF（Launcher / Request 等）と、実装側で go_router をどう使うかの設計メモと、主要な Dart スケルトン（IF のみでよい）を書いてください。",
+      "expected_output": "HomeScreenLauncher.launch + シリアライズ可能な Request（selectedTab）。タブ切替を push にしない。Factory/Proxy 分離。",
+      "files": [],
+      "expectations": [
+        "Uses a Launcher named like HomeScreenLauncher (not raw GoRouter in the calling IF)",
+        "Provides a launch method (not push) for returning to a specific home tab",
+        "Home/tab request inputs are serializable (enum/value object; no callback fields on the launch Request)",
+        "States that go_router usage belongs in navigation impl / Proxy, not screen feature IF",
+        "Mentions Factory (and ideally Proxy) so the concrete home Widget is not imported by the caller"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "ログイン画面を開き、成功またはキャンセルを呼び出し側が Future で待ちたい。Flutter Layered Architecture に沿って、Launcher / Result / Finisher の設計と Dart スケルトン（IF）を書いてください。go_router の具体 API は impl に閉じること。",
+      "expected_output": "LoginScreenLauncher.push が Future<Result>。Finisher で結果返却。画面 package は go_router 非依存。",
+      "files": [],
+      "expectations": [
+        "Uses LoginScreenLauncher.push returning Future with a typed Result",
+        "Defines a NavigationResult (or equivalent) covering success and cancel",
+        "Defines LoginScreenFinisher (or equivalent) to finish with the Result",
+        "Does not expose GoRouter / context.go in the IF skeletons",
+        "Does not recommend launch as the primary API for this result-waiting flow"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "画像クロップ画面に imageFilePath / width / height / jpegQuality を渡して表示したい。呼び出し側は SelectImage フローの途中。画面 Widget がルートの extra を直接読まない前提で、引数の渡し方（型・DI・Proxy）の設計と Dart スケルトンを書いてください。",
+      "expected_output": "CropImageScreenInput.provider を Proxy で ProviderScope override。画面は ref.watch(Input.provider)。Factory で Widget 隠蔽。",
+      "files": [],
+      "expectations": [
+        "Defines a CropImageScreenInput (or equivalent) with path/width/height/jpegQuality",
+        "Exposes Input via a static Provider (UnimplementedError when unbound)",
+        "Proxy (or equivalent) overrides Input with ProviderScope before Factory.build",
+        "States the screen Widget must not read GoRouterState.extra directly",
+        "Uses Factory to construct the screen Widget"
+      ]
+    }
+  ]
+}

@@ -99,7 +99,7 @@ Linter が保証しない設計と実装パターン。
 * `flutter-layered-architecture-design-repository` — Repository の窓口・状態
 * `flutter-layered-architecture-design-dependency-injection` — Provider / `{layer}_injection` / Container
 * `flutter-layered-architecture-design-screen-mvvm` — Screen MVVM（lint が見ない設計判断）
-* `flutter-layered-architecture-design-screen-navigation` — 画面遷移（Factory / Launcher / Proxy）
+* `flutter-layered-architecture-design-screen-navigation` — 画面遷移（`launch`/`push`・Factory / Launcher / Input DI / Proxy）
 
 ### Annotations
 
