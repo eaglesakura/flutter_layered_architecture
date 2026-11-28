@@ -67,7 +67,8 @@ description: >-
 | 結線 package（`usecase_injection` 等） | pubspec `name` が `_injection` で終わる | バレルは `library;` + export |
 
 * Request / Result 型そのものに FLA annotation は不要
-* 詳細な付与形は annotations の `usecase.md` / `implementation.md` / `injection.md`
+* `@usecase` の付与形は annotations の `usecase.md` を正とする
+* 実装 / 結線 package の役割は pubspec `name` の `_impl` / `_injection` サフィックス（`design-dependency-injection`）
 
 ## 考え方: アプリの処理は Usecase
 
